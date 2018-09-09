@@ -1,6 +1,6 @@
 # Compiler Group Project CS 4550
-# Team Avalanche
-# Ryan Holzapfel, Nicholas Rausch, Usman Wariach
+Team Avalanche
+Ryan Holzapfel, Nicholas Rausch, Usman Wariach
 
 # Description
 Known Bugs
