@@ -1,4 +1,4 @@
-from fb_token import Token, TokenType
+from flair_tokens import Token, TokenType
 from errors   import LexicalError
 
 class Scanner:
