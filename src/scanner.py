@@ -1,4 +1,4 @@
-from flair_tokens import Token, TokenType
+from fb_token import Token, TokenType
 from errors   import LexicalError
 
 class Scanner:
@@ -23,16 +23,14 @@ class Scanner:
       return self.get_next_token()
 
   # --------------------------------------------------------
+  #checks for valid tolkens returns token types
+  #booleans keywords and identifiers to be handled as words 
 
   def get_next_token(self):
     self.skip_whitespace()
     
     if self.pos >= len(self.program_str):
       return Token(TokenType.EOF)
-
-    if self.program_str[self.pos] == '=':
-      self.pos += 1
-      return Token(TokenType.EQUALS)
 
     if self.program_str[self.pos:].startswith('...'):
       self.pos += 3
@@ -42,11 +40,72 @@ class Scanner:
       word = self.get_word()
       return Token(TokenType.WORD, word)
 
-    if self.program_str[self.pos] in '123456789':
+    if self.program_str[self.pos] in '1234567890':  #added zero to this string NR
       number = self.get_number()
       return Token(TokenType.NUMBER, number)
+	  
+	#list of operator tokens (self delimiting)
+	  
+    if self.program_str[self.pos] == '-':
+      self.pos += 1
+      return Token(TokenType.SUBTRACT)
+
+    if self.program_str[self.pos] == '+':
+      self.pos += 1
+      return Token(TokenType.ADD, add)	  
+	  
+    if self.program_str[self.pos] == '*':
+      self.pos += 1
+      return Token(TokenType.MULTIPLY)	  
+
+    if self.program_str[self.pos] == '/':
+      self.pos += 1
+      return Token(TokenType.DIVIDE)
+
+    if self.program_str[self.pos] == '<':
+      self.pos += 1
+      return Token(TokenType.LESSTHAN)
+	  
+    if self.program_str[self.pos] == '=':
+      self.pos += 1
+      return Token(TokenType.EQUALS)
+	  
+	# list of punctuators (self delimiting)
+	  
+    if self.program_str[self.pos] == '{':
+      self.pos += 1
+      return Token(TokenType.LEFTBRACKET)
+	  
+    if self.program_str[self.pos] == '}':
+      self.pos += 1
+      return Token(TokenType.RIGHTBRACKET)
+	  
+    if self.program_str[self.pos] == ',':
+      self.pos += 1
+      return Token(TokenType.COMMA)
+	  
+    if self.program_str[self.pos] == ';':
+      self.pos += 1
+      return Token(TokenType.SEMICOLON)
+	  
+    if self.program_str[self.pos] == ':':
+      self.pos += 1
+      return Token(TokenType.COLON)
+	  
+    if self.program_str[self.pos] == '.':
+      self.pos += 1
+      return Token(TokenType.PERIOD)
+	  
+    if self.program_str[self.pos] == '(':
+      self.pos += 1
+      return Token(TokenType.LEFTPARENT)
+	  
+    if self.program_str[self.pos] == ')':
+      self.pos += 1
+      return Token(TokenType.RIGHTPARENT)
 
     # if no token matches, signal an error
+	# Important need to make sure lexor works with scanner
 
     msg = 'invalid characters at position {}'.format(self.pos)
     raise LexicalError(msg)
@@ -75,15 +134,3 @@ class Scanner:
           self.program_str[self.pos] in '0123456789':
       self.pos += 1
     return int( self.program_str[start : self.pos] )
-
-# code copied for use in get_next_token() ------------------
-#     if the scanner takes a file to read ------------------
-'''
-  with open(filename) as f:
-    while True:
-      c = f.read(1)
-      if not c:
-        print "End of file"
-        break
-      print "Read a character:", c
-'''
