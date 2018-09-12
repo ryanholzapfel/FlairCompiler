@@ -91,7 +91,7 @@ class Token:
 
     def __repr__(self):
         if self.is_number():
-            return 'number = ' + str(self.token_value))
+            return 'number = ' + str(self.token_value)
         elif self.is_identifier():
             return 'identifier = ' + self.token_value
         elif self.is_boolean():

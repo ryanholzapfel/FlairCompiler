@@ -1,5 +1,5 @@
 from flair_tokens import Token, TokenType
-from errors   import LexicalError
+from error   import LexicalError
 
 class Scanner:
   'Read tokens from an input stream'
