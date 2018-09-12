@@ -85,6 +85,9 @@ class Token:
     def is_rightparent(self):
         return self.token_type == TokenType.RIGHTPARENT
 
+    def is_colon(self):
+        return self.token_type == TokenType.COLON
+
     def is_eof(self):
         return self.token_type == TokenType.EOF
 
@@ -124,6 +127,8 @@ class Token:
             return 'leftparent'
         elif self.is_rightparent():
             return 'rightparent'
+        elif self.is_colon():
+            return "colon"
         else: #self.is_eof():
             return 'end_of_file'
 

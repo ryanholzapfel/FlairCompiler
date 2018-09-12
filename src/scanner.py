@@ -52,7 +52,7 @@ class Scanner:
 
     if self.program_str[self.pos] == '+':
       self.pos += 1
-      return Token(TokenType.ADD, add)	  
+      return Token(TokenType.ADD)	  
 	  
     if self.program_str[self.pos] == '*':
       self.pos += 1

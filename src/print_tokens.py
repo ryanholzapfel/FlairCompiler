@@ -7,18 +7,18 @@ list of tokens in a Flair program
 
 '''
 
-'''
-#file in
-fileName = argv[1]
 
-file = open(fileName)
-'''
+#file name and open
+#fileName = argv[1]
+#file = open(fileName)
 
-program = "():=+-/*"
 
-#file to line
 
+
+#read file to single string
 #program = file.read()
+
+program = "(){}:;,./*+"
 
 #load the program into the scanner object
 tokenList = Scanner(program)
