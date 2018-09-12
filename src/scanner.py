@@ -32,9 +32,9 @@ class Scanner:
     if self.pos >= len(self.program_str):
       return Token(TokenType.EOF)
 
-    if self.program_str[self.pos:].startswith('...'):
-      self.pos += 3
-      return Token(TokenType.ELLIPSIS)
+   # if self.program_str[self.pos:].startswith('...'):
+     # self.pos += 3
+     # return Token(TokenType.ELLIPSIS)
 
     if self.program_str[self.pos].isalpha():
       word = self.get_word()
@@ -67,8 +67,8 @@ class Scanner:
       return Token(TokenType.LESS)
           
     if self.program_str[self.pos] == '=':
-      self.pos += 1
-      return Token(TokenType.EQUALS)
+        self.pos += 1
+        return Token(TokenType.EQUAL)
     
     #no greater than operator?
     #if self.program_str[self.pos] == '>':
@@ -77,9 +77,11 @@ class Scanner:
 
     # list of punctuators (self delimiting)     
     if self.program_str[self.pos] == '{':
-        while self.lookahead != '}':
+        while True:
+            if self.program_str[self.pos] == '}':
+                break
             self.pos += 1
-      return Token(TokenType.LEFTBRACKET)
+        return Token(TokenType.LEFTBRACKET)
           
     if self.program_str[self.pos] == '}':
       self.pos += 1

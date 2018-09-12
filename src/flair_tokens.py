@@ -98,7 +98,7 @@ class Token:
         if self.is_number():
             return 'number = ' + str(self.token_value)
         elif self.is_word():
-            return 'identifier = ' + self.token_value
+            return 'word = ' + self.token_value
         elif self.is_boolean():
             return 'boolean = ' + str(self.token_value)
         elif self.is_add():
