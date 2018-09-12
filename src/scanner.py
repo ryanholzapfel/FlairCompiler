@@ -64,12 +64,15 @@ class Scanner:
 
     if self.program_str[self.pos] == '<':
       self.pos += 1
-      return Token(TokenType.LESSTHAN)
+      return Token(TokenType.LESS)
 	  
     if self.program_str[self.pos] == '=':
       self.pos += 1
       return Token(TokenType.EQUALS)
-	  
+
+    if self.program_str[self.pos] == '>':
+        self.pos += 1
+        return Token(TokenType.GREATER)
 	# list of punctuators (self delimiting)
 	  
     if self.program_str[self.pos] == '{':
