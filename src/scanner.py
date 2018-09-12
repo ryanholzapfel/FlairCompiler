@@ -77,7 +77,8 @@ class Scanner:
 
     # list of punctuators (self delimiting)     
     if self.program_str[self.pos] == '{':
-      self.pos += 1
+        while self.lookahead != '}':
+            self.pos += 1
       return Token(TokenType.LEFTBRACKET)
           
     if self.program_str[self.pos] == '}':
