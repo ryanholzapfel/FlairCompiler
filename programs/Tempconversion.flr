@@ -1,0 +1,15 @@
+{
+
+----------Conversion from Fahrenheit to Celcius---------
+
+Group: Avalanche: Holzapfel*, Rausch, Wariach (language)
+
+}
+
+program TempUnitConverter( n : integer );
+
+	begin
+
+		print ((n *1.8)+32);
+
+			end.
