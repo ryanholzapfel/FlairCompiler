@@ -43,20 +43,20 @@ class Scanner:
     if self.program_str[self.pos] in '1234567890':  #added zero to this string NR
       number = self.get_number()
       return Token(TokenType.NUMBER, number)
-	  
-	#list of operator tokens (self delimiting)
-	  
+          
+        #list of operator tokens (self delimiting)
+          
     if self.program_str[self.pos] == '-':
       self.pos += 1
       return Token(TokenType.SUBTRACT)
 
     if self.program_str[self.pos] == '+':
       self.pos += 1
-      return Token(TokenType.ADD)	  
-	  
+      return Token(TokenType.ADD)         
+          
     if self.program_str[self.pos] == '*':
       self.pos += 1
-      return Token(TokenType.MULTIPLY)	  
+      return Token(TokenType.MULTIPLY)    
 
     if self.program_str[self.pos] == '/':
       self.pos += 1
@@ -65,50 +65,51 @@ class Scanner:
     if self.program_str[self.pos] == '<':
       self.pos += 1
       return Token(TokenType.LESS)
-	  
+          
     if self.program_str[self.pos] == '=':
       self.pos += 1
       return Token(TokenType.EQUALS)
+    
+    #no greater than operator?
+    #if self.program_str[self.pos] == '>':
+       # self.pos += 1
+       # return Token(TokenType.GREATER)
 
-    if self.program_str[self.pos] == '>':
-        self.pos += 1
-        return Token(TokenType.GREATER)
-	# list of punctuators (self delimiting)
-	  
+    # list of punctuators (self delimiting)     
     if self.program_str[self.pos] == '{':
       self.pos += 1
       return Token(TokenType.LEFTBRACKET)
-	  
+          
     if self.program_str[self.pos] == '}':
       self.pos += 1
       return Token(TokenType.RIGHTBRACKET)
-	  
+          
     if self.program_str[self.pos] == ',':
       self.pos += 1
       return Token(TokenType.COMMA)
-	  
+          
     if self.program_str[self.pos] == ';':
       self.pos += 1
       return Token(TokenType.SEMICOLON)
-	  
+          
     if self.program_str[self.pos] == ':':
       self.pos += 1
       return Token(TokenType.COLON)
-	  
+          
     if self.program_str[self.pos] == '.':
       self.pos += 1
       return Token(TokenType.PERIOD)
-	  
+          
     if self.program_str[self.pos] == '(':
       self.pos += 1
       return Token(TokenType.LEFTPARENT)
-	  
+          
     if self.program_str[self.pos] == ')':
       self.pos += 1
       return Token(TokenType.RIGHTPARENT)
 
     # if no token matches, signal an error
-	# Important need to make sure lexor works with scanner
+        # Important need to make sure lexor works with scanner
 
     msg = 'invalid characters at position {}'.format(self.pos)
     raise LexicalError(msg)

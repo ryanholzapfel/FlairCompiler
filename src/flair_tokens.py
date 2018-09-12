@@ -2,7 +2,7 @@ from enum import Enum
 
 class TokenType(Enum):
     NUMBER = 1
-    IDENTIFIER = 2
+    WORD = 2
     BOOLEAN = 3
 
     #Mathematical Operations
@@ -10,21 +10,22 @@ class TokenType(Enum):
     SUBTRACT = 5
     MULTIPLY = 6
     DIVIDE = 7
-    GREATER = 8
-    LESS = 9
-    EQUAL = 10
+   # GREATER = 8
+    LESS = 8
+    EQUAL = 9
     
     #Punctuators
-    LEFTBRACKET = 11
-    RIGHTBRACKET = 12
-    COMMA = 13
-    SEMICOLON = 14
-    COLON = 15
-    PERIOD = 16
-    LEFTPARENT = 17
-    RIGHTPARENT = 18
+    LEFTBRACKET = 10
+    RIGHTBRACKET = 11
+    COMMA = 12
+    SEMICOLON = 13
+    COLON = 14
+    PERIOD = 15
+    LEFTPARENT = 16
+    RIGHTPARENT = 17
+    
 
-    EOF = 19
+    EOF = 18
 
 class Token:
     def __init__(self, token_type, token_value = None):
@@ -37,8 +38,8 @@ class Token:
     def is_number(self):
         return self.token_type == TokenType.NUMBER
 
-    def is_identifier(self):
-        return self.token_type == TokenType.IDENTIFIER
+    def is_word(self):
+        return self.token_type == TokenType.WORD
 
     def is_boolean(self):
         return self.token_type == TokenType.BOOLEAN
@@ -55,8 +56,9 @@ class Token:
     def is_divide(self):
         return self.token_type == TokenType.DIVIDE
 
-    def is_greater(self):
-        return self.token_type == TokenType.GREATER
+    #no greater than?
+    #def is_greater(self):
+        #return self.token_type == TokenType.GREATER
 
     def is_less(self):
         return self.token_type == TokenType.LESS
@@ -95,7 +97,7 @@ class Token:
     def __repr__(self):
         if self.is_number():
             return 'number = ' + str(self.token_value)
-        elif self.is_identifier():
+        elif self.is_word():
             return 'identifier = ' + self.token_value
         elif self.is_boolean():
             return 'boolean = ' + str(self.token_value)
@@ -107,8 +109,11 @@ class Token:
             return 'multiplication sign'
         elif self.is_divide():
             return 'division sign'
-        elif self.is_greater():
-            return 'greater than'
+        
+        #no greater than?
+        #elif self.is_greater():
+            #return 'greater than'
+        
         elif self.is_less():
             return 'less than'
         elif self.is_equal():

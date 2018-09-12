@@ -1,5 +1,8 @@
 from scanner import Scanner
 from flair_tokens import Token, TokenType
+import sys
+
+
 '''
 print_tokens.py
 Uses the Flair scanner to make a human-readable
@@ -9,16 +12,16 @@ list of tokens in a Flair program
 
 
 #file name and open
-#fileName = argv[1]
-#file = open(fileName)
+fileName = sys.argv[1]
+file = open(fileName)
 
 
 
 
 #read file to single string
-#program = file.read()
+program = file.read()
 
-program = "(){}:;,./*+"
+#program = "program"
 
 #load the program into the scanner object
 tokenList = Scanner(program)
