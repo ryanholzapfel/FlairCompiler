@@ -100,7 +100,12 @@ class Scanner:
       return Token(TokenType.COLON)
           
     if self.program_str[self.pos] == '.':
-      self.pos += 1
+        #add case to catch possible illegal decimal point NR
+        while True:
+            if self.program_str[self.pos + 1] in '1234567890':
+                msg = 'invald decimal point at position {}'.format(self.pos)
+                raise LexicalError(msg)
+            self.pos += 1
       return Token(TokenType.PERIOD)
           
     if self.program_str[self.pos] == '(':
