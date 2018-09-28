@@ -81,11 +81,14 @@ class Scanner:
             if self.program_str[self.pos] == '}':
                 break
             self.pos += 1
-        return Token(TokenType.LEFTBRACKET)
-          
-    if self.program_str[self.pos] == '}':
-      self.pos += 1
-      return Token(TokenType.RIGHTBRACKET)
+        #instead of returning a token we will return zero tokens for left and right bracket
+        #return Token(TokenType.LEFTBRACKET)
+                break
+        
+    #comment out because right bracket should never return unless left bracket is returned first      
+    #if self.program_str[self.pos] == '}':
+    #  self.pos += 1
+    #  return Token(TokenType.RIGHTBRACKET)
           
     if self.program_str[self.pos] == ',':
       self.pos += 1
