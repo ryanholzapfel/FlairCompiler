@@ -64,7 +64,7 @@ class Scanner:
         else:
         	return Token(TokenType.IDENTIFIER, identifier
 
-    if self.program_str[self.pos] in '1234567890':  #added zero to this string NR
+    if self.program_str[self.pos] in '1234567890':
         number = self.get_number()
         return Token(TokenType.NUMBER, number)
           
