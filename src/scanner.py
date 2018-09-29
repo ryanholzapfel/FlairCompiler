@@ -28,116 +28,116 @@ class Scanner:
   def get_next_token(self):
     self.skip_whitespace()
   
-  if self.pos >= len(self.program_str):
-    return Token(TokenType.EOF)  
-
-  if self.program_str[self.pos].isalpha():
-    identifier = self.get_identifier()
-    if identifier == "if":
-      return Token(TokenType.IF)
-    elif identifier == "THEN":
-      return Token(TokenType.THEN)	
-    elif identifier == "else":
-      return Token(TokenType.ELSE)
-    elif identifier == "not":
-      return Token(TokenType.NOT)
-    elif identifier == "OR":
-      return Token(TokenType.OR)
-    elif identifier == "and":
-      return Token(TokenType.AND)
-    elif identifier == "print":
-      return Token(TokenType.PRINT)
-    elif identifier == "begin":
-      return Token(TokenType.BEGIN)
-    elif identifier == "end":
-      return Token(TokenType.END)
-    elif identifier == "return":
-      return Token(TokenType.RETURN)
-    elif identifier == "program":
-      return Token(TokenType.program)
-    elif identifier == "function":
-      return Token(TokenType.FUNCTION)
-    else:
-      return Token(TokenType.IDENTIFIER, identifier)  
-  if self.program_str[self.pos] in '1234567890':
-    number = self.get_number()
-    return Token(TokenType.NUMBER, number)
-      
-    #list of operator tokens (self delimiting)
-      
-  if self.program_str[self.pos] == '-':
-    self.pos += 1
-    return Token(TokenType.SUBTRACT)  
-  if self.program_str[self.pos] == '+':
-    self.pos += 1
-    return Token(TokenType.ADD)         
-      
-  if self.program_str[self.pos] == '*':
-    self.pos += 1
-    return Token(TokenType.MULTIPLY)      
-  if self.program_str[self.pos] == '/':
-    self.pos += 1
-    return Token(TokenType.DIVIDE)  
-  if self.program_str[self.pos] == '<':
-    self.pos += 1
-    return Token(TokenType.LESS)
-        
-  if self.program_str[self.pos] == '=':
-    self.pos += 1
-    return Token(TokenType.EQUAL)
+    if self.pos >= len(self.program_str):
+      return Token(TokenType.EOF)  
   
-  #no greater than operator?
-  #if self.program_str[self.pos] == '>':
-  # self.pos += 1
-  # return Token(TokenType.GREATER)  
-  # list of punctuators (self delimiting)     
-  if self.program_str[self.pos] == '{':
-    while True:
-      if self.program_str[self.pos] == '}':
-        break
+    if self.program_str[self.pos].isalpha():
+      identifier = self.get_identifier()
+      if identifier == "if":
+        return Token(TokenType.IF)
+      elif identifier == "THEN":
+        return Token(TokenType.THEN)	
+      elif identifier == "else":
+        return Token(TokenType.ELSE)
+      elif identifier == "not":
+        return Token(TokenType.NOT)
+      elif identifier == "OR":
+        return Token(TokenType.OR)
+      elif identifier == "and":
+        return Token(TokenType.AND)
+      elif identifier == "print":
+        return Token(TokenType.PRINT)
+      elif identifier == "begin":
+        return Token(TokenType.BEGIN)
+      elif identifier == "end":
+        return Token(TokenType.END)
+      elif identifier == "return":
+        return Token(TokenType.RETURN)
+      elif identifier == "program":
+        return Token(TokenType.program)
+      elif identifier == "function":
+        return Token(TokenType.FUNCTION)
+      else:
+        return Token(TokenType.IDENTIFIER, identifier)  
+    if self.program_str[self.pos] in '1234567890':
+      number = self.get_number()
+      return Token(TokenType.NUMBER, number)
+        
+      #list of operator tokens (self delimiting)
+        
+    if self.program_str[self.pos] == '-':
       self.pos += 1
-    return Token(TokenType.LEFTBRACKET)
-        
-  if self.program_str[self.pos] == '}':
-    self.pos += 1
-    return Token(TokenType.RIGHTBRACKET)
-        
-  if self.program_str[self.pos] == ',':
-    self.pos += 1
-    return Token(TokenType.COMMA)
-        
-  if self.program_str[self.pos] == ';':
-    self.pos += 1
-    return Token(TokenType.SEMICOLON)
-        
-  if self.program_str[self.pos] == ':':
-    self.pos += 1
-    return Token(TokenType.COLON)
-        
-  if self.program_str[self.pos] == '.':
-    #add case to catch possible illegal decimal point NR
-    while True:
-      if self.program_str[self.pos + 1] == '':
-        break
-      elif self.program_str[self.pos + 1].isalpha():
-        break
-      elif self.program_str[self.pos + 1] in '1234567890':
-        msg = 'invald decimal point at position {}'.format(self.pos)
-        raise LexicalError(msg)
+      return Token(TokenType.SUBTRACT)  
+    if self.program_str[self.pos] == '+':
       self.pos += 1
-  return Token(TokenType.PERIOD)
+      return Token(TokenType.ADD)         
         
-  if self.program_str[self.pos] == '(':
-    self.pos += 1
-    return Token(TokenType.LEFTPARENT)
-        
-  if self.program_str[self.pos] == ')':
-    self.pos += 1
-    return Token(TokenType.RIGHTPARENT)  
-  # if no token matches, signal an error
-      # Important need to make sure lexor works with scanner  
-  msg = 'invalid characters at position {}'.format(self.pos)
-  raise LexicalError(msg)  
+    if self.program_str[self.pos] == '*':
+      self.pos += 1
+      return Token(TokenType.MULTIPLY)      
+    if self.program_str[self.pos] == '/':
+      self.pos += 1
+      return Token(TokenType.DIVIDE)  
+    if self.program_str[self.pos] == '<':
+      self.pos += 1
+      return Token(TokenType.LESS)
+          
+    if self.program_str[self.pos] == '=':
+      self.pos += 1
+      return Token(TokenType.EQUAL)
+    
+    #no greater than operator?
+    #if self.program_str[self.pos] == '>':
+    # self.pos += 1
+    # return Token(TokenType.GREATER)  
+    # list of punctuators (self delimiting)     
+    if self.program_str[self.pos] == '{':
+      while True:
+        if self.program_str[self.pos] == '}':
+          break
+        self.pos += 1
+      return Token(TokenType.LEFTBRACKET)
+          
+    if self.program_str[self.pos] == '}':
+      self.pos += 1
+      return Token(TokenType.RIGHTBRACKET)
+          
+    if self.program_str[self.pos] == ',':
+      self.pos += 1
+      return Token(TokenType.COMMA)
+          
+    if self.program_str[self.pos] == ';':
+      self.pos += 1
+      return Token(TokenType.SEMICOLON)
+          
+    if self.program_str[self.pos] == ':':
+      self.pos += 1
+      return Token(TokenType.COLON)
+          
+    if self.program_str[self.pos] == '.':
+      #add case to catch possible illegal decimal point NR
+      while True:
+        if self.program_str[self.pos + 1] == '':
+          break
+        elif self.program_str[self.pos + 1].isalpha():
+          break
+        elif self.program_str[self.pos + 1] in '1234567890':
+          msg = 'invald decimal point at position {}'.format(self.pos)
+          raise LexicalError(msg)
+        self.pos += 1
+    return Token(TokenType.PERIOD)
+          
+    if self.program_str[self.pos] == '(':
+      self.pos += 1
+      return Token(TokenType.LEFTPARENT)
+          
+    if self.program_str[self.pos] == ')':
+      self.pos += 1
+      return Token(TokenType.RIGHTPARENT)  
+    # if no token matches, signal an error
+        # Important need to make sure lexor works with scanner  
+    msg = 'invalid characters at position {}'.format(self.pos)
+    raise LexicalError(msg)  
   #  --------------------------------------------------------  
   def skip_whitespace(self):
     while self.pos < len(self.program_str) and \
