@@ -146,25 +146,25 @@ class Scanner:
 
   # --------------------------------------------------------
 
-    def skip_whitespace(self):
-        while self.pos < len(self.program_str) and \
-            self.is_whitespace(self.program_str[self.pos]):
-          self.pos += 1
-        return
-    
-    def is_whitespace(self, ch):
-        return ch in ' \n\t\r '
-        
-    def get_word(self):
-        start = self.pos
-        while self.pos < len(self.program_str) and \
-              self.program_str[self.pos].isalpha():
-          self.pos += 1
-        return self.program_str[start : self.pos]
-        
-    def get_number(self):
-        start = self.pos
-        while self.pos < len(self.program_str) and \
-            self.program_str[self.pos] in '0123456789':
-          self.pos += 1
-        return int( self.program_str[start : self.pos])
+  def skip_whitespace(self):
+      while self.pos < len(self.program_str) and \
+          self.is_whitespace(self.program_str[self.pos]):
+        self.pos += 1
+      return
+  
+  def is_whitespace(self, ch):
+      return ch in ' \n\t\r '
+      
+  def get_word(self):
+      start = self.pos
+      while self.pos < len(self.program_str) and \
+            self.program_str[self.pos].isalpha():
+        self.pos += 1
+      return self.program_str[start : self.pos]
+      
+  def get_number(self):
+      start = self.pos
+      while self.pos < len(self.program_str) and \
+          self.program_str[self.pos] in '0123456789':
+        self.pos += 1
+      return int( self.program_str[start : self.pos])  
