@@ -120,8 +120,8 @@ class Scanner:
         if self.pos == len(self.program_str):
           break
         elif self.pos != len(self.program_str):
-            if self.program_str[self.pos + 1].isalpha():
-                break
+          if self.program_str[self.pos + 1].isalpha():
+            break
           break
         elif self.program_str[self.pos + 1] in '1234567890':
           msg = 'invald decimal point at position {}'.format(self.pos)
