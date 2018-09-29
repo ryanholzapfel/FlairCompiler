@@ -95,7 +95,7 @@ class Scanner:
     while True:
       if self.program_str[self.pos] == '}':
         break
-          self.pos += 1
+      self.pos += 1
     return Token(TokenType.LEFTBRACKET)
         
   if self.program_str[self.pos] == '}':
