@@ -1,4 +1,3 @@
-
 """
 parse_run.py
 """
@@ -15,7 +14,7 @@ file = open(fileName)
 program = file.read()
 
 scanner = Scanner(program)
-parser = Parser(program)
+parser = Parser(scanner)
 
 valid = parser.parse()
 
