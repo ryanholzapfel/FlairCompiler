@@ -116,17 +116,17 @@ class Scanner:
           
     if self.program_str[self.pos] == '.':
       #add case to catch possible illegal decimal point NR
-      while True:
-        if self.pos == len(self.program_str):
-          break
-        elif self.pos != len(self.program_str):
-          if self.program_str[self.pos + 1].isalpha():
-            break
-          break
-        elif self.program_str[self.pos + 1] in '1234567890':
-          msg = 'invald decimal point at position {}'.format(self.pos)
-          raise LexicalError(msg)
-        self.pos += 1
+      #while True:
+      #  if self.pos == len(self.program_str):
+      #    break
+      #  elif self.pos != len(self.program_str):
+      #    if self.program_str[self.pos + 1].isalpha():
+      #      break
+      #    break
+      #  elif self.program_str[self.pos + 1] in '1234567890':
+      #    msg = 'invald decimal point at position {}'.format(self.pos)
+      #    raise LexicalError(msg)
+      #  self.pos += 1
       return Token(TokenType.PERIOD)
           
     if self.program_str[self.pos] == '(':
