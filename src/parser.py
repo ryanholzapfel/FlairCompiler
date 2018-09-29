@@ -370,6 +370,7 @@ class Parser:
             grammarRule = top(parseStack)
             print(grammarRule)
             if isinstance( grammarRule, TokenType):
+                t = self.scanner.next_token()
                 if grammarRule == t.token_type:
                     pop(parseStack)
                 else:
