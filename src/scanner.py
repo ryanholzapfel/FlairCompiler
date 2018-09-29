@@ -156,7 +156,7 @@ class Scanner:
   def is_whitespace(self, ch):
       return ch in ' \n\t\r '
       
-  def get_word(self):
+  def get_identifier(self):
       start = self.pos
       while self.pos < len(self.program_str) and \
             self.program_str[self.pos].isalpha():
