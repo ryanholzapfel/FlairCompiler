@@ -2,7 +2,7 @@ from flair_tokens import Token, TokenType
 from error   import LexicalError
 
 class Scanner:
-'Read tokens from an input stream'
+#Read tokens from an input stream
 
   def __init__(self, program_str):
     self.program_str = program_str
