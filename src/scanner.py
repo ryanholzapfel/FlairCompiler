@@ -24,7 +24,7 @@ class Scanner:
 
   # --------------------------------------------------------
   #checks for valid tolkens returns token types
-  #booleans keywords and identifiers to be handled as words 
+  #booleans keyidentifiers and identifiers to be handled as identifiers 
 
     def get_next_token(self):
         self.skip_whitespace()
@@ -37,8 +37,8 @@ class Scanner:
      # return Token(TokenType.ELLIPSIS)
 
     if self.program_str[self.pos].isalpha():
-        word = self.get_word()
-        return Token(TokenType.WORD, word)
+        identifier = self.get_identifier()
+        return Token(TokenType.IDENTIFIER, identifier)
 
     if self.program_str[self.pos] in '1234567890':  #added zero to this string NR
         number = self.get_number()
@@ -137,7 +137,7 @@ class Scanner:
     def is_whitespace(self, ch):
         return ch in ' \n\t\r '
         
-    def get_word(self):
+    def get_identifier(self):
         start = self.pos
         while self.pos < len(self.program_str) and \
               self.program_str[self.pos].isalpha():
