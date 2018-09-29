@@ -368,6 +368,7 @@ class Parser:
         push_rule([NonTerminal.PROGRAM, TokenType.EOF], parseStack)
         while parseStack:
             grammarRule = top(parseStack)
+            print(grammarRule)
             if isinstance( grammarRule, TokenType):
                 if grammarRule == t.token_type:
                     pop(parseStack)
