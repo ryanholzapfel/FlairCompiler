@@ -17,4 +17,6 @@ program = file.read()
 scanner = Scanner(program)
 parser = Parser(program)
 
-print(parser)
+if parser:
+    print("Program is valid.")
+#print(parser)
