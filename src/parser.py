@@ -12,13 +12,30 @@ from enum import Enum
 # non-terminals
 
 class NonTerminal(Enum):
-    Program     = 0
-    Range       = 1
-    Assignments = 2
-    Assignment  = 3
-    Word        = 4
-    Number      = 5
-
+    PROGRAM    = 0
+    DEFINITIONS      = 1
+    DEF = 2
+    FORMALS  = 3
+    NONEMPTYFORMALS        = 4
+    FORMAL      = 5
+    NONEMPTYFORMALS-REST
+    BODY = 6
+    STATEMENT-LIST = 7
+    TYPE = 8
+    EXPR = 9
+    EXPR-PRIME = 10
+    SIMPLE-EXPR = 11
+    SE-PRIME = 12
+    TERM = 13
+    TERM-PRIME = 14
+    FACTOR = 15
+    FACTOR-REST = 16
+    ACTUALS = 17
+    NONEMPTYACTUALS = 18
+    NONEMPTYACTUALS-REST = 19
+    LITERAL = 20
+    PRINT-STATEMENT = 21
+    
 #Stack Operations
 def top(stack):
     return stack[-1]
