@@ -311,34 +311,34 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.EOF): [],
 
 #Parser 
 class Parser:
-        def __init__(self, scanner):
-             self.scanner = scanner
-
-        def parse(self):
-                parseStack = []
-                semanticStack = []
-                push_rule([Nonterminal.Program, TokenType.EOF], parseStack)
-                while parseStack:
-                        grammarRule = top(parseStack)
-                                if isinstance( grammarRule, TokenType):
-                                        if grammarRule == t.token_type:
-                                                pop(parseStack)
-                                        else:
-                                                msg ='token mismatch: {} and {}'
-                                                raise ParseError(msg.format(grammarRule,t))
-                                elif isinstance( grammarRule, NonTerminal):
-                                        t = self.scanner.peek()
-                                        rule = parse_table.get( (grammarRule, t.token_type))
-                                        if rule is not None:
-                                                pop(parseStack)
-                                                push_rule(rule, ParseStack)
-                                        else:
-                                                msg = 'cannot expand {} on {}'
-                                                raise ParseError(msg.format(grammarRule,t))
-                                else:
-                                        msg = 'invalid item on stack: {}'
-                                        raise ParseError(msg.format(grammarRule))
-                                        
+    def __init__(self, scanner):
+        self.scanner = scanner
+        
+    def parse(self):
+        parseStack = []
+        semanticStack = []
+        push_rule([Nonterminal.Program, TokenType.EOF], parseStack)
+        while parseStack:
+            grammarRule = top(parseStack)
+                if isinstance( grammarRule, TokenType):
+                    if grammarRule == t.token_type:
+                        pop(parseStack)
+                    else:
+                        msg ='token mismatch: {} and {}'
+                        raise ParseError(msg.format(grammarRule,t))
+                elif isinstance( grammarRule, NonTerminal):
+                    t = self.scanner.peek()
+                    rule = parse_table.get( (grammarRule, t.token_type))
+                    if rule is not None:
+                        pop(parseStack)
+                        push_rule(rule, ParseStack)
+                    else:
+                        msg = 'cannot expand {} on {}'
+                        raise ParseError(msg.format(grammarRule,t))
+                else:
+                    msg = 'invalid item on stack: {}'
+                    raise ParseError(msg.format(grammarRule))
+                        
         if not t.is_eof():
             msg = 'unexpected token at end: {}'
             raise ParseError(msg.format(t))
