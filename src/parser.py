@@ -365,10 +365,12 @@ class Parser:
     def parse(self):
         parseStack = []
         semanticStack = []
-        push_rule([Nonterminal.Program, TokenType.EOF], parseStack)
+        push_rule([NonTerminal.PROGRAM, TokenType.EOF], parseStack)
         while parseStack:
             grammarRule = top(parseStack)
+            print(grammarRule)
             if isinstance( grammarRule, TokenType):
+                t = self.scanner.next_token()
                 if grammarRule == t.token_type:
                     pop(parseStack)
                 else:
@@ -379,7 +381,7 @@ class Parser:
                 rule = parse_table.get( (grammarRule, t.token_type))
                 if rule is not None:
                     pop(parseStack)
-                    push_rule(rule, ParseStack)
+                    push_rule(rule, parseStack)
                 else:
                     msg = 'cannot expand {} on {}'
                     raise ParseError(msg.format(grammarRule,t))
