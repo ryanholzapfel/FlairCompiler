@@ -18,23 +18,23 @@ class NonTerminal(Enum):
     FORMALS  = 3
     NONEMPTYFORMALS        = 4
     FORMAL      = 5
-    NONEMPTYFORMALS-REST
-    BODY = 6
-    STATEMENT-LIST = 7
-    TYPE = 8
-    EXPR = 9
-    EXPR-PRIME = 10
-    SIMPLE-EXPR = 11
-    SE-PRIME = 12
-    TERM = 13
-    TERM-PRIME = 14
-    FACTOR = 15
-    FACTOR-REST = 16
-    ACTUALS = 17
-    NONEMPTYACTUALS = 18
-    NONEMPTYACTUALS-REST = 19
-    LITERAL = 20
-    PRINT-STATEMENT = 21
+    NONEMPTYFORMALS-REST    = 6               
+    BODY                    = 7
+    STATEMENT-LIST          = 8       
+    TYPE                    = 9
+    EXPR                    = 10
+    EXPR-PRIME              = 11  
+    SIMPLE-EXPR             = 12    
+    SE-PRIME                = 13
+    TERM                    = 14
+    TERM-PRIME              = 15  
+    FACTOR                  = 16
+    FACTOR-REST             = 17      
+    ACTUALS                 = 18
+    NONEMPTYACTUALS         = 19      
+    NONEMPTYACTUALS-REST    = 20        
+    LITERAL                 = 21
+    PRINT-STATEMENT         = 22      
     
 #Stack Operations
 def top(stack):
