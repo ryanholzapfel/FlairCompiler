@@ -94,6 +94,7 @@ class Scanner:
     if self.program_str[self.pos] == '{':
         while True:
             if self.program_str[self.pos] == '}':
+                self.pos += 1
                 break
             self.pos += 1
         #instead of returning a token we will return zero tokens for left and right bracket
