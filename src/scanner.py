@@ -35,7 +35,7 @@ class Scanner:
       identifier = self.get_identifier()
       if identifier == "if":
         return Token(TokenType.IF)
-      elif identifier == "THEN":
+      elif identifier == "then":
         return Token(TokenType.THEN)	
       elif identifier == "else":
         return Token(TokenType.ELSE)
