@@ -2,26 +2,25 @@ from flair_tokens import Token, TokenType
 from error   import LexicalError
 
 class Scanner:
-  'Read tokens from an input stream'
+'Read tokens from an input stream'
 
-    def __init__(self, program_str):
-        self.program_str = program_str
-        self.pos         = 0
-        self.lookahead   = None
-     
-    def peek(self):
-        if not self.lookahead:
-            self.lookahead = self.get_next_token()
-        return self.lookahead
-        
-    def next_token(self):
-        if self.lookahead:
-            answer = self.lookahead
-            self.lookahead = None
-            return answer
-        else:
-            return self.get_next_token()
-
+  def __init__(self, program_str):
+    self.program_str = program_str
+    self.pos         = 0
+    self.lookahead   = None
+   
+  def peek(self):
+    if not self.lookahead:
+      self.lookahead = self.get_next_token()
+    return self.lookahead
+      
+  def next_token(self):
+    if self.lookahead:
+      answer = self.lookahead
+      self.lookahead = None
+      return answer
+    else:
+      return self.get_next_token()  
   # --------------------------------------------------------
   #checks for valid tolkens returns token types
   #booleans keyidentifiers and identifiers to be handled as identifiers 
