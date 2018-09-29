@@ -98,7 +98,7 @@ class Scanner:
             self.pos += 1
         #instead of returning a token we will return zero tokens for left and right bracket
         #return Token(TokenType.LEFTBRACKET)
-        self.get_next_token()
+        return self.get_next_token()
         
     #comment out because right bracket should never return unless left bracket is returned first      
     #if self.program_str[self.pos] == '}':
