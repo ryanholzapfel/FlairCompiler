@@ -365,7 +365,7 @@ class Parser:
     def parse(self):
         parseStack = []
         semanticStack = []
-        push_rule([Nonterminal.Program, TokenType.EOF], parseStack)
+        push_rule([NonTerminal.PROGRAM, TokenType.EOF], parseStack)
         while parseStack:
             grammarRule = top(parseStack)
             if isinstance( grammarRule, TokenType):
