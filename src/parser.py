@@ -343,4 +343,4 @@ class Parser:
             msg = 'unexpected token at end: {}'
             raise ParseError(msg.format(t))
                         
-                return True
+        return True
