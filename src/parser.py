@@ -381,7 +381,7 @@ class Parser:
                 rule = parse_table.get( (grammarRule, t.token_type))
                 if rule is not None:
                     pop(parseStack)
-                    push_rule(rule, ParseStack)
+                    push_rule(rule, parseStack)
                 else:
                     msg = 'cannot expand {} on {}'
                     raise ParseError(msg.format(grammarRule,t))
