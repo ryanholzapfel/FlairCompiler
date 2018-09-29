@@ -30,9 +30,7 @@ class Scanner:
   
   if self.pos >= len(self.program_str):
     return Token(TokenType.EOF)  
-    if self.program_str[self.pos:].startswith('...'):
-   # self.pos += 3
-   # return Token(TokenType.ELLIPSIS)  
+
   if self.program_str[self.pos].isalpha():
     identifier = self.get_identifier()
     if identifier == "if":
