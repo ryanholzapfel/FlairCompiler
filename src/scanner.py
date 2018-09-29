@@ -117,9 +117,9 @@ class Scanner:
     if self.program_str[self.pos] == '.':
       #add case to catch possible illegal decimal point NR
       while True:
-        if self.program_str[self.pos + 1] == '':
+        if self.pos == len(self.program_str):
           break
-        elif self.program_str[self.pos + 1].isalpha():
+        if self.program_str[self.pos + 1].isalpha():
           break
         elif self.program_str[self.pos + 1] in '1234567890':
           msg = 'invald decimal point at position {}'.format(self.pos)
