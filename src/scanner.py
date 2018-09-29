@@ -37,29 +37,29 @@ class Scanner:
 
     if self.program_str[self.pos].isalpha():
         identifier = self.get_identifier()
-        if identifier = "if":
+        if identifier == "if":
         	return Token(TokenType.IF)
-        elif identifier = "THEN":
+        elif identifier == "THEN":
         	return Token(TokenType.THEN)	
-        elif identifier = "else":
+        elif identifier == "else":
         	return Token(TokenType.ELSE)
-        elif identifier = "not":
+        elif identifier == "not":
         	return Token(TokenType.NOT)
-        elif identifier = "OR":
+        elif identifier == "OR":
         	return Token(TokenType.OR)
-        elif identifier = "and":
+        elif identifier == "and":
         	return Token(TokenType.AND)
-        elif identifier = "print":
+        elif identifier == "print":
         	return Token(TokenType.PRINT)
-        elif identifier = "begin":
+        elif identifier == "begin":
         	return Token(TokenType.BEGIN)
-        elif identifier = "end":
+        elif identifier == "end":
         	return Token(TokenType.END)
-        elif identifier = "return":
+        elif identifier == "return":
         	return Token(TokenType.RETURN)
-        elif identifier = "program":
+        elif identifier == "program":
         	return Token(TokenType.program)
-        elif identifier = "function":
+        elif identifier == "function":
         	return Token(TokenType.FUNCTION)
         else:
         	return Token(TokenType.IDENTIFIER, identifier
