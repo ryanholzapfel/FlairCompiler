@@ -92,15 +92,18 @@ class Scanner:
     # return Token(TokenType.GREATER)  
     # list of punctuators (self delimiting)     
     if self.program_str[self.pos] == '{':
-      while True:
-        if self.program_str[self.pos] == '}':
-          break
-        self.pos += 1
-      return Token(TokenType.LEFTBRACKET)
-          
-    if self.program_str[self.pos] == '}':
-      self.pos += 1
-      return Token(TokenType.RIGHTBRACKET)
+        while True:
+            if self.program_str[self.pos] == '}':
+                break
+            self.pos += 1
+        #instead of returning a token we will return zero tokens for left and right bracket
+        #return Token(TokenType.LEFTBRACKET)
+                break
+        
+    #comment out because right bracket should never return unless left bracket is returned first      
+    #if self.program_str[self.pos] == '}':
+    #  self.pos += 1
+    #  return Token(TokenType.RIGHTBRACKET)
           
     if self.program_str[self.pos] == ',':
       self.pos += 1
@@ -139,27 +142,29 @@ class Scanner:
     # if no token matches, signal an error
         # Important need to make sure lexor works with scanner  
     msg = 'invalid characters at position {}'.format(self.pos)
-    raise LexicalError(msg)  
-  #  --------------------------------------------------------  
-  def skip_whitespace(self):
-    while self.pos < len(self.program_str) and \
-        self.is_whitespace(self.program_str[self.pos]):
-      self.pos += 1
-    return
-  
-  def is_whitespace(self, ch):
-    return ch in ' \n\t\r '
-      
-  def get_identifier(self):
-    start = self.pos
-    while self.pos < len(self.program_str) and \
-          self.program_str[self.pos].isalpha():
-      self.pos += 1
-    return self.program_str[start : self.pos]
-      
-  def get_number(self):
-    start = self.pos
-    while self.pos < len(self.program_str) and \
-        self.program_str[self.pos] in '0123456789':
-      self.pos += 1
-    return int( self.program_str[start : self.pos])
+    raise LexicalError(msg)
+
+  # --------------------------------------------------------
+
+    def skip_whitespace(self):
+        while self.pos < len(self.program_str) and \
+            self.is_whitespace(self.program_str[self.pos]):
+        self.pos += 1
+        return
+    
+    def is_whitespace(self, ch):
+        return ch in ' \n\t\r '
+        
+    def get_word(self):
+        start = self.pos
+        while self.pos < len(self.program_str) and \
+              self.program_str[self.pos].isalpha():
+        self.pos += 1
+        return self.program_str[start : self.pos]
+        
+    def get_number(self):
+        start = self.pos
+        while self.pos < len(self.program_str) and \
+            self.program_str[self.pos] in '0123456789':
+        self.pos += 1
+        return int( self.program_str[start : self.pos])
