@@ -1,8 +1,9 @@
 from enum import Enum
 
 class TokenType(Enum):
+    #Identifiers and data types
     NUMBER = 1
-    WORD = 2
+    IDENTIFIER = 2
     BOOLEAN = 3
 
     #Mathematical Operations
@@ -10,7 +11,6 @@ class TokenType(Enum):
     SUBTRACT = 5
     MULTIPLY = 6
     DIVIDE = 7
-   # GREATER = 8
     LESS = 8
     EQUAL = 9
     
@@ -23,9 +23,24 @@ class TokenType(Enum):
     PERIOD = 15
     LEFTPARENT = 16
     RIGHTPARENT = 17
-    
-
     EOF = 18
+    
+    #Keywords
+    IF = 19
+    THEN = 20
+    ELSE = 21
+    NOT = 22
+    OR = 23
+    AND = 24
+    PRINT = 25
+    BEGIN = 26
+    END = 27
+    RETURN = 28
+    program = 29
+    FUNCTION = 30
+
+
+    
 
 class Token:
     def __init__(self, token_type, token_value = None):
@@ -39,7 +54,7 @@ class Token:
         return self.token_type == TokenType.NUMBER
 
     def is_word(self):
-        return self.token_type == TokenType.WORD
+        return self.token_type == TokenType.IDENTIFIER
 
     def is_boolean(self):
         return self.token_type == TokenType.BOOLEAN
@@ -56,9 +71,6 @@ class Token:
     def is_divide(self):
         return self.token_type == TokenType.DIVIDE
 
-    #no greater than?
-    #def is_greater(self):
-        #return self.token_type == TokenType.GREATER
 
     def is_less(self):
         return self.token_type == TokenType.LESS
@@ -92,6 +104,30 @@ class Token:
 
     def is_eof(self):
         return self.token_type == TokenType.EOF
+    def is_if(self):
+    	return self.token_type == TokenType.IF
+    def is_then(self):
+    	return self.token_type == TokenType.THEN
+    def is_else(self):
+    	return self.token_type == TokenType.ELSE
+    def is_not(self):
+    	return self.token_type == TokenType.NOT
+    def is_or(self):
+    	return self.token_type == TokenType.OR
+    def is_and(self):
+    	return self.token_type == TokenType.AND
+    def is_print(self):
+    	return self.token_type == TokenType.PRINT
+    def is_begin(self):
+    	return self.token_type == TokenType.BEGIN
+    def is_end(self):
+    	return self.token_type == TokenType.END
+    def is_return(self):
+    	return self.token_type == TokenType.RETURN
+    def is_program(self):
+    	return self.token_type == TokenType.program
+    def is_function(self):
+    	return self.token_type == TokenType.FUNCTION
 
 
     def __repr__(self):
@@ -109,11 +145,6 @@ class Token:
             return 'multiplication sign'
         elif self.is_divide():
             return 'division sign'
-        
-        #no greater than?
-        #elif self.is_greater():
-            #return 'greater than'
-        
         elif self.is_less():
             return 'less than'
         elif self.is_equal():
@@ -134,6 +165,29 @@ class Token:
             return 'rightparent'
         elif self.is_colon():
             return "colon"
-        else: #self.is_eof():
+        elif self.is_eof():
             return 'end_of_file'
-
+        elif self.is_if():
+        	return 'if'
+        elif self.is_then():
+        	return 'then'
+        elif self.is_else():
+        	return 'else'
+        elif self.is_not():
+        	return 'not'
+        elif self.is_or():
+        	return 'or'
+        elif self.is_and():
+        	return 'and'
+        elif self.is_print():
+        	return 'print'
+        elif self.is_begin():
+        	return 'begin'
+        elif self.is_end():
+        	return 'end'
+        elif self.is_return():
+        	return 'return'
+        elif self.is_program():
+        	return 'program'
+        else:# self.is_function():
+        	return 'function'
