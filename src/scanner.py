@@ -38,7 +38,32 @@ class Scanner:
 
     if self.program_str[self.pos].isalpha():
         identifier = self.get_identifier()
-        return Token(TokenType.IDENTIFIER, identifier)
+        if identifier = "if":
+        	return Token(TokenType.IF)
+        elif identifier = "THEN":
+        	return Token(TokenType.THEN)	
+        elif identifier = "else":
+        	return Token(TokenType.ELSE)
+        elif identifier = "not":
+        	return Token(TokenType.NOT)
+        elif identifier = "OR":
+        	return Token(TokenType.OR)
+        elif identifier = "and":
+        	return Token(TokenType.AND)
+        elif identifier = "print":
+        	return Token(TokenType.PRINT)
+        elif identifier = "begin":
+        	return Token(TokenType.BEGIN)
+        elif identifier = "end":
+        	return Token(TokenType.END)
+        elif identifier = "return":
+        	return Token(TokenType.RETURN)
+        elif identifier = "program":
+        	return Token(TokenType.program)
+        elif identifier = "function":
+        	return Token(TokenType.FUNCTION)
+        else:
+        	return Token(TokenType.IDENTIFIER, identifier
 
     if self.program_str[self.pos] in '1234567890':  #added zero to this string NR
         number = self.get_number()
