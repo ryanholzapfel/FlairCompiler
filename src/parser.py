@@ -378,8 +378,9 @@ class Parser:
                     raise ParseError(msg.format(grammarRule,t))
             elif isinstance( grammarRule, NonTerminal):
                 t = self.scanner.peek()
+                print(grammarRule, t.token_type)
                 rule = parse_table.get( (grammarRule, t.token_type))
-                if rule is not None:
+                if rule != []:
                     pop(parseStack)
                     push_rule(rule, parseStack)
                 else:
