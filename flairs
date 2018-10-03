@@ -4,4 +4,4 @@
 
 #This program runs a given flair program through the scanner and prints the tokens to the console
 
-python3 ./src/print_tokens.py $1
+python3 ./src/scanner_run.py $1
