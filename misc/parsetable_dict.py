@@ -5,6 +5,10 @@ dict entry format
 { (NonTerminal.rule,TokenType.token_type):[NonTerminal.rule, etc. or TokenType.token_type]}
 '''
 
+'''
+COMMAND LINE USAGE: python3 parsetable_dict.py > FILENAME
+'''
+
 import csv
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
@@ -12,12 +16,17 @@ pp = pprint.PrettyPrinter(indent=4)
 tableList = []
 tableDict = {}
 
-filename = "PTread.csv"
+
+#change filename if applicable
+filename = "PTclean.csv"
+
+
 f = open(filename)
 reader = csv.reader(f)
 for row in reader:
         tableList.append(row)
 
+#List of TokenType (Terminal Tokens)
 header = tableList[0]
 """
 ruleList = []
@@ -25,30 +34,35 @@ for rule in range(1,len(tableList)):
     ruleList.append(tableList[rule][0])
 """
 
+#for each row in the table
 for r in range(1,len(tableList)):
         row = tableList[r]
 #       ruleList.append(row[0])
+        #for each cell/item in the row
         for c in range(1,len(row)):
                 cell = row[c]
+                #if the cell has rules in it
                 if not (cell == ''):
+                        #strip whitespace from ends, split on interior spaces
                         cell = cell.strip()
                         cellList = cell.split(" ")
-                        for token in cellList:
-                            if token in header:
-                                token = "TokenType."+token
+                        #for token/rule in the cell, check if its a terminal/non-terminal, format for parse_dict
+                        for token in range(0,len(cellList)):
+                            cellList[token] = cellList[token].strip()
+                            if cellList[token] in header:
+                                cellList[token] = "TokenType."+cellList[token]
                             else: #is a non terminal rule
-                                token = "NonTerminal."+token
+                                cellList[token] = "NonTerminal."+cellList[token]
+                           # print(token)
+
+
+                        #create parse_dict entry
 
                         tableDict[(("NonTerminal."+row[0]), ("TokenType."+header[c]))] = cellList
                         
 #print(tableDict)
 pp.pprint(tableDict)    
 
-
-"""
-to do
---0. alter grammar rules to not include ors or left sides
-1. change header to token type representation (maybe with find and replace?)
-2. remove <> w/ find replace
-3. 
-"""
+#load output file in a text editor, find/replace all single quotes with empty string
+#find/replace all NonTerminal.epsilon with empty string
+#copy paste into parser
