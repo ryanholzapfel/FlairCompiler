@@ -58,7 +58,7 @@ class Scanner:
       elif identifier == "function":
         return Token(TokenType.FUNCTION)
       else:
-        if len(identifier) in range(0,256):
+        if len(identifier) in range(0,257):
           return Token(TokenType.IDENTIFIER, identifier)  
         else:
           msg = "identifier too long at position{}".format(self.pos)
@@ -66,7 +66,7 @@ class Scanner:
     
     if self.program_str[self.pos] in '1234567890':
       number = self.get_number()
-      if number in range(-(2^32),(2^32)-1):
+      if number in range(-(2^32),(2^32)):
         return Token(TokenType.NUMBER, number)
       else:
         msg = "number out of range at position{}".format(self.pos)
