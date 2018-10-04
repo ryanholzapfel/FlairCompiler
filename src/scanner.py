@@ -66,7 +66,7 @@ class Scanner:
     
     if self.program_str[self.pos] in '1234567890':
       number = self.get_number()
-      if number in range(-(2^32),(2^32)):
+      if number in range(-4294967296,4294967296):
         return Token(TokenType.NUMBER, number)
       else:
         msg = "number out of range at position{}".format(self.pos)
