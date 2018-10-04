@@ -152,6 +152,10 @@ class Scanner:
       
   def get_identifier(self):
       start = self.pos
+      if len(self.program_str) > 256:
+        msg = 'Invalid Identifier: Identifier is longer than 256 characters at position {}'.format(self.pos)
+        raise LexicalError(msg)
+        
       while self.pos < len(self.program_str) and \
             self.program_str[self.pos].isalpha():
         self.pos += 1
