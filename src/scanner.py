@@ -58,10 +58,20 @@ class Scanner:
       elif identifier == "function":
         return Token(TokenType.FUNCTION)
       else:
-        return Token(TokenType.IDENTIFIER, identifier)  
+        if len(identifier) in range(0,257):
+          return Token(TokenType.IDENTIFIER, identifier)  
+        else:
+          msg = "identifier too long at position{}".format(self.pos)
+          raise LexicalError(msg)
+    
     if self.program_str[self.pos] in '1234567890':
       number = self.get_number()
-      return Token(TokenType.NUMBER, number)
+      if number in range(-4294967296,4294967296):
+        return Token(TokenType.NUMBER, number)
+      else:
+        msg = "number out of range at position{}".format(self.pos)
+        raise LexicalError(msg)
+        
         
       #list of operator tokens (self delimiting)
         
