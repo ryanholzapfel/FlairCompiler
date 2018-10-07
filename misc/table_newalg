@@ -1,55 +1,4 @@
-#parser.py
-#table driven parser for flair
-
-from scanner import Scanner
-
-from flair_tokens import Token, TokenType
-
-from error   import ParseError, SemanticError
-
-from enum import Enum
-
-# non-terminals
-
-class NonTerminal(Enum):
-    PROGRAM    = 0
-    DEFINITIONS      = 1
-    DEF = 2
-    FORMALS  = 3
-    NONEMPTYFORMALS        = 4
-    FORMAL      = 5
-    NONEMPTYFORMALSREST    = 6               
-    BODY                    = 7
-    STATEMENTLIST          = 8       
-    TYPE                    = 9
-    EXPR                    = 10
-    EXPRPRIME              = 11  
-    SIMPLEEXPR             = 12    
-    SEPRIME                = 13
-    TERM                    = 14
-    TERMPRIME              = 15  
-    FACTOR                  = 16
-    FACTORREST             = 17      
-    ACTUALS                 = 18
-    NONEMPTYACTUALS         = 19      
-    NONEMPTYACTUALSREST    = 20        
-    LITERAL                 = 21
-    PRINTSTATEMENT         = 22      
-    
-#Stack Operations
-def top(stack):
-    return stack[-1]
-
-def pop(stack):
-    stack.pop()
-
-def push_rule(lst, stack):
-    for element in reversed(lst):
-        stack.append(element)
-
-
-#parse table
-parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONEMPTYACTUALS],
+{   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.ACTUALS, TokenType.EOF): [],
     (NonTerminal.ACTUALS, TokenType.IDENTIFIER): [   NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.ACTUALS, TokenType.IF): [NonTerminal.NONEMPTYACTUALS],
@@ -171,7 +120,7 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
                                                            NonTerminal.EXPR,
                                                            TokenType.RIGHTPARENT,
                                                            TokenType.SEMICOLON],
-    (NonTerminal.PROGRAM, TokenType.program): [   TokenType.program,
+    (NonTerminal.PROGRAM, TokenType.program): [   NonTerminal.PROGRAM,
                                                       TokenType.IDENTIFIER,
                                                       TokenType.LEFTPARENT,
                                                       NonTerminal.FORMALS,
@@ -243,45 +192,3 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
     (NonTerminal.TERMPRIME, TokenType.THEN): [],
     (NonTerminal.TYPE, TokenType.BOOLEAN): [TokenType.BOOLEAN],
     (NonTerminal.TYPE, TokenType.NUMBER): [TokenType.NUMBER]}
-
-
-
-
-#Parser 
-class Parser:
-    def __init__(self, scanner):
-        self.scanner = scanner
-        
-    def parse(self):
-        parseStack = []
-        semanticStack = []
-        push_rule([NonTerminal.PROGRAM, TokenType.EOF], parseStack)
-        while parseStack:
-            grammarRule = top(parseStack)
-            print(grammarRule)
-            if isinstance( grammarRule, TokenType):
-                t = self.scanner.next_token()
-                if grammarRule == t.token_type:
-                    pop(parseStack)
-                else:
-                    msg ='token mismatch: {} and {}'
-                    raise ParseError(msg.format(grammarRule,t))
-            elif isinstance( grammarRule, NonTerminal):
-                t = self.scanner.peek()
-                print(grammarRule, t.token_type)
-                rule = parse_table.get( (grammarRule, t.token_type))
-                if rule != []:
-                    pop(parseStack)
-                    push_rule(rule, parseStack)
-                else:
-                    msg = 'cannot expand {} on {}'
-                    raise ParseError(msg.format(grammarRule,t))
-            else:
-                msg = 'invalid item on stack: {}'
-                raise ParseError(msg.format(grammarRule))
-                    
-        if not t.is_eof():
-            msg = 'unexpected token at end: {}'
-            raise ParseError(msg.format(t))
-                        
-        return True
