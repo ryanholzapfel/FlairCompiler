@@ -18,7 +18,7 @@ tableDict = {}
 
 
 #change filename if applicable
-filename = "parsetable_newalg.csv"
+filename = "commasfix.csv"
 
 
 f = open(filename)

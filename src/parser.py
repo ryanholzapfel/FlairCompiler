@@ -34,7 +34,8 @@ class NonTerminal(Enum):
     NONEMPTYACTUALS         = 19      
     NONEMPTYACTUALSREST    = 20        
     LITERAL                 = 21
-    PRINTSTATEMENT         = 22      
+    PRINTSTATEMENT         = 22 
+    STATEMENTREST        = 23	
     
 #Stack Operations
 def top(stack):
@@ -140,6 +141,7 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
     (NonTerminal.LITERAL, TokenType.NUMBER): [TokenType.NUMBER],
     (NonTerminal.NONEMPTYACTUALS, TokenType.BOOLEAN): [   NonTerminal.EXPR,
                                                               NonTerminal.NONEMPTYACTUALSREST],
+    (NonTerminal.NONEMPTYACTUALS, TokenType.EOF): [],
     (NonTerminal.NONEMPTYACTUALS, TokenType.IDENTIFIER): [   NonTerminal.EXPR,
                                                                  NonTerminal.NONEMPTYACTUALSREST],
     (NonTerminal.NONEMPTYACTUALS, TokenType.IF): [   NonTerminal.EXPR,
@@ -150,9 +152,12 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
                                                           NonTerminal.NONEMPTYACTUALSREST],
     (NonTerminal.NONEMPTYACTUALS, TokenType.NUMBER): [   NonTerminal.EXPR,
                                                              NonTerminal.NONEMPTYACTUALSREST],
+    (NonTerminal.NONEMPTYACTUALS, TokenType.RIGHTPARENT): [],
     (NonTerminal.NONEMPTYACTUALS, TokenType.SUBTRACT): [   NonTerminal.EXPR,
                                                                NonTerminal.NONEMPTYACTUALSREST],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.BOOLEAN): [   NonTerminal.NONEMPTYACTUALS],
+    (NonTerminal.NONEMPTYACTUALSREST, TokenType.COMMA): [   TokenType.COMMA,
+                                                                NonTerminal.NONEMPTYFORMALS],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.EOF): [],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.IDENTIFIER): [   NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.IF): [   NonTerminal.NONEMPTYACTUALS],
@@ -208,9 +213,14 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
     (NonTerminal.SIMPLEEXPR, TokenType.SUBTRACT): [   NonTerminal.TERM,
                                                           NonTerminal.SEPRIME],
     (NonTerminal.STATEMENTLIST, TokenType.PRINT): [   NonTerminal.PRINTSTATEMENT,
-                                                          NonTerminal.STATEMENTLIST],
+                                                          NonTerminal.STATEMENTREST],
     (NonTerminal.STATEMENTLIST, TokenType.RETURN): [   TokenType.RETURN,
                                                            NonTerminal.EXPR],
+    (NonTerminal.STATEMENTREST, TokenType.COMMA): [   TokenType.COMMA,
+                                                          NonTerminal.STATEMENTLIST],
+    (NonTerminal.STATEMENTREST, TokenType.END): [],
+    (NonTerminal.STATEMENTREST, TokenType.EOF): [],
+    (NonTerminal.STATEMENTREST, TokenType.PRINT): [   NonTerminal.STATEMENTLIST],
     (NonTerminal.TERM, TokenType.BOOLEAN): [   NonTerminal.FACTOR,
                                                    NonTerminal.TERMPRIME],
     (NonTerminal.TERM, TokenType.IDENTIFIER): [   NonTerminal.FACTOR,
@@ -247,6 +257,10 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
 
 
 
+
+
+
+
 #Parser 
 class Parser:
     def __init__(self, scanner):
@@ -257,10 +271,12 @@ class Parser:
         semanticStack = []
         push_rule([NonTerminal.PROGRAM, TokenType.EOF], parseStack)
         while parseStack:
+            print("full stack", parseStack)
             grammarRule = top(parseStack)
-            print(grammarRule)
+            print("top of stack",grammarRule)
             if isinstance( grammarRule, TokenType):
                 t = self.scanner.next_token()
+                print("next token",t.token_type)
                 if grammarRule == t.token_type:
                     pop(parseStack)
                 else:
@@ -268,9 +284,9 @@ class Parser:
                     raise ParseError(msg.format(grammarRule,t))
             elif isinstance( grammarRule, NonTerminal):
                 t = self.scanner.peek()
-                print(grammarRule, t.token_type)
+                print("expand on", grammarRule, t.token_type)
                 rule = parse_table.get( (grammarRule, t.token_type))
-                if rule != []:
+                if rule != None:
                     pop(parseStack)
                     push_rule(rule, parseStack)
                 else:
