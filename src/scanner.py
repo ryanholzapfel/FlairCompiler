@@ -57,6 +57,12 @@ class Scanner:
         return Token(TokenType.program)
       elif identifier == "function":
         return Token(TokenType.FUNCTION)
+      elif identifier == "integer":
+        return Token(TokenType.NUMBER)
+      elif identifier == "true":
+        return Token(TokenType.BOOLEAN, True)
+      elif identifier == "false":
+        return Token(TokenType.BOOLEAN, False)
       else:
         if len(identifier) in range(0,257):
           return Token(TokenType.IDENTIFIER, identifier)  

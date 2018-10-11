@@ -18,7 +18,7 @@ tableDict = {}
 
 
 #change filename if applicable
-filename = "parsetable_newalg.csv"
+filename = "pt1010-7.csv"
 
 
 f = open(filename)
