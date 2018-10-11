@@ -124,7 +124,7 @@ class Scanner:
           
     if self.program_str[self.pos] == ',':
       self.pos += 1
-      return self.get_next_token()#Token(TokenType.COMMA)
+      return Token(TokenType.COMMA)
           
     if self.program_str[self.pos] == ';':
       self.pos += 1
