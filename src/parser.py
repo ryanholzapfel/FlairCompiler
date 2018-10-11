@@ -81,8 +81,15 @@ class Ast_Type(Enum):
     make_number =20 
     make_printstatement =21  
     make_formal = 22
+    make_definitions = 23
     
 #Semantic Action node creation functions
+def make_definitions(ast_stack):
+    definitions = pop(ast_stack)
+    deff = pop(ast_stack)
+    node = Definitions_Node(deff, definitions)
+    push(node, ast_stack)
+
 def make_formal_node(ast_stack):
     type = pop(ast_stack)
     identifier = pop(ast_stack)
