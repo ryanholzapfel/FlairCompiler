@@ -1,0 +1,15 @@
+{
+
+----------Ident too long Program---------
+
+Group: Avalanche: Holzapfel*, Rausch, Wariach (language)
+
+}
+
+program DoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoublerDoubler( n : integer );
+
+	begin
+
+		print (n * 2);
+
+			end.

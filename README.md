@@ -14,6 +14,7 @@ Ryan Holzapfel, Nicholas Rausch, Usman Wariach
 
 ### Features Not Implemented
 * The scanner still uses the function next_token() instead of next()
+* The error handler does not filter Python errors out. It just passes everything through. 
 
 ### Optimizations
 _None for the parser component._
