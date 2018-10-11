@@ -1,5 +1,4 @@
 
-
 class AST_Node(object):
     pass
     
@@ -74,7 +73,7 @@ class SimpleExpr_Node(AST_Node):
         return self._seprime
         
 class LessThan_Node(AST_Node):
-    def __init__(self, simpleexpr)
+    def __init__(self, simpleexpr):
         self._simpleexpr = simpleexpr
         
     def simpleexpr(self):
@@ -152,7 +151,7 @@ class Not_Node(AST_Node):
         return self._factor
         
 class Identifier_Node(AST_Node):
-    def __init__(self, indentifier):
+    def __init__(self, identifier):
         self._identifier = identifier
         
     def identifier(self):
@@ -185,3 +184,15 @@ class PrintStatement_Node(AST_Node):
         
     def expr(self):
         return self._expr
+        
+class Formal_Node(AST_Node):
+    def __init__(self, identifier, type):
+        self._identifier = identifier
+        self._type = type
+        
+    def identifier(self):
+        return self._identifier
+        
+    def type(self):
+        return self._type
+        
