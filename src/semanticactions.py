@@ -1,5 +1,4 @@
 
-
 class AST_Node(object):
     pass
     
@@ -185,3 +184,15 @@ class PrintStatement_Node(AST_Node):
         
     def expr(self):
         return self._expr
+        
+class Formal_Node(AST_Node):
+    def __init__(self, identifier, type):
+        self._identifier = identifier
+        self._type = type
+        
+    def identifier(self):
+        return self._identifier
+        
+    def type(self):
+        return self._type
+        
