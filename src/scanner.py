@@ -143,7 +143,7 @@ class Scanner:
     #    msg = 'Invald decimal/period at position {}'.format(self.pos)
     #    raise LexicalError(msg)
       return Token(TokenType.PERIOD)
-      self.pos +=
+      self.pos += 1
           
     if self.program_str[self.pos] == '(':
       self.pos += 1
