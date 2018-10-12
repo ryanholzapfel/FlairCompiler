@@ -223,7 +223,8 @@ action_table = {
     Ast_Type.make_literal : make_literal_node, 
     Ast_Type.make_negate : make_negate_node, 
     Ast_Type.make_number : make_number_node, 
-    Ast_Type.make_printstatement : make_printstatement_node}
+    Ast_Type.make_printstatement : make_printstatement_node
+    Ast_Type.make_definitions : makedefinitions_node}
    
 #parse table
 parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONEMPTYACTUALS],
