@@ -1,62 +1,19 @@
 program
-word = modulus
+word = Doubler
 leftparent
-word = m
-colon
-number = None
-comma
 word = n
 colon
 number = None
 rightparent
-semicolon
-function
-word = mod
-leftparent
-word = m
-colon
-number = None
-comma
-word = n
-colon
-number = None
-rightparent
-colon
-number = None
-begin
-return
-if
-word = m
-less than
-word = n
-then
-word = m
-else
-word = mod
-leftparent
-word = m
-subtraction sign
-word = n
-comma
-word = n
-rightparent
-end
 semicolon
 begin
 print
 leftparent
-word = m
-division sign
 word = n
+multiplication sign
+number = 2
 rightparent
 semicolon
-return
-word = mod
-leftparent
-word = m
-comma
-word = n
-rightparent
 end
 period
 end_of_file
