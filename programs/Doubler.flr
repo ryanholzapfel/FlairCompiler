@@ -10,6 +10,6 @@ program Doubler( n : integer );
 
 	begin
 
-		print (n * 2);
+		return (n * 2);
 
 			end.
