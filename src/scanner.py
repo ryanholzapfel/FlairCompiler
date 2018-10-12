@@ -142,7 +142,7 @@ class Scanner:
     #  else:
     #    msg = 'Invald decimal/period at position {}'.format(self.pos)
     #    raise LexicalError(msg)
-       self.pos += 1
+      self.pos += 1
       return Token(TokenType.PERIOD)
       
           
