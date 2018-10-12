@@ -18,7 +18,7 @@ tableDict = {}
 
 
 #change filename if applicable
-filename = "PTclean.csv"
+filename = "pt1012-7.csv"
 
 
 f = open(filename)
@@ -51,6 +51,8 @@ for r in range(1,len(tableList)):
                             cellList[token] = cellList[token].strip()
                             if cellList[token] in header:
                                 cellList[token] = "TokenType."+cellList[token]
+                            elif "_" in cellList[token]:
+                                cellList[token] = "Ast_Type."+cellList[token]
                             else: #is a non terminal rule
                                 cellList[token] = "NonTerminal."+cellList[token]
                            # print(token)

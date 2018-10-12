@@ -57,11 +57,27 @@ class Scanner:
         return Token(TokenType.program)
       elif identifier == "function":
         return Token(TokenType.FUNCTION)
+      elif identifier == "integer":
+        return Token(TokenType.NUMBER)
+      elif identifier == "true":
+        return Token(TokenType.BOOLEAN, True)
+      elif identifier == "false":
+        return Token(TokenType.BOOLEAN, False)
       else:
-        return Token(TokenType.IDENTIFIER, identifier)  
+        if len(identifier) in range(0,257):
+          return Token(TokenType.IDENTIFIER, identifier)  
+        else:
+          msg = "identifier too long at position{}".format(self.pos)
+          raise LexicalError(msg)
+    
     if self.program_str[self.pos] in '1234567890':
       number = self.get_number()
-      return Token(TokenType.NUMBER, number)
+      if number in range(-4294967296,4294967296):
+        return Token(TokenType.NUMBER, number)
+      else:
+        msg = "number out of range at position{}".format(self.pos)
+        raise LexicalError(msg)
+        
         
       #list of operator tokens (self delimiting)
         
@@ -119,19 +135,16 @@ class Scanner:
       return Token(TokenType.COLON)
           
     if self.program_str[self.pos] == '.':
-      #add case to catch possible illegal decimal point NR
-      #while True:
-      #  if self.pos == len(self.program_str):
-      #    break
-      #  elif self.pos != len(self.program_str):
-      #    if self.program_str[self.pos + 1].isalpha():
-      #      break
-      #    break
-      #  elif self.program_str[self.pos + 1] in '1234567890':
-      #    msg = 'invald decimal point at position {}'.format(self.pos)
-      #    raise LexicalError(msg)
+    #  tempPos = self.pos + 1
+    #  if (tempPos) == len(self.program_str):
+    #    self.pos += 1
+    #    return Token(TokenType.PERIOD)
+    #  else:
+    #    msg = 'Invald decimal/period at position {}'.format(self.pos)
+    #    raise LexicalError(msg)
       self.pos += 1
       return Token(TokenType.PERIOD)
+      
           
     if self.program_str[self.pos] == '(':
       self.pos += 1
@@ -158,6 +171,10 @@ class Scanner:
       
   def get_identifier(self):
       start = self.pos
+      #if len(self.program_str) > 256:
+       # msg = 'Invalid Identifier: Identifier is longer than 256 characters at position {}'.format(self.pos)
+        #raise LexicalError(msg)
+        
       while self.pos < len(self.program_str) and \
             self.program_str[self.pos].isalpha():
         self.pos += 1
