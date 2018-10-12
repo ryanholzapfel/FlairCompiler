@@ -109,7 +109,10 @@ def make_program_node(ast_stack):
         definitions = pop(ast_stack)
     else:
         definitions = None
-    formals = pop(ast_stack)
+    if isinstance(top(ast_stack), Formals_Node):
+	    formals = pop(ast_stack)
+    else:
+	    formals = None
     identifier = pop(ast_stack)
     node = Program_Node(identifier,formals,definitions,body)
     push(node, ast_stack)
