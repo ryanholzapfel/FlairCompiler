@@ -194,7 +194,13 @@ class Formal_Node(AST_Node):
         
     def type(self):
         return self._type
-        
+
+class Formals_Node(AST_Node):
+    def __init__(self, neformals):
+        self._neformals = neformals
+    def neformals(self):
+        return self.neformals	
+  
 class Definitions_Node(AST_Node):
     def __init__(self, deff, definitions):
         self._deff = deff
