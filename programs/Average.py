@@ -1,7 +1,7 @@
 program Average(m : integer, n : integer);
 
-   function Avg(m : integer, n : integer) : integer
+   {function Avg(m : integer, n : integer) : integer}
    begin
-      return Avg=(m+n)/2
-      print(Avg);
+      return (m+n)/2
+      print(m+n)/2;
    end.
