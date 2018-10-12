@@ -1,23 +1,31 @@
-"""
-parse_run.py
-"""
 
+
+"""
+scanner_test.py
+"""
 import sys
 from scanner import Scanner
 from parser import Parser
 
+def main():
 
-fileName = sys.argv[1]
+    filename = input('Enter your program name ')
+    file = open("../programs/"+ filename,"r")
+    print('\n')
 
-file = open(fileName)
+    program = file.read()
+    scanner - Scanner(program)
+    parser = Parser(scanner)
+    
+    valid = parser.parse()
+    
+    if valid:
+        print('Program is valid')
 
-program = file.read()
+    print('\n')
+    return main()
 
-scanner = Scanner(program)
-parser = Parser(scanner)
+        
 
-valid = parser.parse()
-
-if valid:
-    print("Program is valid.")
-#print(parser)
+if __name__ =='__main__':
+    main()
