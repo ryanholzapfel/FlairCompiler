@@ -1,0 +1,16 @@
+['Doubler']
+[<semanticactions.Identifier_Node object at 0x7fbadc236da0>, 'n']
+[<semanticactions.Identifier_Node object at 0x7fbadc236da0>, <semanticactions.Identifier_Node object at 0x7fbadc236e10>, None]
+[<semanticactions.Identifier_Node object at 0x7fbadc236da0>, <semanticactions.Identifier_Node object at 0x7fbadc236e10>, <semanticactions.Integer_Node object at 0x7fbadc236d68>]
+[<semanticactions.Identifier_Node object at 0x7fbadc236da0>, <semanticactions.Formal_Node object at 0x7fbadc236e10>]
+[<semanticactions.Identifier_Node object at 0x7fbadc236da0>, <semanticactions.Formals_Node object at 0x7fbadc236e10>, 'n']
+[<semanticactions.Identifier_Node object at 0x7fbadc236da0>, <semanticactions.Formals_Node object at 0x7fbadc236e10>, <semanticactions.Identifier_Node object at 0x7fbadc236e80>, 2]
+[<semanticactions.Identifier_Node object at 0x7fbadc236da0>, <semanticactions.Formals_Node object at 0x7fbadc236e10>, <semanticactions.Identifier_Node object at 0x7fbadc236e80>, <semanticactions.Literal_Node object at 0x7fbadc236e48>]
+[<semanticactions.Identifier_Node object at 0x7fbadc236da0>, <semanticactions.Formals_Node object at 0x7fbadc236e10>, <semanticactions.Identifier_Node object at 0x7fbadc236e80>, <semanticactions.Times_Node object at 0x7fbadc236e48>]
+[<semanticactions.Identifier_Node object at 0x7fbadc236da0>, <semanticactions.Formals_Node object at 0x7fbadc236e10>, <semanticactions.SimpleExpr_Node object at 0x7fbadc236e80>]
+[<semanticactions.Identifier_Node object at 0x7fbadc236da0>, <semanticactions.Formals_Node object at 0x7fbadc236e10>, <semanticactions.PrintStatement_Node object at 0x7fbadc236e80>]
+[<semanticactions.Identifier_Node object at 0x7fbadc236da0>, <semanticactions.Formals_Node object at 0x7fbadc236e10>, <semanticactions.Body_Node object at 0x7fbadc236e80>]
+done
+[<semanticactions.Program_Node object at 0x7fbadc236da0>]
+[]
+Program is valid.

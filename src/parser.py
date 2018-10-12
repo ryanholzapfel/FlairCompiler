@@ -82,6 +82,7 @@ class Ast_Type(Enum):
     make_printstatement =21  
     make_formal = 22
     make_definitions = 23
+    make_formals = 24
     
 #Semantic Action node creation functions
 def make_definitions_node(ast_stack):
@@ -96,11 +97,22 @@ def make_formal_node(ast_stack):
     node = Formal_Node(identifier,type)
     push(node, ast_stack)
 
+def make_formals_node(ast_stack):
+    neformals = pop(ast_stack)
+    node = Formals_Node(neformals)
+    push(node, ast_stack)
+    
     
 def make_program_node(ast_stack):
     body = pop(ast_stack)
-    definitions = pop(ast_stack)
-    formals = pop(ast_stack)
+    if isinstance(top(ast_stack), Definitions_Node):
+        definitions = pop(ast_stack)
+    else:
+        definitions = None
+    if isinstance(top(ast_stack), Formals_Node):
+	    formals = pop(ast_stack)
+    else:
+	    formals = None
     identifier = pop(ast_stack)
     node = Program_Node(identifier,formals,definitions,body)
     push(node, ast_stack)
@@ -234,7 +246,8 @@ action_table = {
     Ast_Type.make_number : make_number_node, 
     Ast_Type.make_printstatement : make_printstatement_node,
     Ast_Type.make_formal : make_formal_node,
-    Ast_Type.make_definitions : make_definitions_node}
+    Ast_Type.make_definitions : make_definitions_node,
+    Ast_Type.make_formals : make_formals_node}
    
 #parse table
 parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONEMPTYACTUALS],
@@ -393,6 +406,7 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
                                                       Ast_Type.make_identifier,
                                                       TokenType.LEFTPARENT,
                                                       NonTerminal.FORMALS,
+                                                      Ast_Type.make_formals,
                                                       TokenType.RIGHTPARENT,
                                                       TokenType.SEMICOLON,
                                                       NonTerminal.DEFINITIONS,
@@ -505,6 +519,8 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
 
 
 
+
+
 #Parser 
 class Parser:
     def __init__(self, scanner):
@@ -515,12 +531,12 @@ class Parser:
         semanticStack = []
         push_rule([NonTerminal.PROGRAM, TokenType.EOF], parseStack)
         while parseStack:
-            print("full stack", parseStack)
+            #print("full stack", parseStack)
             grammarRule = top(parseStack)
-            print("top of stack",grammarRule)
+            #print("top of stack",grammarRule)
             if isinstance( grammarRule, TokenType):
                 t = self.scanner.next_token()
-                print("next token",t.token_type)
+                #print("next token",t.token_type)
                 if grammarRule == t.token_type:
                     if t.is_number() or t.is_boolean() or t.is_word():
                         push(t.value(), semanticStack)
@@ -530,7 +546,7 @@ class Parser:
                     raise ParseError(msg.format(grammarRule,t))
             elif isinstance( grammarRule, NonTerminal):
                 t = self.scanner.peek()
-                print("expand on", grammarRule, t.token_type)
+                #print("expand on", grammarRule, t.token_type)
                 rule = parse_table.get( (grammarRule, t.token_type))
                 if rule != None:
                     pop(parseStack)
@@ -539,7 +555,7 @@ class Parser:
                     msg = 'cannot expand {} on {}'
                     raise ParseError(msg.format(grammarRule,t))
             elif isinstance(grammarRule, Ast_Type):
-            
+                print(semanticStack)
                 actionNode = action_table.get(grammarRule) #lookup function to create node
                 actionNode(semanticStack) #call function to create node
                 pop(parseStack) #pop semantic action from parse stack

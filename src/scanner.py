@@ -135,13 +135,16 @@ class Scanner:
       return Token(TokenType.COLON)
           
     if self.program_str[self.pos] == '.':
-      tempPos = self.pos + 1
-      if (tempPos) == len(self.program_str):
-        self.pos += 1
-        return Token(TokenType.PERIOD)
-      else:
-        msg = 'Invald decimal/period at position {}'.format(self.pos)
-        raise LexicalError(msg)
+    #  tempPos = self.pos + 1
+    #  if (tempPos) == len(self.program_str):
+    #    self.pos += 1
+    #    return Token(TokenType.PERIOD)
+    #  else:
+    #    msg = 'Invald decimal/period at position {}'.format(self.pos)
+    #    raise LexicalError(msg)
+      self.pos += 1
+      return Token(TokenType.PERIOD)
+      
           
     if self.program_str[self.pos] == '(':
       self.pos += 1
