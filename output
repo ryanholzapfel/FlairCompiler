@@ -1,16 +1,16 @@
 ['Doubler']
-[<semanticactions.Identifier_Node object at 0x7faa15e36da0>, 'n']
-[<semanticactions.Identifier_Node object at 0x7faa15e36da0>, <semanticactions.Identifier_Node object at 0x7faa15e36e10>, None]
-[<semanticactions.Identifier_Node object at 0x7faa15e36da0>, <semanticactions.Identifier_Node object at 0x7faa15e36e10>, <semanticactions.Integer_Node object at 0x7faa15e36d68>]
-[<semanticactions.Identifier_Node object at 0x7faa15e36da0>, <semanticactions.Formal_Node object at 0x7faa15e36e10>]
-[<semanticactions.Identifier_Node object at 0x7faa15e36da0>, <semanticactions.Formals_Node object at 0x7faa15e36e10>, 'n']
-[<semanticactions.Identifier_Node object at 0x7faa15e36da0>, <semanticactions.Formals_Node object at 0x7faa15e36e10>, <semanticactions.Identifier_Node object at 0x7faa15e36e80>, 2]
-[<semanticactions.Identifier_Node object at 0x7faa15e36da0>, <semanticactions.Formals_Node object at 0x7faa15e36e10>, <semanticactions.Identifier_Node object at 0x7faa15e36e80>, <semanticactions.Literal_Node object at 0x7faa15e36e48>]
-[<semanticactions.Identifier_Node object at 0x7faa15e36da0>, <semanticactions.Formals_Node object at 0x7faa15e36e10>, <semanticactions.Identifier_Node object at 0x7faa15e36e80>, <semanticactions.Times_Node object at 0x7faa15e36e48>]
-[<semanticactions.Identifier_Node object at 0x7faa15e36da0>, <semanticactions.Formals_Node object at 0x7faa15e36e10>, <semanticactions.Identifier_Node object at 0x7faa15e36e80>, <semanticactions.SimpleExpr_Node object at 0x7faa15e36e48>]
-[<semanticactions.Identifier_Node object at 0x7faa15e36da0>, <semanticactions.Formals_Node object at 0x7faa15e36e10>, <semanticactions.Identifier_Node object at 0x7faa15e36e80>, <semanticactions.PrintStatement_Node object at 0x7faa15e36e48>]
-[<semanticactions.Identifier_Node object at 0x7faa15e36da0>, <semanticactions.Formals_Node object at 0x7faa15e36e10>, <semanticactions.Identifier_Node object at 0x7faa15e36e80>, <semanticactions.Body_Node object at 0x7faa15e36e48>]
-<semanticactions.Identifier_Node object at 0x7faa15e36da0>
-<semanticactions.Formals_Node object at 0x7faa15e36e10>
-<semanticactions.Program_Node object at 0x7faa15e36e80>
+[<semanticactions.Identifier_Node object at 0x7fdea9b55630>, 'n']
+[<semanticactions.Identifier_Node object at 0x7fdea9b55630>, <semanticactions.Identifier_Node object at 0x7fdea9b556a0>, None]
+[<semanticactions.Identifier_Node object at 0x7fdea9b55630>, <semanticactions.Identifier_Node object at 0x7fdea9b556a0>, <semanticactions.Integer_Node object at 0x7fdea9b555f8>]
+[<semanticactions.Identifier_Node object at 0x7fdea9b55630>, <semanticactions.Formal_Node object at 0x7fdea9b556a0>]
+[<semanticactions.Identifier_Node object at 0x7fdea9b55630>, <semanticactions.Formals_Node object at 0x7fdea9b556a0>, 'n']
+[<semanticactions.Identifier_Node object at 0x7fdea9b55630>, <semanticactions.Formals_Node object at 0x7fdea9b556a0>, <semanticactions.Identifier_Node object at 0x7fdea9b55710>, 2]
+[<semanticactions.Identifier_Node object at 0x7fdea9b55630>, <semanticactions.Formals_Node object at 0x7fdea9b556a0>, <semanticactions.Identifier_Node object at 0x7fdea9b55710>, <semanticactions.Literal_Node object at 0x7fdea9b556d8>]
+[<semanticactions.Identifier_Node object at 0x7fdea9b55630>, <semanticactions.Formals_Node object at 0x7fdea9b556a0>, <semanticactions.Identifier_Node object at 0x7fdea9b55710>, <semanticactions.Times_Node object at 0x7fdea9b556d8>]
+[<semanticactions.Identifier_Node object at 0x7fdea9b55630>, <semanticactions.Formals_Node object at 0x7fdea9b556a0>, <semanticactions.Identifier_Node object at 0x7fdea9b55710>, <semanticactions.SimpleExpr_Node object at 0x7fdea9b556d8>]
+[<semanticactions.Identifier_Node object at 0x7fdea9b55630>, <semanticactions.Formals_Node object at 0x7fdea9b556a0>, <semanticactions.Identifier_Node object at 0x7fdea9b55710>, <semanticactions.SimpleExpr_Node object at 0x7fdea9b556d8>]
+[<semanticactions.Identifier_Node object at 0x7fdea9b55630>, <semanticactions.Formals_Node object at 0x7fdea9b556a0>, <semanticactions.Identifier_Node object at 0x7fdea9b55710>, <semanticactions.Body_Node object at 0x7fdea9b556d8>]
+<semanticactions.Identifier_Node object at 0x7fdea9b55630>
+<semanticactions.Formals_Node object at 0x7fdea9b556a0>
+<semanticactions.Program_Node object at 0x7fdea9b55710>
 Program is valid.
