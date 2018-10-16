@@ -285,6 +285,7 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
     (NonTerminal.EXPR, TokenType.BOOLEAN): [   NonTerminal.SIMPLEEXPR,
                                                    Ast_Type.make_simpleexpr,
                                                    NonTerminal.EXPRPRIME],
+    (NonTerminal.EXPR, TokenType.COMMA): [],
     (NonTerminal.EXPR, TokenType.IDENTIFIER): [   NonTerminal.SIMPLEEXPR,
                                                       Ast_Type.make_simpleexpr,
                                                       NonTerminal.EXPRPRIME],
@@ -390,7 +391,7 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
                                                                NonTerminal.NONEMPTYACTUALSREST],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.BOOLEAN): [   NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.COMMA): [   TokenType.COMMA,
-                                                                NonTerminal.NONEMPTYFORMALS],
+                                                                NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.EOF): [],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.IDENTIFIER): [   NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.IF): [   NonTerminal.NONEMPTYACTUALS],
@@ -536,6 +537,7 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
 
 
 
+
 #Parser 
 class Parser:
     def __init__(self, scanner):
@@ -547,13 +549,13 @@ class Parser:
         semanticStack = []
         push_rule([NonTerminal.PROGRAM, TokenType.EOF], parseStack)
         while parseStack:
-            #print("full stack", parseStack)
+            print("full stack", parseStack)
             grammarRule = top(parseStack)
             #print("top of stack",grammarRule)
             if isinstance( grammarRule, TokenType):
                 t = self.scanner.next_token()
-                #print(tokenCount)
-                #tokenCount += 1
+                print(tokenCount)
+                tokenCount += 1
                 #print("next token",t.token_type)
                 if grammarRule == t.token_type:
                     if t.is_number() or t.is_boolean() or t.is_word():
@@ -564,7 +566,7 @@ class Parser:
                     raise ParseError(msg.format(grammarRule,t))
             elif isinstance( grammarRule, NonTerminal):
                 t = self.scanner.peek()
-                #print("expand on", grammarRule, t.token_type)
+                print("expand on", grammarRule, t.token_type)
                 rule = parse_table.get( (grammarRule, t.token_type))
                 if rule != None:
                     pop(parseStack)
@@ -573,9 +575,9 @@ class Parser:
                     msg = 'cannot expand {} on {}'
                     raise ParseError(msg.format(grammarRule,t))
             elif isinstance(grammarRule, Ast_Type):
-                print(semanticStack)
-                actionNode = action_table.get(grammarRule) #lookup function to create node
-                actionNode(semanticStack) #call function to create node
+                #print(semanticStack)
+                #actionNode = action_table.get(grammarRule) #lookup function to create node
+                #actionNode(semanticStack) #call function to create node
                 pop(parseStack) #pop semantic action from parse stack
             else:
                 msg = 'invalid item on stack: {}'

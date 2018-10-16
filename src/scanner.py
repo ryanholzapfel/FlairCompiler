@@ -63,6 +63,8 @@ class Scanner:
         return Token(TokenType.BOOLEAN, True)
       elif identifier == "false":
         return Token(TokenType.BOOLEAN, False)
+      elif identifier == "boolean":
+        return Token(TokenType.BOOLEAN)
       else:
         if len(identifier) in range(0,257):
           return Token(TokenType.IDENTIFIER, identifier)  
