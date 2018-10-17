@@ -14,7 +14,7 @@ class Scanner:
       self.lookahead = self.get_next_token()
     return self.lookahead
       
-  def next_token(self):
+  def next(self):
     if self.lookahead:
       answer = self.lookahead
       self.lookahead = None

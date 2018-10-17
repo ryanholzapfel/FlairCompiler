@@ -549,12 +549,12 @@ class Parser:
         semanticStack = []
         push_rule([NonTerminal.PROGRAM, TokenType.EOF], parseStack)
         while parseStack:
-            print("full stack", parseStack)
+            #print("full stack", parseStack)
             grammarRule = top(parseStack)
             #print("top of stack",grammarRule)
             if isinstance( grammarRule, TokenType):
-                t = self.scanner.next_token()
-                print(tokenCount)
+                t = self.scanner.next()
+                #print(tokenCount)
                 tokenCount += 1
                 #print("next token",t.token_type)
                 if grammarRule == t.token_type:
@@ -566,7 +566,7 @@ class Parser:
                     raise ParseError(msg.format(grammarRule,t))
             elif isinstance( grammarRule, NonTerminal):
                 t = self.scanner.peek()
-                print("expand on", grammarRule, t.token_type)
+                #print("expand on", grammarRule, t.token_type)
                 rule = parse_table.get( (grammarRule, t.token_type))
                 if rule != None:
                     pop(parseStack)
@@ -576,8 +576,8 @@ class Parser:
                     raise ParseError(msg.format(grammarRule,t))
             elif isinstance(grammarRule, Ast_Type):
                 #print(semanticStack)
-                #actionNode = action_table.get(grammarRule) #lookup function to create node
-                #actionNode(semanticStack) #call function to create node
+                actionNode = action_table.get(grammarRule) #lookup function to create node
+                actionNode(semanticStack) #call function to create node
                 pop(parseStack) #pop semantic action from parse stack
             else:
                 msg = 'invalid item on stack: {}'
