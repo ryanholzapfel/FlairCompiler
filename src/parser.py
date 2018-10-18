@@ -44,7 +44,7 @@ def top(stack):
     return stack[-1]
 
 def pop(stack):
-    stack.pop()
+    return stack.pop()
 
 def push_rule(lst, stack):
     for element in reversed(lst):
@@ -575,7 +575,7 @@ class Parser:
                     msg = 'cannot expand {} on {}'
                     raise ParseError(msg.format(grammarRule,t))
             elif isinstance(grammarRule, Ast_Type):
-                #print(semanticStack)
+                #print(grammarRule, semanticStack)
                 actionNode = action_table.get(grammarRule) #lookup function to create node
                 actionNode(semanticStack) #call function to create node
                 pop(parseStack) #pop semantic action from parse stack
@@ -587,8 +587,8 @@ class Parser:
             msg = 'unexpected token at end: {}'
             raise ParseError(msg.format(t))
                         
-        #print("done")
-        for item in semanticStack:
-            print(item)
-        #print(parseStack)
+        #print(semanticStack)
+        print(semanticStack[0])
+        #for item in semanticStack:
+        #    print(item)
         return True
