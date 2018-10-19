@@ -1,7 +1,6 @@
-{ SemanticErrors.flr
-	team avalanche}
+{ SemanticErrors.flr  Project 4 Status Check  Team Avalanche}
 	
-program semanticerros( n : integer, m : integer );
+program semanticerrors( n : integer, m : integer );
 
 {Our Doubler program to ensure a first case is a valid program and the scanner and parser are working as expected}
 
