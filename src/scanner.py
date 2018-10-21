@@ -200,5 +200,8 @@ class Scanner:
           msg = "invalid number at pos {}".format(self.pos)
           raise LexicalError(msg)
         else:
-          break     
+          break
+      # if start == '0' and len(self.program_str[start:self.pos]) > 1:
+        # msg = "Leading zero(s) at position {}".format(start)
+        # raise LexicalError(msg)     
       return int( self.program_str[start : self.pos])  
