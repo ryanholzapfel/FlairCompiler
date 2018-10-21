@@ -193,7 +193,12 @@ class Scanner:
       
   def get_number(self):
       start = self.pos
-      while self.pos < len(self.program_str) and \
-          self.program_str[self.pos] in '0123456789':
-        self.pos += 1
+      while True:
+        if self.pos < len(self.program_str) and self.program_str[self.pos] in '0123456789':
+          self.pos += 1
+        elif self.program_str[self.pos].isalpha():
+          msg = "invalid number at pos {}".format(self.pos)
+          raise LexicalError(msg)
+        else:
+          break     
       return int( self.program_str[start : self.pos])  
