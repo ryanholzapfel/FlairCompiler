@@ -261,7 +261,7 @@ class Formal_Node(AST_Node):
 
 class Formals_Node(AST_Node):
     def __init__(self, neformals):
-        self._neformals = neformals
+        self._neformals = neformals #list of formals in program (list is empty if no formals,but node is still created)
         
     def __str__(self):
         return str(self.neformals())
@@ -270,17 +270,32 @@ class Formals_Node(AST_Node):
         return self.neformals   
   
 class Definitions_Node(AST_Node):
-    def __init__(self, deff, definitions):
-        self._deff = deff
-        self._definitions = definitions
+    def __init__(self, deffs):
+        self._deffs = deffs #list of definition nodes
+        #self._definitions = definitions
         
     def __str__(self):
-        return "{} {}".format(str(self.deff()), str(self.definitions()))
+        return "{}".format(str(self.deffs()))
     
-    def deff(self):
-        return self._deff
+    def deffs(self):
+        return self._deffs
         
-    def definitions(self):
-        return self._definitions
+    # def definitions(self):
+        # return self._definitions
+        
+        
+class StatementList_Node(AST_Node):
+    def __init__(self, prints, returnstatement):
+        self._prints = prints
+        self._returnstatement = returnstatement
+    
+    def __str__(self):
+        return "{} {}".format(str(self.prints()), str(self.returnstatement()))
+        
+    def prints(self):
+        return self._prints
+        
+    def returnstatement(self):
+        return self._returnstatement
         
         

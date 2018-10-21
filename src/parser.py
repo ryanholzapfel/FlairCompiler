@@ -86,9 +86,10 @@ class Ast_Type(Enum):
     
 #Semantic Action node creation functions
 def make_definitions_node(ast_stack):
-    definitions = pop(ast_stack)
-    deff = pop(ast_stack)
-    node = Definitions_Node(deff, definitions)
+    deffs = []
+    while isinstance(top(ast_stack), Def_Node): #as long as the top of the stack is a def, add it to the definitions node
+      deffs.append(pop(ast_stack))
+    node = Definitions_Node(deffs)
     push(node, ast_stack)
 
 def make_formal_node(ast_stack):
@@ -98,7 +99,9 @@ def make_formal_node(ast_stack):
     push(node, ast_stack)
 
 def make_formals_node(ast_stack):
-    neformals = pop(ast_stack)
+    neformals = []
+    while isinstance(top(ast_stack), Formal_Node): #as long as the top of the stack is a formal, add it to the formals node
+      neformals.append(pop(ast_stack))
     node = Formals_Node(neformals)
     push(node, ast_stack)
     
@@ -224,6 +227,15 @@ def make_number_node(ast_stack):
 def make_printstatement_node(ast_stack):
     expr = pop(ast_stack)
     node = PrintStatement_Node(expr)
+    push(node, ast_stack)
+    
+    
+def make_statementlist_node(ast_stack):
+    returnstatement = pop(ast_stack)
+    prints = []
+    while isinstance(top(ast_stack), PrintStatement_Node):
+      prints.append(pop(ast_stack))
+    node = StatementList_Node(prints,returnstatement)
     push(node, ast_stack)
     
 action_table = {
