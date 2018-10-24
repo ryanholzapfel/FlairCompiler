@@ -18,7 +18,7 @@ tableDict = {}
 
 
 #change filename if applicable
-filename = "pt1016-2.csv"
+filename = "pt1024-2.csv"
 
 
 f = open(filename)

@@ -290,12 +290,29 @@ class StatementList_Node(AST_Node):
         self._returnstatement = returnstatement
     
     def __str__(self):
-        return "{} {}".format(str(self.prints()), str(self.returnstatement()))
+        
+		#return "{} {}".format(str(self.prints()), str(self.returnstatement()))
         
     def prints(self):
         return self._prints
         
     def returnstatement(self):
         return self._returnstatement
+        
+        
+class Term_Node(AST_Node):
+    def __init__(self, factor, termprime):
+        self._factor = factor
+        self._termprime = termprime
+        
+    def __str__(self):
+        return "{} {}".format(str(self.factor()), str(self.termprime()))
+        
+    def factor(self):
+        return self._factor
+        
+    def termprime(self):
+        return self._termprime
+        
         
         
