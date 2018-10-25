@@ -86,6 +86,8 @@ class Ast_Type(Enum):
     make_statementlist = 25
     make_term = 26
     make_expr = 27
+    make_call = 28
+    make_actuals = 29
     
 #Semantic Action node creation functions
 def make_definitions_node(ast_stack):
@@ -264,6 +266,26 @@ def make_expr_node(ast_stack):
     node = Expr_Node(sexpr, exprprime)
     push(node, ast_stack)
     
+def make_call_node(ast_stack):
+    # actuals = []
+    # while isinstance(top(ast_stack), Expr_Node):
+        # actuals.append(pop(ast_stack))
+    if isinstance(top(ast_stack), Actuals_Node):
+        actuals = pop(ast_stack)
+    else:
+        actuals = None
+    identifier = pop(ast_stack)
+    node = Call_Node(identifier, actuals)
+    push(node, ast_stack)
+
+
+def make_actuals_node(ast_stack):
+    actuals = []
+    while isinstance(top(ast_stack), Expr_Node):
+        actuals.append(pop(ast_stack))
+    node = Actuals_Node(actuals)
+    push(node, ast_stack)
+    
     
 action_table = {
     Ast_Type.make_program : make_program_node, 
@@ -292,7 +314,9 @@ action_table = {
     Ast_Type.make_formals : make_formals_node,
     Ast_Type.make_statementlist : make_statementlist_node,
     Ast_Type.make_term : make_term_node,
-    Ast_Type.make_expr : make_expr_node}
+    Ast_Type.make_expr : make_expr_node,
+    Ast_Type.make_call : make_call_node,
+    Ast_Type.make_actuals : make_actuals_node}
    
 #parse table
 parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONEMPTYACTUALS],
@@ -373,7 +397,6 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
     (NonTerminal.FACTOR, TokenType.BOOLEAN): [   NonTerminal.LITERAL,
                                                      Ast_Type.make_literal],
     (NonTerminal.FACTOR, TokenType.IDENTIFIER): [   TokenType.IDENTIFIER,
-                                                        Ast_Type.make_identifier,
                                                         NonTerminal.FACTORREST],
     (NonTerminal.FACTOR, TokenType.IF): [   TokenType.IF,
                                                 NonTerminal.EXPR,
@@ -393,23 +416,24 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
     (NonTerminal.FACTOR, TokenType.SUBTRACT): [   TokenType.SUBTRACT,
                                                       NonTerminal.FACTOR,
                                                       Ast_Type.make_negate],
-    (NonTerminal.FACTORREST, TokenType.ADD): [],
-    (NonTerminal.FACTORREST, TokenType.AND): [],
-    (NonTerminal.FACTORREST, TokenType.COMMA): [],
-    (NonTerminal.FACTORREST, TokenType.DIVIDE): [],
-    (NonTerminal.FACTORREST, TokenType.ELSE): [],
-    (NonTerminal.FACTORREST, TokenType.END): [],
+    (NonTerminal.FACTORREST, TokenType.ADD): [Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.AND): [Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.COMMA): [Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.DIVIDE): [   Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.ELSE): [Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.END): [Ast_Type.make_identifier],
     (NonTerminal.FACTORREST, TokenType.EOF): [],
-    (NonTerminal.FACTORREST, TokenType.EQUAL): [],
+    (NonTerminal.FACTORREST, TokenType.EQUAL): [Ast_Type.make_identifier],
     (NonTerminal.FACTORREST, TokenType.LEFTPARENT): [   TokenType.LEFTPARENT,
                                                             NonTerminal.ACTUALS,
-                                                            TokenType.RIGHTPARENT],
-    (NonTerminal.FACTORREST, TokenType.LESS): [],
-    (NonTerminal.FACTORREST, TokenType.MULTIPLY): [],
-    (NonTerminal.FACTORREST, TokenType.OR): [],
-    (NonTerminal.FACTORREST, TokenType.RIGHTPARENT): [],
-    (NonTerminal.FACTORREST, TokenType.SUBTRACT): [],
-    (NonTerminal.FACTORREST, TokenType.THEN): [],
+                                                            TokenType.RIGHTPARENT,
+                                                            Ast_Type.make_call],
+    (NonTerminal.FACTORREST, TokenType.LESS): [Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.MULTIPLY): [   Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.OR): [Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.RIGHTPARENT): [   Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.SUBTRACT): [   Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.THEN): [Ast_Type.make_identifier],
     (NonTerminal.FORMAL, TokenType.IDENTIFIER): [   TokenType.IDENTIFIER,
                                                         Ast_Type.make_identifier,
                                                         TokenType.COLON,
@@ -446,7 +470,7 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.LEFTPARENT): [   NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.NOT): [   NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.NUMBER): [   NonTerminal.NONEMPTYACTUALS],
-    (NonTerminal.NONEMPTYACTUALSREST, TokenType.RIGHTPARENT): [   ],
+    (NonTerminal.NONEMPTYACTUALSREST, TokenType.RIGHTPARENT): [   Ast_Type.make_actuals],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.SUBTRACT): [   NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.NONEMPTYFORMALS, TokenType.IDENTIFIER): [   NonTerminal.FORMAL,
                                                                  NonTerminal.NONEMPTYFORMALSREST],
@@ -559,6 +583,7 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
                                                    Ast_Type.make_boolean],
     (NonTerminal.TYPE, TokenType.NUMBER): [   TokenType.NUMBER,
                                                   Ast_Type.make_integer]}
+
 
 
 

@@ -371,4 +371,29 @@ class Expr_Node(AST_Node):
     def exprprime(self):
         return self._exprprime
         
+class Call_Node(AST_Node):
+    def __init__(self, identifier, actuals):
+        self._identifier = identifier
+        self._actuals = actuals
         
+    def __str__(self):
+        return "{}({})".format(str(self.identifier()), str(self.actuals()))
+        
+    def identifier(self):
+        return self._identifier
+        
+    def actuals(self):
+        return self._actuals
+        
+class Actuals_Node(AST_Node):
+    def __init__(self, actualList):
+        self._actualList = actualList
+        
+    def __str__(self):
+        actualstr = ""
+        for actual in self.actualList():
+            actualstr = actualstr = str(actual)
+        return actualstr
+    
+    def actualList(self):
+        return self._actualList
