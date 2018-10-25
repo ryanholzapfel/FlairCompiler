@@ -1,4 +1,6 @@
 program main();
 begin
+  print(1);
+  print(1);
   return 1
 end.

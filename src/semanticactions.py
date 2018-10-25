@@ -8,9 +8,22 @@ class Program_Node(AST_Node):
         self._definitions    = definitions
         self._body           = body
 
+        
     def __str__(self):
         #return str(self.identifier())
-        return """Program {} Formals {} definitions {} body {}""".format(str(self.identifier()), str(self.formals()), str(self.definitions()), str(self.body()))
+        #return """Program {} Formals {} definitions {} body {}""".format(str(self.identifier()), str(self.formals()), str(self.definitions()), str(self.body()))
+        idstr = "Program {}\n".format(str(self.identifier()))
+        if self.formals() == None:
+            formalsstr = ""
+        else:
+            formalsstr = "Formals {}\n".format(str(self.formals()))
+        if self.definitions() == None:
+            defsstr = ""
+        else:
+            defsstr = "Definitions {}\n".format(str(self.definitions()))
+        bodystr = "\tBody\n{}\n".format(str(self.body()))
+        return idstr + formalsstr + defsstr + bodystr
+        
         
     def identifier(self):
         return self._identifier
@@ -61,9 +74,12 @@ class Integer_Node(AST_Node):
         self._integer = integer
         
     def __str__(self):
-        return str(self.integer())
+        if self.integer() == None:
+            return "integer"
+        else:
+            return "{}".format(str(self.integer()))
         
-    def integer(self, integer):
+    def integer(self):
         return self._integer
         
 class Boolean_Node(AST_Node):
@@ -82,7 +98,10 @@ class SimpleExpr_Node(AST_Node):
         self._seprime = seprime
         
     def __str__(self):
-        return "{} {}".format(str(self.term()), str(self.seprime()))
+        if self.seprime() == None:
+            return "{}".format(str(self.term()))
+        else:
+            return "{} {}".format(str(self.term()), str(self.seprime()))
         
     def term(self):
         return self._term
@@ -153,6 +172,9 @@ class And_Node(AST_Node):
 class Times_Node(AST_Node):
     def __init__(self, factor):
         self._factor = factor
+        
+    def __str__(self):
+        return "multiplied by {}".format(str(self.factor()))
         
     def factor(self):
         return self._factor
@@ -251,7 +273,7 @@ class Formal_Node(AST_Node):
         self._type = type
         
     def __str__(self):
-        return "{} {}".format(str(self.identifier()), str(self.type()))
+        return "{} is type {}".format(str(self.identifier()), str(self.type()))
         
     def identifier(self):
         return self._identifier
@@ -264,10 +286,17 @@ class Formals_Node(AST_Node):
         self._neformals = neformals #list of formals in program (list is empty if no formals,but node is still created)
         
     def __str__(self):
-        return str(self.neformals())
+        if self.neformals() == None:
+            return ""
+        else:
+            formalsstr = ""
+            for formal in self.neformals():
+                formalsstr = formalsstr + "{}, ".format(str(formal))
+            return formalsstr
+        #return "{}".format(str(self.neformals()))
         
     def neformals(self):
-        return self.neformals   
+        return self._neformals   
   
 class Definitions_Node(AST_Node):
     def __init__(self, deffs):
@@ -275,7 +304,11 @@ class Definitions_Node(AST_Node):
         #self._definitions = definitions
         
     def __str__(self):
-        return "{}".format(str(self.deffs()))
+        defstr = ""
+        for deff in self.deffs():
+            defstr = defstr + "{}, ".format(str(deff))
+        return defstr
+        #return "{}".format(str(self.deffs()))
     
     def deffs(self):
         return self._deffs
@@ -290,8 +323,11 @@ class StatementList_Node(AST_Node):
         self._returnstatement = returnstatement
     
     def __str__(self):
-        
-		#return "{} {}".format(str(self.prints()), str(self.returnstatement()))
+        slstr = ""
+        for statement in self.prints():
+            slstr = slstr + "\t\tPrint {}\n".format(str(statement))
+        return slstr + "\t\tReturn {}\n".format(str(self.returnstatement()))
+        #return "{} {}".format(str(self.prints()), str(self.returnstatement()))
         
     def prints(self):
         return self._prints
@@ -306,7 +342,10 @@ class Term_Node(AST_Node):
         self._termprime = termprime
         
     def __str__(self):
-        return "{} {}".format(str(self.factor()), str(self.termprime()))
+        if self.termprime() == None:
+            return "{}".format(str(self.factor()))
+        else:
+            return "{} {}".format(str(self.factor()), str(self.termprime()))
         
     def factor(self):
         return self._factor
@@ -314,5 +353,22 @@ class Term_Node(AST_Node):
     def termprime(self):
         return self._termprime
         
+        
+class Expr_Node(AST_Node):
+    def __init__(self, sexpr, exprprime):
+        self._sexpr = sexpr
+        self._exprprime = exprprime
+        
+    def __str__(self):
+        if self.exprprime() == None:
+            return "{}".format(str(self.sexpr()))
+        else:
+            return "{} {}".format(str(self.sexpr()), str(self.exprprime()))
+            
+    def sexpr(self):
+        return self._sexpr
+        
+    def exprprime(self):
+        return self._exprprime
         
         

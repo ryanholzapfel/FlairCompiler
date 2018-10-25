@@ -85,16 +85,25 @@ class Scanner:
         
     if self.program_str[self.pos] == '-':
       if self.program_str[self.pos+1] in '1234567890':
+        left_of_minus = self.pos - 1
         self.pos += 1
-        absnumber = self.get_number()
-        if absnumber in range(0,4294967297): #check if number in negative range, then return number with negative sign
-          return Token(TokenType.NUMBER, -1*absnumber)
+        if self.program_str[left_of_minus].isalpha() or self.program_str[left_of_minus] in '1234567890_':
+            return Token(TokenType.SUBTRACT)
         else:
-          msg = "negative number out of range at position {}".format(self.pos)
-          raise LexicalError(msg)
+            absnumber = self.get_number()
+            if absnumber in range(0,4294967297): #check if number in negative range, then return number with negative sign
+                return Token(TokenType.NUMBER, -1*absnumber)
+            else:
+                msg = "negative number out of range at position {}".format(self.pos)
+                raise LexicalError(msg)
       else:
         self.pos += 1
         return Token(TokenType.SUBTRACT)  
+        
+        
+        
+        
+        
     if self.program_str[self.pos] == '+':
       self.pos += 1
       return Token(TokenType.ADD)         
