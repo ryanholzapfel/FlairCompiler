@@ -18,20 +18,21 @@ Ryan Holzapfel, Nicholas Rausch, Usman Wariach
 ### Features Not Implemented
 * ~~The scanner still uses the function next_token() instead of next()~~ Fixed
 * The error handler does not filter Python errors out. It just passes everything through. (IN PROGRESS)
-* ~~The AST is not able to be printed in a human readable format. ~~ Fixed
+* ~~The AST is not able to be printed in a human readable format.~~ Fixed
 * The semantic error checker symbol table is incomplete. Currently, it finds all functions, their names, input types, and return type.
 
 ### Optimizations
 _None for the scanner component._
+
 _None for the parser component._
 
 ## How to Build
 No compilation/building necessary for python3.
 
 ## How to Run
-Executing the command `./flairs ./programs/<program name>` from the top level directory will execute the scanner and print_token programs which produce the tokens associated with the given Flair file and print them to the console. 
-Executing the command `./flairf ./programs/<program name>` from the top level directory executes the parser (and scanner) on the program, prints the AST tree representation if the program is successfully parsed, or prints a relevent error message if it is not.
-Executing the command `./flairv ./programs/<program name>` from the top level directory executes the parser on the program and prints the symbol table.
+* Executing the command `./flairs ./programs/<program name>` from the top level directory will execute the scanner and print_token programs which produce the tokens associated with the given Flair file and print them to the console. 
+* Executing the command `./flairf ./programs/<program name>` from the top level directory executes the parser (and scanner) on the program, prints the AST tree representation if the program is successfully parsed, or prints a relevent error message if it is not.
+* Executing the command `./flairv ./programs/<program name>` from the top level directory executes the parser on the program and prints the symbol table.
 
 ## Architecture and Design Decisions
 The scanner and flair token list are modeled after the class examples. We modeled each punctuation character and end of file as its own token type, and use the token/value pair for integers and words. 
@@ -47,7 +48,7 @@ After a program is successfully parsed, the semantic action stack contains only 
 The semantic error symbol table uses the program node created by the AST/Parser to print a (rough) table of the program's functions, their names, inputs, and return type. Currently, we are not able to check for function calls and return type matches.
 
 ## Files specific to this submission
-* Project 4
-..* programs/semanticerrors.flr
-..* src/semanticanalyzer.py
-..* flairv
+Project 4
+* programs/semanticerrors.flr
+* src/semanticanalyzer.py
+* flairv
