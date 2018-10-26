@@ -38,7 +38,7 @@ class Program_Node(AST_Node):
         return self._body
     
 class Def_Node(AST_Node):
-    def __init__(self, identifier, formals, definitions, body):
+    def __init__(self, identifier, formals, type, body):
         self._identifier     = identifier
         self._formals        = formals
         self._type           = type

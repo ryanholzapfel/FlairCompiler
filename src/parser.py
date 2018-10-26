@@ -659,7 +659,7 @@ class Parser:
                     msg = 'cannot expand {} on {}'
                     raise ParseError(msg.format(grammarRule,t))
             elif isinstance(grammarRule, Ast_Type):
-                print(grammarRule, "/", semanticStack)#, semanticStack)
+                #print(grammarRule, "/", semanticStack)#, semanticStack)
                 actionNode = action_table.get(grammarRule) #lookup function to create node
                 actionNode(semanticStack) #call function to create node
                 pop(parseStack) #pop semantic action from parse stack
@@ -673,6 +673,6 @@ class Parser:
                         
         #print(semanticStack)
         #print(semanticStack[0])
-        for item in semanticStack:
-            print(item)
-        return True
+        #for item in semanticStack:
+            #print(item)
+        return semanticStack[0]
