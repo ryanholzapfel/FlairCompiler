@@ -14,7 +14,7 @@ class Scanner:
       self.lookahead = self.get_next_token()
     return self.lookahead
       
-  def next_token(self):
+  def next(self):
     if self.lookahead:
       answer = self.lookahead
       self.lookahead = None
@@ -36,7 +36,7 @@ class Scanner:
       if identifier == "if":
         return Token(TokenType.IF)
       elif identifier == "then":
-        return Token(TokenType.THEN)	
+        return Token(TokenType.THEN)    
       elif identifier == "else":
         return Token(TokenType.ELSE)
       elif identifier == "not":
@@ -63,27 +63,47 @@ class Scanner:
         return Token(TokenType.BOOLEAN, True)
       elif identifier == "false":
         return Token(TokenType.BOOLEAN, False)
+      elif identifier == "boolean":
+        return Token(TokenType.BOOLEAN)
       else:
         if len(identifier) in range(0,257):
           return Token(TokenType.IDENTIFIER, identifier)  
         else:
-          msg = "identifier too long at position{}".format(self.pos)
+          msg = "identifier too long at position {}".format(self.pos)
           raise LexicalError(msg)
     
     if self.program_str[self.pos] in '1234567890':
       number = self.get_number()
-      if number in range(-4294967296,4294967296):
+      if number in range(0,4294967296):
         return Token(TokenType.NUMBER, number)
       else:
-        msg = "number out of range at position{}".format(self.pos)
+        msg = "positive number out of range at position {}".format(self.pos)
         raise LexicalError(msg)
         
         
       #list of operator tokens (self delimiting)
         
     if self.program_str[self.pos] == '-':
-      self.pos += 1
-      return Token(TokenType.SUBTRACT)  
+      if self.program_str[self.pos+1] in '1234567890':
+        left_of_minus = self.pos - 1
+        self.pos += 1
+        if self.program_str[left_of_minus].isalpha() or self.program_str[left_of_minus] in '1234567890_':
+            return Token(TokenType.SUBTRACT)
+        else:
+            absnumber = self.get_number()
+            if absnumber in range(0,4294967297): #check if number in negative range, then return number with negative sign
+                return Token(TokenType.NUMBER, -1*absnumber)
+            else:
+                msg = "negative number out of range at position {}".format(self.pos)
+                raise LexicalError(msg)
+      else:
+        self.pos += 1
+        return Token(TokenType.SUBTRACT)  
+        
+        
+        
+        
+        
     if self.program_str[self.pos] == '+':
       self.pos += 1
       return Token(TokenType.ADD)         
@@ -182,7 +202,15 @@ class Scanner:
       
   def get_number(self):
       start = self.pos
-      while self.pos < len(self.program_str) and \
-          self.program_str[self.pos] in '0123456789':
-        self.pos += 1
+      while True:
+        if self.pos < len(self.program_str) and self.program_str[self.pos] in '0123456789':
+          self.pos += 1
+        elif self.program_str[self.pos].isalpha():
+          msg = "invalid number at pos {}".format(self.pos)
+          raise LexicalError(msg)
+        else:
+          break
+      # if start == '0' and len(self.program_str[start:self.pos]) > 1:
+        # msg = "Leading zero(s) at position {}".format(start)
+        # raise LexicalError(msg)     
       return int( self.program_str[start : self.pos])  

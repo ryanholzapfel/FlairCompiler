@@ -16,8 +16,9 @@ program = file.read()
 scanner = Scanner(program)
 parser = Parser(scanner)
 
-valid = parser.parse()
+tree = parser.parse()
 
-if valid:
-    print("Program is valid.")
+if tree:
+    #print("Program is valid.")
+	print(tree)
 #print(parser)

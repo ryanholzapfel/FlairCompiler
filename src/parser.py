@@ -44,7 +44,7 @@ def top(stack):
     return stack[-1]
 
 def pop(stack):
-    stack.pop()
+    return stack.pop()
 
 def push_rule(lst, stack):
     for element in reversed(lst):
@@ -83,12 +83,18 @@ class Ast_Type(Enum):
     make_formal = 22
     make_definitions = 23
     make_formals = 24
+    make_statementlist = 25
+    make_term = 26
+    make_expr = 27
+    make_call = 28
+    make_actuals = 29
     
 #Semantic Action node creation functions
 def make_definitions_node(ast_stack):
-    definitions = pop(ast_stack)
-    deff = pop(ast_stack)
-    node = Definitions_Node(deff, definitions)
+    deffs = []
+    while isinstance(top(ast_stack), Def_Node): #as long as the top of the stack is a def, add it to the definitions node
+      deffs.append(pop(ast_stack))
+    node = Definitions_Node(deffs)
     push(node, ast_stack)
 
 def make_formal_node(ast_stack):
@@ -98,7 +104,13 @@ def make_formal_node(ast_stack):
     push(node, ast_stack)
 
 def make_formals_node(ast_stack):
-    neformals = pop(ast_stack)
+    neformals = []
+    while isinstance(top(ast_stack), Formal_Node): #as long as the top of the stack is a formal, add it to the formals node
+      neformals.append(pop(ast_stack))
+    # if neformals == []:
+        # node = Formals_Node(None)
+    # else:
+        # node = Formals_Node(neformals)
     node = Formals_Node(neformals)
     push(node, ast_stack)
     
@@ -226,6 +238,55 @@ def make_printstatement_node(ast_stack):
     node = PrintStatement_Node(expr)
     push(node, ast_stack)
     
+    
+def make_statementlist_node(ast_stack):
+    returnstatement = pop(ast_stack)
+    prints = []
+    while isinstance(top(ast_stack), PrintStatement_Node):
+      prints.append(pop(ast_stack))
+    node = StatementList_Node(prints,returnstatement)
+    push(node, ast_stack)
+    
+def make_term_node(ast_stack):
+    if isinstance(top(ast_stack), Times_Node) or isinstance(top(ast_stack), Divide_Node):
+        termprime = pop(ast_stack)
+    else:
+        termprime = None
+    factor = pop(ast_stack)
+    node = Term_Node(factor, termprime)
+    push(node, ast_stack)
+    
+
+def make_expr_node(ast_stack):
+    if isinstance(top(ast_stack), LessThan_Node) or isinstance(top(ast_stack), EqualTo_Node):
+        exprprime = pop(ast_stack)
+    else:
+        exprprime = None
+    sexpr = pop(ast_stack)
+    node = Expr_Node(sexpr, exprprime)
+    push(node, ast_stack)
+    
+def make_call_node(ast_stack):
+    # actuals = []
+    # while isinstance(top(ast_stack), Expr_Node):
+        # actuals.append(pop(ast_stack))
+    if isinstance(top(ast_stack), Actuals_Node):
+        actuals = pop(ast_stack)
+    else:
+        actuals = None
+    identifier = pop(ast_stack)
+    node = Call_Node(identifier, actuals)
+    push(node, ast_stack)
+
+
+def make_actuals_node(ast_stack):
+    actuals = []
+    while isinstance(top(ast_stack), Expr_Node):
+        actuals.append(pop(ast_stack))
+    node = Actuals_Node(actuals)
+    push(node, ast_stack)
+    
+    
 action_table = {
     Ast_Type.make_program : make_program_node, 
     Ast_Type.make_def : make_def_node, 
@@ -250,7 +311,12 @@ action_table = {
     Ast_Type.make_printstatement : make_printstatement_node,
     Ast_Type.make_formal : make_formal_node,
     Ast_Type.make_definitions : make_definitions_node,
-    Ast_Type.make_formals : make_formals_node}
+    Ast_Type.make_formals : make_formals_node,
+    Ast_Type.make_statementlist : make_statementlist_node,
+    Ast_Type.make_term : make_term_node,
+    Ast_Type.make_expr : make_expr_node,
+    Ast_Type.make_call : make_call_node,
+    Ast_Type.make_actuals : make_actuals_node}
    
 #parse table
 parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONEMPTYACTUALS],
@@ -280,29 +346,36 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
     (NonTerminal.DEFINITIONS, TokenType.BEGIN): [],
     (NonTerminal.DEFINITIONS, TokenType.EOF): [],
     (NonTerminal.DEFINITIONS, TokenType.FUNCTION): [   NonTerminal.DEF,
-                                                           NonTerminal.DEFINITIONS,
-                                                           Ast_Type.make_definitions],
+                                                           NonTerminal.DEFINITIONS],
     (NonTerminal.EXPR, TokenType.BOOLEAN): [   NonTerminal.SIMPLEEXPR,
                                                    Ast_Type.make_simpleexpr,
-                                                   NonTerminal.EXPRPRIME],
+                                                   NonTerminal.EXPRPRIME,
+                                                   Ast_Type.make_expr],
+    (NonTerminal.EXPR, TokenType.COMMA): [],
     (NonTerminal.EXPR, TokenType.IDENTIFIER): [   NonTerminal.SIMPLEEXPR,
                                                       Ast_Type.make_simpleexpr,
-                                                      NonTerminal.EXPRPRIME],
+                                                      NonTerminal.EXPRPRIME,
+                                                      Ast_Type.make_expr],
     (NonTerminal.EXPR, TokenType.IF): [   NonTerminal.SIMPLEEXPR,
                                               Ast_Type.make_simpleexpr,
-                                              NonTerminal.EXPRPRIME],
+                                              NonTerminal.EXPRPRIME,
+                                              Ast_Type.make_expr],
     (NonTerminal.EXPR, TokenType.LEFTPARENT): [   NonTerminal.SIMPLEEXPR,
                                                       Ast_Type.make_simpleexpr,
-                                                      NonTerminal.EXPRPRIME],
+                                                      NonTerminal.EXPRPRIME,
+                                                      Ast_Type.make_expr],
     (NonTerminal.EXPR, TokenType.NOT): [   NonTerminal.SIMPLEEXPR,
                                                Ast_Type.make_simpleexpr,
-                                               NonTerminal.EXPRPRIME],
+                                               NonTerminal.EXPRPRIME,
+                                               Ast_Type.make_expr],
     (NonTerminal.EXPR, TokenType.NUMBER): [   NonTerminal.SIMPLEEXPR,
                                                   Ast_Type.make_simpleexpr,
-                                                  NonTerminal.EXPRPRIME],
+                                                  NonTerminal.EXPRPRIME,
+                                                  Ast_Type.make_expr],
     (NonTerminal.EXPR, TokenType.SUBTRACT): [   NonTerminal.SIMPLEEXPR,
                                                     Ast_Type.make_simpleexpr,
-                                                    NonTerminal.EXPRPRIME],
+                                                    NonTerminal.EXPRPRIME,
+                                                    Ast_Type.make_expr],
     (NonTerminal.EXPRPRIME, TokenType.AND): [   TokenType.AND,
                                                     NonTerminal.FACTOR],
     (NonTerminal.EXPRPRIME, TokenType.COMMA): [],
@@ -324,7 +397,6 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
     (NonTerminal.FACTOR, TokenType.BOOLEAN): [   NonTerminal.LITERAL,
                                                      Ast_Type.make_literal],
     (NonTerminal.FACTOR, TokenType.IDENTIFIER): [   TokenType.IDENTIFIER,
-                                                        Ast_Type.make_identifier,
                                                         NonTerminal.FACTORREST],
     (NonTerminal.FACTOR, TokenType.IF): [   TokenType.IF,
                                                 NonTerminal.EXPR,
@@ -344,23 +416,24 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
     (NonTerminal.FACTOR, TokenType.SUBTRACT): [   TokenType.SUBTRACT,
                                                       NonTerminal.FACTOR,
                                                       Ast_Type.make_negate],
-    (NonTerminal.FACTORREST, TokenType.ADD): [],
-    (NonTerminal.FACTORREST, TokenType.AND): [],
-    (NonTerminal.FACTORREST, TokenType.COMMA): [],
-    (NonTerminal.FACTORREST, TokenType.DIVIDE): [],
-    (NonTerminal.FACTORREST, TokenType.ELSE): [],
-    (NonTerminal.FACTORREST, TokenType.END): [],
+    (NonTerminal.FACTORREST, TokenType.ADD): [Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.AND): [Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.COMMA): [Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.DIVIDE): [   Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.ELSE): [Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.END): [Ast_Type.make_identifier],
     (NonTerminal.FACTORREST, TokenType.EOF): [],
-    (NonTerminal.FACTORREST, TokenType.EQUAL): [],
+    (NonTerminal.FACTORREST, TokenType.EQUAL): [Ast_Type.make_identifier],
     (NonTerminal.FACTORREST, TokenType.LEFTPARENT): [   TokenType.LEFTPARENT,
                                                             NonTerminal.ACTUALS,
-                                                            TokenType.RIGHTPARENT],
-    (NonTerminal.FACTORREST, TokenType.LESS): [],
-    (NonTerminal.FACTORREST, TokenType.MULTIPLY): [],
-    (NonTerminal.FACTORREST, TokenType.OR): [],
-    (NonTerminal.FACTORREST, TokenType.RIGHTPARENT): [],
-    (NonTerminal.FACTORREST, TokenType.SUBTRACT): [],
-    (NonTerminal.FACTORREST, TokenType.THEN): [],
+                                                            TokenType.RIGHTPARENT,
+                                                            Ast_Type.make_call],
+    (NonTerminal.FACTORREST, TokenType.LESS): [Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.MULTIPLY): [   Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.OR): [Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.RIGHTPARENT): [   Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.SUBTRACT): [   Ast_Type.make_identifier],
+    (NonTerminal.FACTORREST, TokenType.THEN): [Ast_Type.make_identifier],
     (NonTerminal.FORMAL, TokenType.IDENTIFIER): [   TokenType.IDENTIFIER,
                                                         Ast_Type.make_identifier,
                                                         TokenType.COLON,
@@ -390,14 +463,14 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
                                                                NonTerminal.NONEMPTYACTUALSREST],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.BOOLEAN): [   NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.COMMA): [   TokenType.COMMA,
-                                                                NonTerminal.NONEMPTYFORMALS],
+                                                                NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.EOF): [],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.IDENTIFIER): [   NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.IF): [   NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.LEFTPARENT): [   NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.NOT): [   NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.NUMBER): [   NonTerminal.NONEMPTYACTUALS],
-    (NonTerminal.NONEMPTYACTUALSREST, TokenType.RIGHTPARENT): [   ],
+    (NonTerminal.NONEMPTYACTUALSREST, TokenType.RIGHTPARENT): [   Ast_Type.make_actuals],
     (NonTerminal.NONEMPTYACTUALSREST, TokenType.SUBTRACT): [   NonTerminal.NONEMPTYACTUALS],
     (NonTerminal.NONEMPTYFORMALS, TokenType.IDENTIFIER): [   NonTerminal.FORMAL,
                                                                  NonTerminal.NONEMPTYFORMALSREST],
@@ -419,6 +492,7 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
                                                       TokenType.RIGHTPARENT,
                                                       TokenType.SEMICOLON,
                                                       NonTerminal.DEFINITIONS,
+                                                      Ast_Type.make_definitions,
                                                       NonTerminal.BODY,
                                                       TokenType.PERIOD,
                                                       Ast_Type.make_program],
@@ -456,7 +530,8 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
     (NonTerminal.STATEMENTLIST, TokenType.PRINT): [   NonTerminal.PRINTSTATEMENT,
                                                           NonTerminal.STATEMENTREST],
     (NonTerminal.STATEMENTLIST, TokenType.RETURN): [   TokenType.RETURN,
-                                                           NonTerminal.EXPR],
+                                                           NonTerminal.EXPR,
+                                                           Ast_Type.make_statementlist],
     (NonTerminal.STATEMENTREST, TokenType.COMMA): [   TokenType.COMMA,
                                                           NonTerminal.STATEMENTLIST],
     (NonTerminal.STATEMENTREST, TokenType.END): [],
@@ -464,19 +539,26 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
     (NonTerminal.STATEMENTREST, TokenType.PRINT): [   NonTerminal.STATEMENTLIST],
     (NonTerminal.STATEMENTREST, TokenType.RETURN): [   NonTerminal.STATEMENTLIST],
     (NonTerminal.TERM, TokenType.BOOLEAN): [   NonTerminal.FACTOR,
-                                                   NonTerminal.TERMPRIME],
+                                                   NonTerminal.TERMPRIME,
+                                                   Ast_Type.make_term],
     (NonTerminal.TERM, TokenType.IDENTIFIER): [   NonTerminal.FACTOR,
-                                                      NonTerminal.TERMPRIME],
+                                                      NonTerminal.TERMPRIME,
+                                                      Ast_Type.make_term],
     (NonTerminal.TERM, TokenType.IF): [   NonTerminal.FACTOR,
-                                              NonTerminal.TERMPRIME],
+                                              NonTerminal.TERMPRIME,
+                                              Ast_Type.make_term],
     (NonTerminal.TERM, TokenType.LEFTPARENT): [   NonTerminal.FACTOR,
-                                                      NonTerminal.TERMPRIME],
+                                                      NonTerminal.TERMPRIME,
+                                                      Ast_Type.make_term],
     (NonTerminal.TERM, TokenType.NOT): [   NonTerminal.FACTOR,
-                                               NonTerminal.TERMPRIME],
+                                               NonTerminal.TERMPRIME,
+                                               Ast_Type.make_term],
     (NonTerminal.TERM, TokenType.NUMBER): [   NonTerminal.FACTOR,
-                                                  NonTerminal.TERMPRIME],
+                                                  NonTerminal.TERMPRIME,
+                                                  Ast_Type.make_term],
     (NonTerminal.TERM, TokenType.SUBTRACT): [   NonTerminal.FACTOR,
-                                                    NonTerminal.TERMPRIME],
+                                                    NonTerminal.TERMPRIME,
+                                                    Ast_Type.make_term],
     (NonTerminal.TERMPRIME, TokenType.ADD): [],
     (NonTerminal.TERMPRIME, TokenType.AND): [   TokenType.AND,
                                                     NonTerminal.FACTOR,
@@ -536,6 +618,10 @@ parse_table = {   (NonTerminal.ACTUALS, TokenType.BOOLEAN): [   NonTerminal.NONE
 
 
 
+
+
+
+
 #Parser 
 class Parser:
     def __init__(self, scanner):
@@ -547,12 +633,12 @@ class Parser:
         semanticStack = []
         push_rule([NonTerminal.PROGRAM, TokenType.EOF], parseStack)
         while parseStack:
-            print("full stack", parseStack)
+            #print("full stack", parseStack)
             grammarRule = top(parseStack)
             #print("top of stack",grammarRule)
             if isinstance( grammarRule, TokenType):
-                t = self.scanner.next_token()
-                print(tokenCount)
+                t = self.scanner.next()
+                #print(tokenCount)
                 tokenCount += 1
                 #print("next token",t.token_type)
                 if grammarRule == t.token_type:
@@ -573,7 +659,7 @@ class Parser:
                     msg = 'cannot expand {} on {}'
                     raise ParseError(msg.format(grammarRule,t))
             elif isinstance(grammarRule, Ast_Type):
-                #print(semanticStack)
+                #print(grammarRule, "/", semanticStack)#, semanticStack)
                 actionNode = action_table.get(grammarRule) #lookup function to create node
                 actionNode(semanticStack) #call function to create node
                 pop(parseStack) #pop semantic action from parse stack
@@ -585,7 +671,8 @@ class Parser:
             msg = 'unexpected token at end: {}'
             raise ParseError(msg.format(t))
                         
-        #print("done")
-        print(semanticStack)
-        #print(parseStack)
-        return True
+        #print(semanticStack)
+        #print(semanticStack[0])
+        #for item in semanticStack:
+            #print(item)
+        return semanticStack[0]

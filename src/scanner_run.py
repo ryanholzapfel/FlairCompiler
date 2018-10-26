@@ -11,11 +11,11 @@ file = open(fileName)
 program = file.read()
 
 tokenList = Scanner(program)
-currentToken = tokenList.next_token()
+currentToken = tokenList.next()
 
 while True:
     print(currentToken)
     if currentToken.is_eof():
         break
-    currentToken = tokenList.next_token()
+    currentToken = tokenList.next()
 
