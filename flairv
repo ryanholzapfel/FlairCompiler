@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#flairv 
+
+#This program runs a given flair program through the semantic checker and prints the table to the console
+
+python3 ./src/semanticanalyzer.py $1
