@@ -1,0 +1,170 @@
+{ SemanticErrors.flr  Project 4 Status Check  Team Avalanche}
+	
+program semanticerrors( n : integer, m : integer );
+
+{Our Doubler program to ensure a first case is a valid program and the scanner and parser are working as expected}
+
+	function Doubler( n : integer ) : integer
+	
+		begin
+			
+			return (n*2)
+			
+		end;
+		
+{Expresion gives the wrong type of value to an operator}
+
+	function nsquared ( n : integer) : integer
+		
+		begin
+			
+			return n and n
+			
+		end;
+		
+			
+{Expresion uses variable that doesn't exist}
+
+	function numberplustwo ( n : integer) : integer
+		
+		begin 
+		
+			return m + 2
+			
+		end;
+		
+{function returns wrong type}
+
+	function dividebytwo ( n : integer ) : boolean
+	
+		begin 
+			
+			return n / 2
+			
+		end;
+		
+{function passes wrong type of arg}
+
+	function divisiblebytwochecker ( n : boolean ) : boolean
+	
+		begin 
+			
+			return Dividebytwo (n) 
+			
+		end;
+		
+{function passes wrong number of args}
+
+	function DoublerMOD ( n : integer ) : integer
+	
+		begin 
+			
+			return Doubler (n,2)
+			
+		end;	
+
+		
+{two formals with the same name}
+
+	function nminusn ( n : integer, n : integer ) : integer
+	
+		begin 
+			
+			return n-n
+			
+		end;	
+		
+{if operation on a non-boolean}
+
+	function isone (n : integer) : boolean
+	
+		begin
+		
+			return if n then true else false
+			
+		end;
+		
+{then and else have different types}
+
+	function iszero(n : integer) : boolean
+	
+		begin
+		
+			return if n then 0 else false
+			
+		end;
+		
+{function has wrong type for its use}
+
+	function  ( n : integer, m : boolean ) : boolean
+	
+		begin 
+			
+			return n = m
+			
+		end;	
+		
+{expression calls a function that doesn't exist}
+
+	function Doubletwice ( n : integer ) : integer
+	
+		begin 
+			
+			return Doublers (Doubler (n))
+			
+		end;	
+
+{two or more functions have same name}
+
+	function DoublerMODtwo ( n : integer ) : integer
+	
+		begin 
+			
+			return Doubler (n)
+			
+		end;
+		
+	function DoublerMODtwo ( n : integer ) : integer
+	
+		begin 
+			
+			return Doubler (n)
+			
+		end;
+		
+{presence of a variable that is never used}
+
+	function DoublerMODquad ( n : integer, m : integer ) : integer
+	
+		begin 
+			
+			return Doubler (n) + Doubler (n)
+			
+		end;
+		
+{presence of code path that can never execute}
+		
+	function returnbinary ( ) : integer
+	
+		begin 
+			
+			return if true then 1 else 0
+			
+		end;
+
+{code that never terminates}
+		
+	function theloop () : integer
+	
+		begin 
+			
+			return if true then theloop () else 0
+			
+		end;
+		
+		
+begin 
+
+	return if isone(m) then nsquared(n) else numberplustwo(m)
+	
+end.
