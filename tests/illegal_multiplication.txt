@@ -1,0 +1,10 @@
+program illegal(n:integer);
+
+function f(n:integer):integer
+begin
+	return  true * n
+	end;
+
+begin
+	return f(n)
+	end.
