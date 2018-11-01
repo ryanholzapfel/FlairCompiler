@@ -6,6 +6,7 @@ class SemanticAnalyzer(self, programNode):
 		self._currentType = None
 		self._errors = []
 		self._typelist = {}
+		self._currentID = ""
 		
 	def programNode(self):
 		return self._programNode
@@ -22,14 +23,26 @@ class SemanticAnalyzer(self, programNode):
 	def addError(self, msg):
 		return self._errors.append(msg)
 		
-	def formals_list(self):
-		for formal in self.programNode().formals():
-			self._typelist[formal.identifier().identifier()] = formal.type()
+	def formals_dict(self, node): #node is the program node, creates a double dict for all formals in program
+		self._typeList = {} #empty out dict
+		programID = node.identifier().identifier()
+		self._typelist[programID] = {}
+		for formal in node.formals(): #build program formals set
+			self._typelist[programID][formal.identifier().identifier()] = formal.type()
+		defs = node.definitions()
+		for deff in defs: #for each def
+			defID = deff.identifier().identifier()
+			self._typelist[defID] = {}
+			for formal in deff.formals():
+				self._typelist[defID][formal.identifier().identifier()] = formal.type()
 		#return type_list
+
+	def set_currentID(self,id):
+		self._currentID = id
 		
-	def check_expr(node):
+	def check_expr(node, dictt):
 		if node.exprprime() == None:
-			return check_se(node.sexpr())
+			return check_se(node.sexpr(), dictt)
 		elif isinstance(node.exprprime(), LessThan_Node):
 			if check_se(node.sexpr())=="I" and check_less(node.exprprime())=="I"
 				return "B"
@@ -76,6 +89,11 @@ class SemanticAnalyzer(self, programNode):
 				msg = "Int Error: Expected to resolve multiplication operation to Integer, got Boolean"
 				addError(msg)
 				return "B"
+		elif isinstance(node.termprime(), And_Node):
+			if check_factor(node.factor())=="B" and check_and(node.termprime())=="B"
+				return "B"
+			else:
+				return "I"
 		else: #termprime is a divide node
 			if check_factor(node.factor())=="I" and check_divide(node.termprime()) == "I"
 				return "I"
@@ -85,7 +103,7 @@ class SemanticAnalyzer(self, programNode):
 				return "B"
 				
 				
-	def check_factor(self, node):
+	def check_factor(node):
 		if isinstance(node, Expr_Node):
 			return check_expr(node)
 		elif isinstance(node, If_Node):
@@ -100,24 +118,130 @@ class SemanticAnalyzer(self, programNode):
 				#setBool()
 				return "B"
 		elif isinstance(node, Identifier_Node):
-			id = node.identifier()
-			if isinstance(self._typelist[id], Integer_Node):
-				return "I"
-			else: # ID is assigned to boolean type
-				return "B"		
-		else: #factor is function call
-			if isinstance(node.identifier(), Integer_Node):
-				return "I"
-			else: #function returns type boolean
-				return "B"
+			return check_id(node)
+		elif isinstance(node, Call_Node):
+			return check_call(node)
+
+	def check_call(node):
+		pass
 				
 				
 				
+	def check_equal(node):
+		return check_se(node.simpleexpr())
+		# if isinstance(node, Integer_Node):
+		# 	return "I"
+		# elif isinstance(node, Identifier_Node):
+		# 	return check_id(node)
+		# else:
+		# 	return "B"
+	def check_less(node):
+		return check_se(node.simpleexpr())
+		# if isinstance(node, Integer_Node):
+		# 	return "I"
+		# elif isinstance(node, Identifier_Node):
+		# 	return check_id(node)
+		# else:
+		# 	return "B"
+	def check_plus(node):
+		return check_term(node.term())
+		# if isinstance(node, Integer_Node):
+		# 	return "I"
+		# elif isinstance(node, Identifier_Node):
+		# 	return check_id(node)
+		# else:
+		# 	return "B"
+	def check_minus(node):
+		return check_term(node.term())
+		# if isinstance(node, Integer_Node):
+		# 	return "I"
+		# elif isinstance(node, Identifier_Node):
+		# 	return check_id(node)
+		# else:
+		# 	return "B"
+	def check_or(node):
+		return check_term(node.term())
+		# if isinstance(node, Boolean_Node):
+		# 	return "B"
+		# elif isinstance(node, Identifier_Node):
+		# 	return check_id(node)
+		# else:
+		# 	return "I"
+	def check_times(node):
+		return check_factor(node.factor())
+		# if isinstance(node, Integer_Node):
+		# 	return "I"
+		# elif isinstance(node, Identifier_Node):
+		# 	return check_id(node)
+		# else:
+		# 	return "B"
+	def check_divide(node):
+		return check_factor(node.factor())
+		# if isinstance(node, Integer_Node):
+		# 	return "I"
+		# elif isinstance(node, Identifier_Node):
+		# 	return check_id(node)
+		# else:
+		# 	return "B"
+	def check_if(node):
+		tf = check_expr(node.expr1())
+		rt = check_expr(node.expr2())
+		rf = check_expr(node.expr3())
+		if tf == "B":
+			if rt == rf:
+				return rt
+			else:
+				msg = "Mismatch return types on If-Then-Else"
+				addError(msg)
+				return "B" #doesn't matter what this returns...
+		else:
+			msg = "If statement does not evaluate to boolean"
+			addError(msg)
+			return "I"
+
+	def check_not(node):
+		return check_factor(node.factor())
+
+	def check_negate(node):
+		return check_factor(node.factor())
+
+	def check_and(node):
+		return check_factor(node.factor())
 				
+	def check_id(self, node):
+		id = node.identifier() 
+		#if node is id, look up id in formals type list and check if integer or boolean
+		if isinstance(self._typelist[self._currentID][id], Integer_Node):
+			return "I"
+		else: # ID is assigned to boolean type
+			return "B"
 				
-				
-				
-				
+	def check_return(node):
+		if isinstance(node, Integer_Node):
+			return "I"
+		else:
+			return "B"
+
+	def check_def(self, node):	#node is def node	
+		expr_type = check_expr(node.body().statementlist().returnstatement())
+		return_type = check_return(node.type())
+		if expr_type == return_type:
+			return expr_type
+		else:
+			msg = "def {} expected {} return type got {}".format(self._currentID, expr_type, return_type)
+			addError(msg)
+
+	def check_definitions(self, node): #node is program node
+		for deff in node.definitions():
+			set_currentID(deff.identifier().identifier())
+			valid = check_def(deff)
+
+	def check_program(self, node):
+		set_currentID(node.identifier().identifier())
+		expr_type = check_expr(node.body().statementlist().returnstatement())
+		return expr_type
+
+
 				
 				
 				
