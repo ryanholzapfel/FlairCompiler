@@ -38,14 +38,14 @@ class Program_Node(AST_Node):
         return self._body
     
 class Def_Node(AST_Node):
-    def __init__(self, identifier, formals, type, body):
+    def __init__(self, identifier, formals, types, body):
         self._identifier     = identifier
         self._formals        = formals
-        self._type           = type
+        self._types          = types
         self._body           = body
         
     def __str__(self):
-        return """Function {} takes in {} returns a""".format(str(self.identifier()), str(self.formals()), str(self.type()))
+        return """Function {} takes in {} returns a""".format(str(self.identifier()), str(self.formals()), str(self.types()))
         
     def identifier(self):
         return self._identifier
@@ -53,8 +53,8 @@ class Def_Node(AST_Node):
     def formals(self):
         return self._formals
         
-    def type(self):
-        return self._type
+    def types(self):
+        return self._types
         
     def body(self):
         return self._body
@@ -268,18 +268,18 @@ class PrintStatement_Node(AST_Node):
         return self._expr
         
 class Formal_Node(AST_Node):
-    def __init__(self, identifier, type):
+    def __init__(self, identifier, types):
         self._identifier = identifier
-        self._type = type
+        self._types = types
         
     def __str__(self):
-        return "{} is type {}".format(str(self.identifier()), str(self.type()))
+        return "{} is type {}".format(str(self.identifier()), str(self.types()))
         
     def identifier(self):
         return self._identifier
         
-    def type(self):
-        return self._type
+    def types(self):
+        return self._types
 
 class Formals_Node(AST_Node):
     def __init__(self, neformals):

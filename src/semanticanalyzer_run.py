@@ -2,7 +2,9 @@ import sys
 
 from scanner import Scanner
 from parser import Parser
-from semanticactions import *
+# from semanticactions import *
+
+from semanticanalyzer import SemanticAnalyzer
 
 #bring in filepath, read program file
 fileName = sys.argv[1]
@@ -15,6 +17,9 @@ parser = Parser(scanner)
 
 #parse the program and save the program node (contains all semantic actions)
 programNode = parser.parse()
+
+sa = SemanticAnalyzer(programNode)
+sa.table()
 
 
 
@@ -32,7 +37,7 @@ programNode = parser.parse()
 	# functionList = []
 	# functionList.append(function.identifier())
 	# functionList.append(function.formals())
-	# functionList.append(function.type())
+	# functionList.append(function.types())
 	# programFunctions.append(functionList)
 	
 # print(header)
