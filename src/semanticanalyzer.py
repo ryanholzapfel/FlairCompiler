@@ -1,6 +1,6 @@
 from semanticactions import *
 
-class SemanticAnalyzer():
+class SemanticAnalyzer(object):
     def __init__(self, programNode):
         self._programNode = programNode
         self._currentType = None
