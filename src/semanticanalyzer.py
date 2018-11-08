@@ -54,7 +54,7 @@ class SemanticAnalyzer(object):
         self._currentID = id
         
     def check_expr(self, node):
-        print(node.sexpr().seprime())
+        print(node)
         if node.exprprime() == None:
             print("checked se only")
             return self.check_se(node.sexpr())
