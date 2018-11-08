@@ -69,14 +69,14 @@ class CodeGen(object):
             #perform the operation
             #big if isinstance checking what operation needs to be added
 
-    #still need line numbers
+
     def generate(self):
         self.walkReturn()
         for code in range(0,len(self.threeAddressList())):
             self.tmWriter(code)
         self.addInstructions("OUT 2,0,0\nHALT 0,0,0")
         self.addLineNumbers()
-        print(self.programStr())
+        #print(self.programStr())
         return self.programStr()
             
 
