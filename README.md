@@ -13,18 +13,24 @@ Ryan Holzapfel, Nicholas Rausch, Usman Wariach
 * ~~The scanner does not check for identifier length (should be limited to 256 characters)~~ Fixed
 * ~~The scanner reads numbers separated with periods as individual tokens (should return an invalid character error)~~ This is no longer considered an error?
 * ~~The parser errors out on trying to expand the NonTerminal FORMALS. This seems to be an issue with our parse table.~~ Fixed
+* Creating the proper semantic actions for if-then-else expressions seems to cause issues. We think the issue stems from not having semantic actions associated with primes?
 
 
 ### Features Not Implemented
 * ~~The scanner still uses the function next_token() instead of next()~~ Fixed
 * The error handler does not filter Python errors out. It just passes everything through. (IN PROGRESS)
 * ~~The AST is not able to be printed in a human readable format.~~ Fixed
-* The semantic error checker symbol table is incomplete. Currently, it finds all functions, their names, input types, and return type.
+* ~~The semantic error checker symbol table is incomplete. Currently, it finds all functions, their names, input types, and return type.~~ Mostly complete, may alter later.
+* Need a nicely formatted symbol table. Plan to use a python library that can format a dictionary into a table. 
 
 ### Optimizations
 _None for the scanner component._
 
 _None for the parser component._
+
+_None for the checker component._
+
+_None for the generator component._
 
 ## How to Build
 No compilation/building necessary for python3.
@@ -47,8 +53,10 @@ After a program is successfully parsed, the semantic action stack contains only 
 
 The semantic error symbol table uses the program node created by the AST/Parser to print a (rough) table of the program's functions, their names, inputs, and return type. Currently, we are not able to check for function calls and return type matches.
 
+The code generator 
+
 ## Files specific to this submission
-Project 4
-* programs/semanticerrors.flr
-* src/semanticanalyzer.py
-* flairv
+Project 5
+* docs/
+* src/codegen.py
+* src/codegen2.py
