@@ -39,6 +39,7 @@ No compilation/building necessary for python3.
 * Executing the command `./flairs ./programs/<program name>` from the top level directory will execute the scanner and print_token programs which produce the tokens associated with the given Flair file and print them to the console. 
 * Executing the command `./flairf ./programs/<program name>` from the top level directory executes the parser (and scanner) on the program, prints the AST tree representation if the program is successfully parsed, or prints a relevent error message if it is not.
 * Executing the command `./flairv ./programs/<program name>` from the top level directory executes the parser on the program and prints the symbol table.
+* Executing the command `./flairc ./programs/<program name>` from the top level directory executes the generator and outputs a TM program with the same name as the flair program in the programs directory
 
 ## Architecture and Design Decisions
 The scanner and flair token list are modeled after the class examples. We modeled each punctuation character and end of file as its own token type, and use the token/value pair for integers and words. 
@@ -53,10 +54,13 @@ After a program is successfully parsed, the semantic action stack contains only 
 
 The semantic error symbol table uses the program node created by the AST/Parser to print a (rough) table of the program's functions, their names, inputs, and return type. Currently, we are not able to check for function calls and return type matches.
 
-The code generator 
+We took two approaches to the code generator. The source file codegen.py is our first attempt (prior to Thursday's class) uses a more hard-coded approach to the TM instructions, but can dynamically assign the value that the TM outputs (eg. a flair program that prints 2). 
+The source file codegen2.py includes more of the TM run-time components that we have been discussing in class, but can't dynamically change the output value.
+Of course, either approach would need more tree traversal functions in order to generate more complicated programs. 
+We will probably expand/improve on codegen2.py going forward, but for the time being are including both files in our submission.
 
 ## Files specific to this submission
 Project 5
-* docs/
+* docs/stack_diagrams.pdf
 * src/codegen.py
 * src/codegen2.py
