@@ -53,7 +53,7 @@ class SemanticAnalyzer(object):
                 for formal in deff.formals().neformals():
                     self._typelist[defID][0].append(formal.identifier().identifier())
                     self._typelist[defID][1].append(self.check_return(formal.types()))
-                self._typelist[defID].append(self.check_return(deff.type()))
+                self._typelist[defID].append(self.check_return(deff.types()))
             
 
     def set_currentID(self,id):
@@ -62,15 +62,15 @@ class SemanticAnalyzer(object):
     def check_expr(self, node):
         print(node)
         if node.exprprime() == None:
-            print("checked se only")
+            #print("checked se only")
             return self.check_se(node.sexpr())
         elif isinstance(node.exprprime(), LessThan_Node):
             if self.check_se(node.sexpr())=="I" and self.check_less(node.exprprime())=="I":
-                print("checked se and less")
+                #print("checked se and less")
                 return "B"
         else: #exprprime is an equal to node
             if self.check_se(node.sexpr())=="I" and self.check_equal(node.exprprime())=="I":
-                print("checked se and equal")
+                #print("checked se and equal")
                 return "B"
             else:
                 msg = "Int Error: Expected to resolve integer in equal to operation, got boolean"
@@ -78,7 +78,7 @@ class SemanticAnalyzer(object):
                 return "I"
             
     def check_se(self, node):
-        print(node.seprime(), "and", node.term)
+        #print(node.seprime(), "and", node.term)
         if node.seprime() == None:
             return self.check_term(node.term())
         elif isinstance(node.seprime(), Or_Node):
@@ -110,7 +110,7 @@ class SemanticAnalyzer(object):
             if self.check_factor(node.factor())=="I" and self.check_times(node.termprime())=="I":
                 return "I"
             else:
-                print(self.check_factor(node.factor()), self.check_times(node.termprime()))
+                #print(self.check_factor(node.factor()), self.check_times(node.termprime()))
                 msg = "Int Error: Expected to resolve multiplication operation to Integer, got Boolean"
                 self.addError(msg)
                 return "B"
@@ -150,7 +150,8 @@ class SemanticAnalyzer(object):
             return self.check_call(node)
 
     def check_call(self, node):
-        pass
+        #pass
+        return "I"
                 
                 
                 
@@ -290,7 +291,9 @@ class SemanticAnalyzer(object):
         self.formals_dict(self.programNode()) #create (most of) symbol table
         self.check_definitions(self.programNode()) #verify that defs return the declared types
         self._typelist[self.programNode().identifier().identifier()].append(self.check_program(self.programNode())) #add program return type to symbol table
+        print(self._typelist)
         print(self._errors)
+        return self._typelist
         # programFunctions = []
         # functionList = []
         # for function in self.programNode().definitions().deffs():
