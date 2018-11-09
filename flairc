@@ -3,4 +3,4 @@
 #flairc
 
 #This program runs a given flair program through the generator and outputs a TM program
-python3 ./src/codegen_run.py $1
+python3 ./src/compile.py $1
