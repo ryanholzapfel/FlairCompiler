@@ -35,6 +35,11 @@ class SemanticAnalyzer(object):
         # 	self._typelist[defID] = {}
         # 	for formal in deff.formals():
         # 		self._typelist[defID][formal.identifier().identifier()] = formal.types()
+        
+        """
+        dict entry --> prog/fn ID : [[formal ids(strings)], [formal types("I" or "B")], return value ("I" or "B")]
+        """
+        #this is serving as our symbol table
         programID = node.identifier().identifier()
         self._typelist[programID] = [[],[]]
         if not node.formals() == None:
@@ -48,6 +53,7 @@ class SemanticAnalyzer(object):
                 for formal in deff.formals().neformals():
                     self._typelist[defID][0].append(formal.identifier().identifier())
                     self._typelist[defID][1].append(self.check_return(formal.types()))
+                self._typelist[defID].append(self.check_return(deff.type()))
             
 
     def set_currentID(self,id):
@@ -281,20 +287,19 @@ class SemanticAnalyzer(object):
                 
                 
     def table(self):
-        self.formals_dict(self.programNode())
-        #print(self._typelist)
-        self.check_definitions(self.programNode())
-        self.check_program(self.programNode())
+        self.formals_dict(self.programNode()) #create (most of) symbol table
+        self.check_definitions(self.programNode()) #verify that defs return the declared types
+        self._typelist[self.programNode().identifier().identifier()].append(self.check_program(self.programNode())) #add program return type to symbol table
         print(self._errors)
-        programFunctions = []
-        #functionList = []
-        for function in self.programNode().definitions().deffs():
-            functionList = []
-            functionList.append(str(function.identifier()))
-            functionList.append(str(function.formals()))
-            functionList.append(str(function.types()))
-            programFunctions.append(str(functionList))
-        print(programFunctions)
+        # programFunctions = []
+        # functionList = []
+        # for function in self.programNode().definitions().deffs():
+        #     functionList = []
+        #     functionList.append(str(function.identifier()))
+        #     functionList.append(str(function.formals()))
+        #     functionList.append(str(function.types()))
+        #     programFunctions.append(str(functionList))
+        # print(programFunctions)
         
             
 
