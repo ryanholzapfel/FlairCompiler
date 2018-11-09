@@ -68,6 +68,9 @@ class CodeGen(object):
         self.incrementLine()
 
     def returnMain(self):
+        #hardcode literal 1
+        self.addCode("LDC 2,1(0)  #literal one")
+        #end hardcode
         self.addCode("OUT 2,0,0   #return result of main")
         self.addCode("HALT 0,0,0  #stop execution; end of program")
 
@@ -79,3 +82,9 @@ class CodeGen(object):
         self.addCode("MUL 4,4,5   #multiply")
         self.addCode("ST 4,0(3)   #store product in DMEM")
         self.loadReg()
+        
+    def generate(self):
+        self.genPointers()
+        self.initializeMain()
+        self.returnMain()
+        return self._programString
