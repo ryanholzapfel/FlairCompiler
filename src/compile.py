@@ -1,6 +1,6 @@
 import sys
 import os
-from codegen import CodeGen
+from codegen2 import CodeGen
 from parser import Parser
 from scanner import Scanner
 
@@ -29,6 +29,7 @@ fn = genTMFileName()
 
 # cwd = os.getcwd()
 # print(cwd)
+print(programstr)
 
 tmpath = "../tm/"+ fn + ".tm"
 tmOut = open(tmpath, "w")

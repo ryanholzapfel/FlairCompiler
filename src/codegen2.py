@@ -17,7 +17,7 @@ class CodeGen(object):
 
     def addCode(self, code):
         ln = self.currentLine()
-        self._programString = self._programString + currentLine + ": " + code + "\n"
+        self._programString = self._programString + str(self.currentLine()) + ": " + code + "\n"
         self.incrementLine()
 
     def genPointers(self):
@@ -64,7 +64,7 @@ class CodeGen(object):
         self.addCode("ST 1,1(6)   #store return address")
 
     def genJump(self): #WIP
-        self._jumpString = self._jumpString + self.currentLine() + ": LDA 7, X(0)"
+        self._jumpString = self._jumpString + str(self.currentLine()) + ": LDA 7, X(0)"
         self.incrementLine()
 
     def returnMain(self):
@@ -73,6 +73,10 @@ class CodeGen(object):
         #end hardcode
         self.addCode("OUT 2,0,0   #return result of main")
         self.addCode("HALT 0,0,0  #stop execution; end of program")
+
+
+    def nextOperation(self):
+        pass
 
     def genMult(self, a,b,c): #r2 is possibly not zero
         self.saveReg()
