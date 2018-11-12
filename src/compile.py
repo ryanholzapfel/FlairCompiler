@@ -13,26 +13,26 @@ def genTMFileName():
 
 
 fileName = sys.argv[1]
-file = open(fileName)
-program = file.read()
+fileIn = open(fileName)
+flrprogram = fileIn.read()
 
 #make scanner and parser objects
-scanner = Scanner(program)
+scanner = Scanner(flrprogram)
 parser = Parser(scanner)
 
 #parse the program and save the program node (contains all semantic actions)
 programNode = parser.parse()
 symbolTable = None
 generator = CodeGen(programNode, symbolTable)
-programstr = generator.generate()
+tmprogramstr = generator.generate()
 fn = genTMFileName()
 
-# cwd = os.getcwd()
-# print(cwd)
-print(programstr)
+#cwd = os.getcwd()
+#print(cwd)
+#print(programstr)
 
-tmpath = "../tm/"+ fn + ".tm"
+tmpath = "./tm/"+ fn + ".tm"
 tmOut = open(tmpath, "w")
-tmOut.write(programstr)
+tmOut.write(tmprogramstr)
 tmOut.close()
 
