@@ -108,7 +108,7 @@ class CodeGen(object):
     
     def returnMain(self):
         #hardcode literal 1
-        self.addCode("LDC 2,1(0)  #literal one")
+        self.addCode("LDC 2,{}(0)  #literal one".format(commandArg))
         #end hardcode
         self.addCode("OUT 2,0,0   #return result of main")
         self.addCode("HALT 0,0,0  #stop execution; end of program")
