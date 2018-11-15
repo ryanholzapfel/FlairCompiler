@@ -87,12 +87,17 @@ class CodeGen(object):
         #self.addCode("ST 6,8(6)")
         #self.addCode("LDA 6,9(6)")
         #end hardcode
+<<<<<<< HEAD
         thisLabel = self.currentLabel()
         self._jumpsToComplete.append((self.currentLine() ,thisLabel, 'uncondtional' ))
         self._labelDate[thisLabel] = self.currentLine() + 1
         jumpLines = ""
         jumpLines.join(self.genJump()) #make a jump for later
         self.addCode("LD#retrieve stored value")
+=======
+        self.genJump() #make a jump for later
+        #self.addCode("LD#retrieve stored value")
+>>>>>>> d6577e26e7e630612569dbc08bdee856b5efccbe
         
     def storeReturn(self):
         self.addCode("LDA 1,6(7)  #load return address")
@@ -127,4 +132,5 @@ class CodeGen(object):
         self.genPointers()
         self.initializeMain()
         self.returnMain()
+
         return self._programString
