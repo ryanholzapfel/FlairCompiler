@@ -8,7 +8,31 @@ class CodeGen(object):
         self._jumpString = ""
         self._currentLine = 0
         self._programString = ""
+        self._labelData = {}
+        self._jumpsToComplete = []
+        self._availableIMEM = ["locked",0,0,0,0,1,1,"locked"] #locked = reserved (PC and const. 0), 0= not in use, 1= in use
 
+    def toggleIMEM(self, regNum):
+        if self._availableIMEM[regNum] == 0:
+            self._availableIMEM[regNum] = 1
+        elif self._availableIMEM[regNum] == 1:
+            self._availableIMEM[regNum] = 0
+
+    def regInUse(self, regNum):
+        self._availableIMEM[regNum] = 1
+    
+    def regAvail(self, regNum):
+        self._availableIMEM[regNum] = 0
+
+    def getRegister(self):
+        try: 
+            return self._availableIMEM.index(0)
+        except ValueError:
+            regToMove = self._availableIMEM.index(1)
+            self.addCode("ST {},{}(0)  #move register {} to DMEM{}".format(regToMove,regToMove,regToMove,regToMove))
+            self._availableIMEM[regToMove] = 0
+            return regToMove
+    
     def currentLine(self):
         return self._currentLine
 
