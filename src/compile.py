@@ -16,7 +16,7 @@ fileName = sys.argv[1]
 hasFlr = ".flr"
 if ".flr" in fileName:
     hasFlr = ""
-fileIn = open("programs/existing_programs/"+ fileName + hasFlr, "r")
+fileIn = open("programs/"+ fileName + hasFlr, "r")
 
 flrprogram = fileIn.read()
 
