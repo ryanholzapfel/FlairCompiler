@@ -9,7 +9,7 @@ class CodeGen(object):
         self._currentLine = 0
         self._programString = ""
         self._labelData = {}
-        self._jumpsToComplete = []
+        self._jumpsToComplete = [""]
         self._availableIMEM = ["locked",0,0,0,0,1,1,"locked"] #locked = reserved (PC and const. 0), 0= not in use, 1= in use
         self._currentLabel = 1
 
@@ -87,17 +87,13 @@ class CodeGen(object):
         #self.addCode("ST 6,8(6)")
         #self.addCode("LDA 6,9(6)")
         #end hardcode
-<<<<<<< HEAD
         thisLabel = self.currentLabel()
         self._jumpsToComplete.append((self.currentLine() ,thisLabel, 'uncondtional' ))
-        self._labelDate[thisLabel] = self.currentLine() + 1
+        self._labelData[thisLabel] = self.currentLine() + 1
         jumpLines = ""
         jumpLines.join(self.genJump()) #make a jump for later
-        self.addCode("LD#retrieve stored value")
-=======
-        self.genJump() #make a jump for later
         #self.addCode("LD#retrieve stored value")
->>>>>>> d6577e26e7e630612569dbc08bdee856b5efccbe
+        self._programString = self._programString + jumpLines
         
     def storeReturn(self):
         self.addCode("LDA 1,6(7)  #load return address")
