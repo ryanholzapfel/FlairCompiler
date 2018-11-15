@@ -106,9 +106,9 @@ class CodeGen(object):
             self._jumpString.append(str(jumps[0]) + ": LDA 7, {}(0)\n".format(self._labelData['label' + str(1 + self._jumpsToComplete.index(jumps))]))
         return self._jumpString
     
-    def returnMain(self):
+    def returnMain(self):#wip previously worked as ("LDC 2, 1 (0)" #literal one)
         #hardcode literal 1
-        self.addCode("LDC 2,{}(0)  #literal one".format(commandArg))
+        self.addCode("LDC 2,{}(0)  #literal one".format(commandArg))#need to save command line arg here
         #end hardcode
         self.addCode("OUT 2,0,0   #return result of main")
         self.addCode("HALT 0,0,0  #stop execution; end of program")
