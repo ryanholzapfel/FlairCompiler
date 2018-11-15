@@ -9,7 +9,7 @@ class CodeGen(object):
         self._currentLine = 0
         self._programString = ""
         self._labelData = {}
-        self._jumpsToComplete = [""]
+        self._jumpsToComplete = []
         self._availableIMEM = ["locked",0,0,0,0,1,1,"locked"] #locked = reserved (PC and const. 0), 0= not in use, 1= in use
         self._currentLabel = 1
 
@@ -87,21 +87,23 @@ class CodeGen(object):
         #self.addCode("ST 6,8(6)")
         #self.addCode("LDA 6,9(6)")
         #end hardcode
+        
         thisLabel = self.currentLabel()
         self._jumpsToComplete.append((self.currentLine() ,thisLabel, 'uncondtional' ))
         self._labelData[thisLabel] = self.currentLine() + 1
-        jumpLines = ""
-        jumpLines.join(self.genJump()) #make a jump for later
-        #self.addCode("LD#retrieve stored value")
-        self._programString = self._programString + jumpLines
+        self.incrementLine()
+        self.returnMain()
+        jumpLines = "".join(self.genJump()) #make a jump for later make sure to create jump lines last
         
+        self._programString = self._programString + jumpLines
+
     def storeReturn(self):
         self.addCode("LDA 1,6(7)  #load return address")
         self.addCode("ST 1,1(6)   #store return address")
 
     def genJump(self): #WIP
         for jumps in self._jumpsToComplete:
-            self._jumpString.append(str(jumps[1]) + ": LDA 7, {}(0)\n".format(self._labelData['label' + str(self._jumpsToComplete.index(jumps))]))
+            self._jumpString.append(str(jumps[0]) + ": LDA 7, {}(0)\n".format(self._labelData['label' + str(1 + self._jumpsToComplete.index(jumps))]))
         return self._jumpString
     
     def returnMain(self):
@@ -127,6 +129,6 @@ class CodeGen(object):
     def generate(self):
         self.genPointers()
         self.initializeMain()
-        self.returnMain()
+        
 
         return self._programString

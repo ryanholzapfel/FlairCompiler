@@ -5,16 +5,17 @@ from parser import Parser
 from scanner import Scanner
 
 def genTMFileName():
-    fl = fileName.split("/")
-    flairFN = fl[-1]
-    flairFN = flairFN.strip(".flr")
-    return flairFN
+    #fl = fileName.split("/")
+    #flairFN = fl[-1]
+    #flairFN = flairFN.strip(".flr")
+    #return flairFN
+    return "print-one"
 
 
 
 filename = input('Enter your program name ')
-file = open("../programs/existing_programs/"+ filename,"r")
-fileIn = open(fileName)
+fileIn = open("/home/nick/Compiler/programs/existing_programs/"+ filename,"r")
+#fileIn = open(fileName)
 flrprogram = fileIn.read()
 
 #make scanner and parser objects
