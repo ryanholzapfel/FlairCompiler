@@ -5,7 +5,7 @@ class CodeGen(object):
         self._programNode = programNode
         self._symbolTable = symbolTable
         self._programName = programNode.identifier().identifier()
-        self._jumpString = ['# BackPatched Jumps\n']
+        self._jumpString = ['*--------- BackPatched Jumps\n']
         self._currentLine = 0
         self._programString = ""
         self._labelData = {}
