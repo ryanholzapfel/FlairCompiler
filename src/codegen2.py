@@ -5,18 +5,24 @@ class CodeGen(object):
         self._programNode = programNode
         self._symbolTable = symbolTable
         self._programName = programNode.identifier().identifier()
-        self._jumpString = ""
+        self._jumpString = ['# BackPatched Jumps\n']
         self._currentLine = 0
         self._programString = ""
         self._labelData = {}
         self._jumpsToComplete = []
         self._availableIMEM = ["locked",0,0,0,0,1,1,"locked"] #locked = reserved (PC and const. 0), 0= not in use, 1= in use
+        self._currentLabel = 1
 
     def toggleIMEM(self, regNum):
         if self._availableIMEM[regNum] == 0:
             self._availableIMEM[regNum] = 1
         elif self._availableIMEM[regNum] == 1:
             self._availableIMEM[regNum] = 0
+
+    def currentLabel(self):
+        tempLabel = "label" + str(self._currentLabel)
+        self._currentLabel += 1
+        return tempLabel  
 
     def regInUse(self, regNum):
         self._availableIMEM[regNum] = 1
@@ -54,8 +60,9 @@ class CodeGen(object):
     def genProgramArgs(self):
         self.addCode("")
 
-    def genMain(self):
-        pass
+    def genTMProgram(self):
+        self.initializeMain()
+        
 
     def saveReg(self):
         self.addCode("ST 0,1(5)   #save IMEM to DMEM")
@@ -75,12 +82,16 @@ class CodeGen(object):
         self.genPointers()
         self.storeReturn()
         #hardcoded save and set status pointer
-        self.addCode("ST 5,7(6)")
-        self.addCode("LDA 5,1(6)")
-        self.addCode("ST 6,8(6)")
-        self.addCode("LDA 6,9(6)")
+        #self.addCode("ST 5,7(6)")
+        #self.addCode("LDA 5,1(6)")
+        #self.addCode("ST 6,8(6)")
+        #self.addCode("LDA 6,9(6)")
         #end hardcode
-        self.genJump() #make a jump for later
+        thisLabel = self.currentLabel()
+        self._jumpsToComplete.append((self.currentLine() ,thisLabel, 'uncondtional' ))
+        self._labelDate[thisLabel] = self.currentLine() + 1
+        jumpLines = ""
+        jumpLines.join(self.genJump()) #make a jump for later
         self.addCode("LD#retrieve stored value")
         
     def storeReturn(self):
@@ -88,9 +99,10 @@ class CodeGen(object):
         self.addCode("ST 1,1(6)   #store return address")
 
     def genJump(self): #WIP
-        self._jumpString = self._jumpString + str(self.currentLine()) + ": LDA 7, X(0)"
-        self.incrementLine()
-
+        for jumps in self._jumpsToComplete:
+            self._jumpString.append(str(jumps[1]) + ": LDA 7, {}(0)\n".format(self._labelData['label' + str(self._jumpsToComplete.index(jumps))]))
+        return self._jumpString
+    
     def returnMain(self):
         #hardcode literal 1
         self.addCode("LDC 2,1(0)  #literal one")
