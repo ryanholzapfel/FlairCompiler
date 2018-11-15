@@ -81,7 +81,7 @@ class CodeGen(object):
         self.addCode("LDA 6,9(6)")
         #end hardcode
         self.genJump() #make a jump for later
-        self.addCode("LD#retrieve stored value")
+        #self.addCode("LD#retrieve stored value")
         
     def storeReturn(self):
         self.addCode("LDA 1,6(7)  #load return address")
@@ -115,4 +115,5 @@ class CodeGen(object):
         self.genPointers()
         self.initializeMain()
         self.returnMain()
+
         return self._programString
