@@ -5,10 +5,12 @@ from parser import Parser
 # from semanticactions import *
 
 from semanticanalyzer import SemanticAnalyzer
-
+import os
+cwd = os.getcwd()
+print(cwd)
 #bring in filepath, read program file
-fileName = sys.argv[1]
-file = open(fileName)
+filename = input('Enter your program name ')
+file = open("./programs/existing_programs/"+ filename,"r")
 program = file.read()
 
 #make scanner and parser objects
