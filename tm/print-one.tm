@@ -7,5 +7,5 @@
 7: LDC 2,1(0)  #literal one
 8: OUT 2,0,0   #return result of main
 9: HALT 0,0,0  #stop execution; end of program
-# BackPatched Jumps
+*--------- BackPatched Jumps
 6: LDA 7, 7(0)

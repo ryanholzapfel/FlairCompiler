@@ -13,7 +13,11 @@ def genTMFileName():
 
 
 fileName = sys.argv[1]
-fileIn = open(fileName)
+hasFlr = ".flr"
+if ".flr" in fileName:
+    hasFlr = ""
+fileIn = open("programs/existing_programs/"+ fileName + hasFlr, "r")
+
 flrprogram = fileIn.read()
 
 #make scanner and parser objects
