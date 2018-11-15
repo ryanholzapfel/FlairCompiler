@@ -9,9 +9,15 @@ import os
 cwd = os.getcwd()
 print(cwd)
 #bring in filepath, read program file
-filename = input('Enter your program name ')
-file = open("./programs/existing_programs/"+ filename,"r")
-program = file.read()
+# filename = input('Enter your program name ')
+# file = open("./programs/existing_programs/"+ filename,"r")
+fileName = sys.argv[1]
+hasFlr = ".flr"
+if ".flr" in fileName:
+    hasFlr = ""
+fileIn = open("programs/"+ fileName + hasFlr, "r")
+
+program = fileIn.read()
 
 #make scanner and parser objects
 scanner = Scanner(program)
