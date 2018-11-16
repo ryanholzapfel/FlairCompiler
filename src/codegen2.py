@@ -108,8 +108,13 @@ class CodeGen(object):
     
     def returnMain(self):#wip previously worked as ("LDC 2, 1 (0)" #literal one)
         #hardcode literal 1
-        self.addCode("LDC 2,{}(0)  #literal one".format(commandArg))#need to save command line arg here
+        self.addCode("LDC 2,1(0)  #literal one")
         #end hardcode
+        
+        #not hardcoded WIP
+        #self.addCode("LDC 2,{}(0)  #literal one".format(commandArg))#need to save command line arg here
+        #
+        
         self.addCode("OUT 2,0,0   #return result of main")
         self.addCode("HALT 0,0,0  #stop execution; end of program")
 
