@@ -143,7 +143,7 @@ class CodeGen(object):
 
     def genFunction(self):
         #first we establish the offset in dmem for each function this will be 12 for a 1 or 0 arg program to a finite number no more than 1000
-        if len(self._symbolTable[self._programName][0]) == 0
+        if len(self._symbolTable[self._programName][0]) == 0:
             self._nextOffset += 1
         else:
             self._nextOffset += len(self._symbolTable[self._programName][0])
@@ -162,7 +162,7 @@ class CodeGen(object):
         self.addCode("*-------------function {}".format(functName))
         functVars = self._symbolTable[self._programName][functName][0]
         self._nextOffset += len(self._symbolTable[self._programName][functName][0]) # sets the next function offset
-        for var in functVars:
+        #for var in functVars:
 
 
     def genMult(self, a,b,c): #r2 is possibly not zero
