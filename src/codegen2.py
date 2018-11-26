@@ -164,7 +164,6 @@ class CodeGen(object):
         self._nextOffset += len(self._symbolTable[self._programName][functName][0]) # sets the next function offset
         #for var in functVars:
 
-
     def genMult(self, a,b,c): #r2 is possibly not zero
         self.saveReg()
         self.addCode("LDA 3,{}(0) #".format(a))
