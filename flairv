@@ -4,4 +4,4 @@
 
 #This program runs a given flair program through the semantic checker and prints the table to the console
 
-python3 ./src/semanticanalyzer.py $1
+python3 ./src/semanticanalyzer_run.py $1

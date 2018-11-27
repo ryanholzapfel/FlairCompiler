@@ -13,24 +13,18 @@ Ryan Holzapfel, Nicholas Rausch, Usman Wariach
 * ~~The scanner does not check for identifier length (should be limited to 256 characters)~~ Fixed
 * ~~The scanner reads numbers separated with periods as individual tokens (should return an invalid character error)~~ This is no longer considered an error?
 * ~~The parser errors out on trying to expand the NonTerminal FORMALS. This seems to be an issue with our parse table.~~ Fixed
-* Creating the proper semantic actions for if-then-else expressions seems to cause issues. We think the issue stems from not having semantic actions associated with primes?
 
 
 ### Features Not Implemented
 * ~~The scanner still uses the function next_token() instead of next()~~ Fixed
 * The error handler does not filter Python errors out. It just passes everything through. (IN PROGRESS)
 * ~~The AST is not able to be printed in a human readable format.~~ Fixed
-* ~~The semantic error checker symbol table is incomplete. Currently, it finds all functions, their names, input types, and return type.~~ Mostly complete, may alter later.
-* Need a nicely formatted symbol table. Plan to use a python library that can format a dictionary into a table. 
+* The semantic error checker symbol table is incomplete. Currently, it finds all functions, their names, input types, and return type.
 
 ### Optimizations
 _None for the scanner component._
 
 _None for the parser component._
-
-_None for the checker component._
-
-_None for the generator component._
 
 ## How to Build
 No compilation/building necessary for python3.
@@ -39,7 +33,6 @@ No compilation/building necessary for python3.
 * Executing the command `./flairs ./programs/<program name>` from the top level directory will execute the scanner and print_token programs which produce the tokens associated with the given Flair file and print them to the console. 
 * Executing the command `./flairf ./programs/<program name>` from the top level directory executes the parser (and scanner) on the program, prints the AST tree representation if the program is successfully parsed, or prints a relevent error message if it is not.
 * Executing the command `./flairv ./programs/<program name>` from the top level directory executes the parser on the program and prints the symbol table.
-* Executing the command `./flairc ./programs/<program name>` from the top level directory executes the generator and outputs a TM program with the same name as the flair program in the programs directory
 
 ## Architecture and Design Decisions
 The scanner and flair token list are modeled after the class examples. We modeled each punctuation character and end of file as its own token type, and use the token/value pair for integers and words. 
@@ -54,13 +47,8 @@ After a program is successfully parsed, the semantic action stack contains only 
 
 The semantic error symbol table uses the program node created by the AST/Parser to print a (rough) table of the program's functions, their names, inputs, and return type. Currently, we are not able to check for function calls and return type matches.
 
-We took two approaches to the code generator. The source file codegen.py is our first attempt (prior to lecture 24) uses a more hard-coded approach to the TM instructions, but can dynamically assign the value that the TM outputs (eg. a flair program that prints 2). 
-The source file codegen2.py includes more of the TM run-time components that we have been discussing in class, but can't dynamically change the output value.
-Of course, either approach would need more tree traversal functions in order to generate more complicated programs. 
-We will probably expand/improve on codegen2.py going forward, but for the time being are including both files in our submission.
-
 ## Files specific to this submission
-Project 5
-* doc/stack_diagrams.pdf
-* src/codegen.py
-* src/codegen2.py
+Project 4
+* programs/semanticerrors.flr
+* src/semanticanalyzer.py
+* flairv

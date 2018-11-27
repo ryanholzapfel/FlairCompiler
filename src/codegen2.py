@@ -1,0 +1,139 @@
+from semanticactions import *
+
+class CodeGen(object):
+    def __init__(self, programNode, symbolTable):
+        self._programNode = programNode
+        self._symbolTable = symbolTable
+        self._programName = programNode.identifier().identifier()
+        self._jumpString = ['*--------- BackPatched Jumps\n']
+        self._currentLine = 0
+        self._programString = ""
+        self._labelData = {}
+        self._jumpsToComplete = []
+        self._availableIMEM = ["locked",0,0,0,0,1,1,"locked"] #locked = reserved (PC and const. 0), 0= not in use, 1= in use
+        self._currentLabel = 1
+
+    def toggleIMEM(self, regNum):
+        if self._availableIMEM[regNum] == 0:
+            self._availableIMEM[regNum] = 1
+        elif self._availableIMEM[regNum] == 1:
+            self._availableIMEM[regNum] = 0
+
+    def currentLabel(self):
+        tempLabel = "label" + str(self._currentLabel)
+        self._currentLabel += 1
+        return tempLabel  
+
+    def regInUse(self, regNum):
+        self._availableIMEM[regNum] = 1
+    
+    def regAvail(self, regNum):
+        self._availableIMEM[regNum] = 0
+
+    def getRegister(self):
+        try: 
+            return self._availableIMEM.index(0)
+        except ValueError:
+            regToMove = self._availableIMEM.index(1)
+            self.addCode("ST {},{}(0)  #move register {} to DMEM{}".format(regToMove,regToMove,regToMove,regToMove))
+            self._availableIMEM[regToMove] = 0
+            return regToMove
+    
+    def currentLine(self):
+        return self._currentLine
+
+    def incrementLine(self):
+        self._currentLine += 1
+
+    def addCode(self, code):
+        ln = self.currentLine()
+        self._programString = self._programString + str(self.currentLine()) + ": " + code + "\n"
+        self.incrementLine()
+
+    def genPointers(self):
+        self.addCode("LDC 5,-1(0)  #initialize status ptr")
+        self.addCode("LDC 6,2(0)   #initialize top ptr")
+
+    def savePointers(self):
+        pass
+    
+    def genProgramArgs(self):
+        self.addCode("")
+
+    def genTMProgram(self):
+        self.initializeMain()
+        
+
+    def saveReg(self):
+        self.addCode("ST 0,1(5)   #save IMEM to DMEM")
+        self.addCode("ST 1,2(5)   #save IMEM to DMEM")
+        self.addCode("ST 2,3(5)   #save IMEM to DMEM")
+        self.addCode("ST 3,4(5)   #save IMEM to DMEM")
+        self.addCode("ST 4,5(5)   #save IMEM to DMEM")
+
+    def loadReg(self):
+        self.addCode("LD 0,1(5)   #load DMEM to IMEM")
+        self.addCode("LD 1,2(5)   #load DMEM to IMEM")
+        self.addCode("LD 2,3(5)   #load DMEM to IMEM")
+        self.addCode("LD 3,4(5)   #load DMEM to IMEM")
+        self.addCode("LD 4,5(5)   #load DMEM to IMEM")
+
+    def initializeMain(self): #
+        self.genPointers()
+        self.storeReturn()
+        #hardcoded save and set status pointer
+        #self.addCode("ST 5,7(6)")
+        #self.addCode("LDA 5,1(6)")
+        #self.addCode("ST 6,8(6)")
+        #self.addCode("LDA 6,9(6)")
+        #end hardcode
+        
+        thisLabel = self.currentLabel()
+        self._jumpsToComplete.append((self.currentLine() ,thisLabel, 'uncondtional' ))
+        self._labelData[thisLabel] = self.currentLine() + 1
+        self.incrementLine()
+        self.returnMain()
+        jumpLines = "".join(self.genJump()) #make a jump for later make sure to create jump lines last
+        
+        self._programString = self._programString + jumpLines
+
+    def storeReturn(self):
+        self.addCode("LDA 1,6(7)  #load return address")
+        self.addCode("ST 1,1(6)   #store return address")
+
+    def genJump(self): #WIP
+        for jumps in self._jumpsToComplete:
+            self._jumpString.append(str(jumps[0]) + ": LDA 7, {}(0)\n".format(self._labelData['label' + str(1 + self._jumpsToComplete.index(jumps))]))
+        return self._jumpString
+    
+    def returnMain(self):#wip previously worked as ("LDC 2, 1 (0)" #literal one)
+        #hardcode literal 1
+        self.addCode("LDC 2,1(0)  #literal one")
+        #end hardcode
+        
+        #not hardcoded WIP
+        #self.addCode("LDC 2,{}(0)  #literal one".format(commandArg))#need to save command line arg here
+        #
+        
+        self.addCode("OUT 2,0,0   #return result of main")
+        self.addCode("HALT 0,0,0  #stop execution; end of program")
+
+
+    def nextOperation(self):
+        pass
+
+    def genMult(self, a,b,c): #r2 is possibly not zero
+        self.saveReg()
+        self.addCode("LDA 3,{}(0) #".format(a))
+        self.addCode("LD 4,{}(0)  #".format(b))
+        self.addCode("LD 5,{}(0)  #".format(c))
+        self.addCode("MUL 4,4,5   #multiply")
+        self.addCode("ST 4,0(3)   #store product in DMEM")
+        self.loadReg()
+        
+    def generate(self):
+        self.genPointers()
+        self.initializeMain()
+        
+
+        return self._programString
