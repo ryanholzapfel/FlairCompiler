@@ -3,12 +3,12 @@ from semanticactions import *
 class CodeGen(object):
     def __init__(self, programNode, symbolTable):
         self._programNode = programNode
-        self._symbolTable = symbolTable
-        self._programName = programNode.identifier().identifier()
-        self._jumpString = ['*--------- BackPatched Jumps\n']
-        self._currentLine = 0
-        self._programString = ""
-        self._labelData = {}
+        self._symbolTable = symbolTable #list of lists containing all functions used in program 
+        self._programName = programNode.identifier().identifier() #sting of the name of program being compiled
+        self._jumpString = ['*--------- BackPatched Jumps\n'] # a string of all backpached jumps
+        self._currentLine = 0 #current tm line number
+        self._programString = "" # sting of all tm lines in the program
+        self._labelData = {} # dict of labels used in jumps
         self._jumpsToComplete = []
         self._availableIMEM = ["locked",0,0,0,0,1,1,"locked"] #locked = reserved (PC and const. 0), 0= not in use, 1= in use
         self._currentLabel = 1
@@ -60,10 +60,10 @@ class CodeGen(object):
     def genProgramArgs(self):
         self.addCode("") #use getRegister()and increment through args from the symbol table for that specific function
         progArgs= self._symbolTable[self._programName]
-        for arg in progArgs:
+        for arg in progArgs: # how i get the arg here is wrong i for got where the args are passed in possibly in the tree???
             tempReg = getRegister()
             self.addCode("LDC {},{}(0)  #load arg".format(tempReg, arg))#need to save command line arg here 
-            self.addCode('ST {},{},(10) #save arg to dmem'.format(tempReg, arg.index()))
+            self.addCode('ST {},{},(10) #save arg to dmem'.format(tempReg, arg.index())) # to find arg in dmem use the index in symboyl table of arg desired plus an offset of 10
             #IMPORTANT: we should set up an offset in case there are more than 3 args passed in. which is highly probable
             #IMPORTANT: if we decide to store function variables in dmem we need to count keep track of all args and previous variables saved in dmem 
             #  or we risk overwriting important dmem registers
