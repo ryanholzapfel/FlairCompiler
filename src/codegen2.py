@@ -24,10 +24,10 @@ class CodeGen(object):
         self._currentLabel += 1
         return tempLabel  
 
-    def regInUse(self, regNum):
+    def regInUse(self, regNum):# used to toggle available imem register as in use
         self._availableIMEM[regNum] = 1
     
-    def regAvail(self, regNum):
+    def regAvail(self, regNum):# used to toggle in use imem register as available
         self._availableIMEM[regNum] = 0
 
     def getRegister(self):
@@ -58,20 +58,40 @@ class CodeGen(object):
         pass
     
     def genProgramArgs(self):
-        self.addCode("")
+        self.addCode("") #use getRegister()and increment through args from the symbol table for that specific function
+        progArgs= self._symbolTable[self._programName]
+        for arg in progArgs:
+            tempReg = getRegister()
+            self.addCode("LDC {},{}(0)  #load arg".format(tempReg, arg))#need to save command line arg here 
+            self.addCode('ST {},{},(10) #save arg to dmem'.format(tempReg, arg.index()))
+            #IMPORTANT: we should set up an offset in case there are more than 3 args passed in. which is highly probable
+            #IMPORTANT: if we decide to store function variables in dmem we need to count keep track of all args and previous variables saved in dmem 
+            #  or we risk overwriting important dmem registers
+            #IMPORTANT: we still need to handle 0 arg cases we can do this by looking at the bottom of the program node to see what value is returned, 
+            # then load that as our arg, this will probably only be useful in print one style cases we only do this if symbol table has 0 args
+
+        treeValue = 1 # not sure how to get the actuall tree value here
+        if len(self._symbolTable[self._programName]) == 0:
+            self.addCode('LDC 2,{}(0) #load zero arg case'.format(treeValue))
+
+            # would look like --> self.addCode("LDC {},{}({})  #load arg".format(getRegister(), arg, offset)) where offset is determinde either by the number of args in symbol table or set at a constant 10
+            #might have to keep track of how mnay times getRegister is called 
+
+            # i dont toggle the registers here because i save the args to dmem. if we choose to optimize we can toggle registers especially if there 
+            # are 3 args or less so that we dont have to reload them later in the secuence. it would likely help by reducing stack size
 
     def genTMProgram(self):
         self.initializeMain()
         
 
-    def saveReg(self):
+    def saveReg(self): # typically used to store imem before a function call to save current state of main prog
         self.addCode("ST 0,1(5)   #save IMEM to DMEM")
         self.addCode("ST 1,2(5)   #save IMEM to DMEM")
         self.addCode("ST 2,3(5)   #save IMEM to DMEM")
         self.addCode("ST 3,4(5)   #save IMEM to DMEM")
         self.addCode("ST 4,5(5)   #save IMEM to DMEM")
 
-    def loadReg(self):
+    def loadReg(self): # used after a funtion calll to return imem to previous main prog state
         self.addCode("LD 0,1(5)   #load DMEM to IMEM")
         self.addCode("LD 1,2(5)   #load DMEM to IMEM")
         self.addCode("LD 2,3(5)   #load DMEM to IMEM")
@@ -101,16 +121,16 @@ class CodeGen(object):
         self.addCode("LDA 1,6(7)  #load return address")
         self.addCode("ST 1,1(6)   #store return address")
 
-    def genJump(self): #WIP
+    def genJump(self): #generates jump stats via backpatching, label data, and jumps to complete. all jump statements must be generated last, but before return statment generation
         for jumps in self._jumpsToComplete:
             self._jumpString.append(str(jumps[0]) + ": LDA 7, {}(0)\n".format(self._labelData['label' + str(1 + self._jumpsToComplete.index(jumps))]))
         return self._jumpString
     
     def returnMain(self):#wip previously worked as ("LDC 2, 1 (0)" #literal one)
         #hardcode literal 1
-        self.addCode("LDC 2,1(0)  #literal one")
+        #self.addCode("LDC 2,1(0)  #literal one")
         #end hardcode
-        
+        genProgramArgs()
         #not hardcoded WIP
         #self.addCode("LDC 2,{}(0)  #literal one".format(commandArg))#need to save command line arg here
         #
