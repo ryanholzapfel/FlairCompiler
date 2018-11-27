@@ -7,7 +7,7 @@ class CodeGen(object):
         self._programName = programNode.identifier().identifier() #sting of the name of program being compiled
         self._jumpString = ['*--------- BackPatched Jumps\n'] # a string of all backpached jumps
         self._currentLine = 0 #current tm line number
-        self._programString = "" # sting of all tm lines in the program
+        self._programString = "" # string of all tm lines in the program
         self._labelData = {} # dict of labels used in jumps
         self._jumpsToComplete = []
         self._availableIMEM = ["locked",0,0,0,0,1,1,"locked"] #locked = reserved (PC and const. 0), 0= not in use, 1= in use
@@ -69,14 +69,14 @@ class CodeGen(object):
 
         #IMPORTANT: we still need to handle 0 arg cases we can do this by looking at the bottom of the program node to see what value is returned, 
         # then load that as our arg, this will probably only be useful in print one style cases we only do this if symbol table has 0 args
-        treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal()
+        treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal() #will this work for any zero arg case????
         # if isinstance(temp_arg, Integer_Node):
         #     treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal().integer()
         # else:
         #     treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal().boolean()
         if len(self._symbolTable[self._programName][0]) == 0:
             self.addCode('LDC 2,{}(0) #load zero arg case'.format(treeValue))
-            self.addCode('ST 2, 1(0)') # store tree value to dmem 1 we now have our arg for 0 arg programs
+            self.addCode('ST 2, 1(0) #Store zero arg case to dmem 1') # store tree value to dmem 1 we now have our arg for 0 arg programs
 
             # would look like --> self.addCode("LDC {},{}({})  #load arg".format(getRegister(), <arg>, <offset>)) where offset is determinde either by the number of args in symbol table or set at a constant 10
             #might have to keep track of how mnay times getRegister is called 
@@ -142,9 +142,21 @@ class CodeGen(object):
         self.addCode("OUT 2,0,0   #return result of main")
         self.addCode("HALT 0,0,0  #stop execution; end of program")
 
+    def functCount(self):#literally only keeps track of how many times genFunction is called usefull to know where in the symbol table you are
+        functNumber += 1
+        return functNumber
 
-    def nextOperation(self):
-        pass
+    def genFunction(self):
+        #first we establish the offset in dmem for each function this will be 12 for a 1 or 0 arg program to a finite number no more than 1000
+        if len(self._symbolTable[self._programName][0]) == 0
+            functOffset = 12
+        else:
+            functOffset = 11 +  len(self._symbolTable[self._programName][0])
+        functName = self._symbolTable[self._programName][functNumber()] # im gonna store the funct name to help in debugging tm code
+        self._symbolTable[self._programName][functNumber().append("offset:"+functOffset)]
+        #thinking about adding the offset to the symbol table at this point using "offest:" as a delimiter this way function offsets can be searched by
+        # key <functName> then in the list of values search for "offset:" then strip offset: producing an int
+        
 
     def genMult(self, a,b,c): #r2 is possibly not zero
         self.saveReg()
