@@ -58,7 +58,7 @@ class CodeGen(object):
         pass
     
     def genProgramArgs(self):
-        progArgs= self._symbolTable[self._programName]
+        #progArgs= self._symbolTable[self._programName]
         #for arg in progArgs: # how i get the arg here is wrong i for got where the args are passed in possibly in the tree???
         #    tempReg = getRegister()
         #    self.addCode("LDC {},{}(0)  #load arg".format(tempReg, arg))#need to save command line arg here 
@@ -69,10 +69,14 @@ class CodeGen(object):
 
         #IMPORTANT: we still need to handle 0 arg cases we can do this by looking at the bottom of the program node to see what value is returned, 
         # then load that as our arg, this will probably only be useful in print one style cases we only do this if symbol table has 0 args
-        treeValue = 1 # not sure how to get the actuall tree value here
-        if len(self._symbolTable[self._programName]) == 0:
+        treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal()
+        # if isinstance(temp_arg, Integer_Node):
+        #     treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal().integer()
+        # else:
+        #     treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal().boolean()
+        if len(self._symbolTable[self._programName][0]) == 0:
             self.addCode('LDC 2,{}(0) #load zero arg case'.format(treeValue))
-            self.addcode('ST 2, 1(0)') # store tree value to dmem 1 we now have our arg for 0 arg programs
+            self.addCode('ST 2, 1(0)') # store tree value to dmem 1 we now have our arg for 0 arg programs
 
             # would look like --> self.addCode("LDC {},{}({})  #load arg".format(getRegister(), <arg>, <offset>)) where offset is determinde either by the number of args in symbol table or set at a constant 10
             #might have to keep track of how mnay times getRegister is called 
@@ -130,7 +134,7 @@ class CodeGen(object):
         #hardcode literal 1
         #self.addCode("LDC 2,1(0)  #literal one")
         #end hardcode
-        genProgramArgs()
+        self.genProgramArgs()
         #not hardcoded WIP
         #self.addCode("LDC 2,{}(0)  #literal one".format(commandArg))#need to save command line arg here
         #
