@@ -148,7 +148,7 @@ class CodeGen(object):
 
     def genFunction(self):
         #first we establish the offset in dmem for each function this will be 12 for a 1 or 0 arg program to a finite number no more than 1000
-        if len(self._symbolTable[self._programName][0]) == 0
+        if len(self._symbolTable[self._programName][0]) == 0:
             functOffset = 12
         else:
             functOffset = 11 +  len(self._symbolTable[self._programName][0])

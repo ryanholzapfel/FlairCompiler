@@ -5,7 +5,7 @@
 4: LDA 1,6(7)  #load return address
 5: ST 1,1(6)   #store return address
 7: LDC 2,1(0) #load zero arg case
-8: ST 2, 1(0)
+8: ST 2, 1(0) #Store zero arg case to dmem 1
 9: OUT 2,0,0   #return result of main
 10: HALT 0,0,0  #stop execution; end of program
 *--------- BackPatched Jumps
