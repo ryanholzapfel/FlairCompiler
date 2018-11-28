@@ -168,7 +168,6 @@ class CodeGen(object):
         self.loadReg()
         
     def generate(self):
-        self.genPointers()
         self.initializeMain()
         
 
