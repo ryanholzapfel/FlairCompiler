@@ -12,6 +12,7 @@ class CodeGen(object):
         self._jumpsToComplete = []
         self._availableIMEM = ["locked",0,0,0,0,1,1,"locked"] #locked = reserved (PC and const. 0), 0= not in use, 1= in use
         self._currentLabel = 1
+        self._nextOffset = 11 # this is the program arg offset that is then used as the next function offset thin number will grow in accordance to the number of args and function vars
 
     def toggleIMEM(self, regNum):
         if self._availableIMEM[regNum] == 0:
@@ -19,7 +20,7 @@ class CodeGen(object):
         elif self._availableIMEM[regNum] == 1:
             self._availableIMEM[regNum] = 0
 
-    def currentLabel(self):
+    def currentLabel(self): # this is for when creating labels it is the next label number to be created
         tempLabel = "label" + str(self._currentLabel)
         self._currentLabel += 1
         return tempLabel  
@@ -105,17 +106,11 @@ class CodeGen(object):
     def initializeMain(self): #
         self.genPointers()
         self.storeReturn()
-        #hardcoded save and set status pointer
-        #self.addCode("ST 5,7(6)")
-        #self.addCode("LDA 5,1(6)")
-        #self.addCode("ST 6,8(6)")
-        #self.addCode("LDA 6,9(6)")
-        #end hardcode
         
-        thisLabel = self.currentLabel()
-        self._jumpsToComplete.append((self.currentLine() ,thisLabel, 'uncondtional' ))
-        self._labelData[thisLabel] = self.currentLine() + 1
-        self.incrementLine()
+        thisLabel = self.currentLabel()                                                  # this should be factored out                           
+        self._jumpsToComplete.append((self.currentLine() ,thisLabel, 'uncondtional' ))   # this should be factored out       
+        self._labelData[thisLabel] = self.currentLine() + 1                              # this should be factored out                       
+        self.incrementLine()                                                             # this should be factored out
         self.returnMain()
         jumpLines = "".join(self.genJump()) #make a jump for later make sure to create jump lines last
         
@@ -149,14 +144,26 @@ class CodeGen(object):
     def genFunction(self):
         #first we establish the offset in dmem for each function this will be 12 for a 1 or 0 arg program to a finite number no more than 1000
         if len(self._symbolTable[self._programName][0]) == 0
-            functOffset = 12
+            self._nextOffset += 1
         else:
-            functOffset = 11 +  len(self._symbolTable[self._programName][0])
-        functName = self._symbolTable[self._programName][functNumber()] # im gonna store the funct name to help in debugging tm code
-        self._symbolTable[self._programName][functNumber().append("offset:"+functOffset)]
+            self._nextOffset += len(self._symbolTable[self._programName][0])
+        tempFunctNumber = functCount()
+        functName = self._symbolTable[self._programName][tempFunctNumber()] # im gonna store the funct name to help in debugging tm code this will be added to the
+           # begining of the function in the tm code
+        self._symbolTable[self._programName][tempFunctNumber().append("offset:"+self._nextOffset)] #this will append the functions offset to the list in the symbol table related to that specific funct
+        
         #thinking about adding the offset to the symbol table at this point using "offest:" as a delimiter this way function offsets can be searched by
         # key <functName> then in the list of values search for "offset:" then strip offset: producing an int
         
+        #IMPORTANT: may need to check if theres an if statement
+        # OR print 
+        # OR return
+        # i think the symbol table needs to be modified to include these not sure
+        self.addCode("*-------------function {}".format(functName))
+        functVars = self._symbolTable[self._programName][functName][0]
+        self._nextOffset += len(self._symbolTable[self._programName][functName][0]) # sets the next function offset
+        for var in functVars:
+
 
     def genMult(self, a,b,c): #r2 is possibly not zero
         self.saveReg()
@@ -168,7 +175,6 @@ class CodeGen(object):
         self.loadReg()
         
     def generate(self):
-        self.genPointers()
         self.initializeMain()
         
 
