@@ -164,13 +164,13 @@ class CodeGen(object):
         self._nextOffset += len(self._symbolTable[self._programName][functName][0]) # sets the next function offset
         #for var in functVars:
 
-    def genMult(self, a,b,c): #r2 is possibly not zero
+    def genMult(self, a,b,c): #r2 is possibly not zero a,b,c is possibly t1,t2,t3
         self.saveReg()
         self.addCode("LDA 3,{}(0) #".format(a))
         self.addCode("LD 4,{}(0)  #".format(b))
         self.addCode("LD 5,{}(0)  #".format(c))
         self.addCode("MUL 4,4,5   #multiply")
-        self.addCode("ST 4,0(3)   #store product in DMEM")
+        self.addCode("ST 4,0(3)   #store product in DMEM") # this should be stored in the function offset return not in a hard coded spot
         self.loadReg()
 
     
