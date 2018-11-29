@@ -1,0 +1,15 @@
+{
+
+----------adding Program---------
+
+Group: Avalanche: Holzapfel*, Rausch, Wariach (language)
+
+}
+
+program add( n : integer );
+
+	begin
+
+		return n + 2
+
+			end.
