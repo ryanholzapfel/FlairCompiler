@@ -26,7 +26,6 @@ class threeACGen(object):
         self._exprPrime.place = makeNewTemp()
         self._exprPrime.code =  [simpleExpr1.code]
                                 [simpleExpr2.code]
-                                emitCode(exprPrime.place,":=",simpleExpr1.place "<", simpleExpr2.place)
 
 def idInc(id):
     num = int(id[1:])
@@ -68,3 +67,5 @@ def walkFactor(factor):
         pass
     else: #make sure I didn't forget any...
         walkExpr(factor)
+                                emitCode(exprPrime.place,":=",simpleExpr1.place "<", simpleExpr2.place)
+
