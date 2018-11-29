@@ -1,0 +1,15 @@
+{
+
+----------subtracting Program---------
+
+Group: Avalanche: Holzapfel*, Rausch, Wariach (language)
+
+}
+
+program sub( n : integer );
+
+	begin
+
+		return n - 2
+
+			end.
