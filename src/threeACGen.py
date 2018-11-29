@@ -10,4 +10,7 @@ class threeACGen(object):
         self._exprPrime.place = makeNewTemp()
         self._exprPrime.code =  [simpleExpr1.code]
                                 [simpleExpr2.code]
+                                if isinstance()
                                 emitCode(exprPrime.place,":=",simpleExpr1.place "<", simpleExpr2.place)
+
+    
