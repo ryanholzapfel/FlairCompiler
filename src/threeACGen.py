@@ -28,3 +28,43 @@ class threeACGen(object):
                                 [simpleExpr2.code]
                                 emitCode(exprPrime.place,":=",simpleExpr1.place "<", simpleExpr2.place)
 
+def idInc(id):
+    num = int(id[1:])
+    return "t" + str(num+1)
+
+def new3AC(id,op,a1,a2):
+    pass
+
+def program3AC(returnExpr): #returnExpr is the return expression from the program node
+    id = "t1"
+    acList = []
+    #need a backlog/temp list for the case where both sides of an operator are expressions
+
+
+
+def walkExpr(expr):
+    if not expr.exprprime() == None:
+        pass
+    walkSimpleExpr(expr.sexpr())
+
+def walkSimpleExpr(simpleexpr):
+    if not simpleexpr.seprime() == None:
+        pass
+    walkTerm(simpleexpr.term())
+
+def walkTerm(term):
+    if not term.termprime() == None:
+        pass
+    walkFactor(term.factor())
+
+def walkFactor(factor):
+    if isinstance(factor,Literal_Node):
+        return factor.literal()
+    elif isinstance(factor, Identifier_Node):
+        return factor.identifier()
+    elif isinstance(factor, If_Node):
+        pass
+    elif isinstance(factor, Call_Node):
+        pass
+    else: #make sure I didn't forget any...
+        walkExpr(factor)
