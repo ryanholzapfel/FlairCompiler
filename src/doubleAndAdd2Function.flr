@@ -1,0 +1,25 @@
+{
+
+----------doubleandmultiply Program---------
+
+Group: Avalanche: Holzapfel*, Rausch, Wariach (language)
+
+}
+
+program Doubleandmul( a : integer ) ;
+
+
+    function Double( n :integer ):integer
+		begin
+			return n * 2
+		end;
+
+	function Add(m :integer):integer
+		begin
+			return m + 2
+		end;
+
+	begin
+		return Add(Double(a))
+
+	end.
