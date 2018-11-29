@@ -17,21 +17,13 @@ class GenExpression(Enum):
     genBool = 14
 
 class threeACGen(object):
-    def __init__(self, programNode, symbolTable):
-        self._programNode = programNode
-        self._symbolTable = symbolTable #list of lists containing all functions used in program 
-        self._program3AC = []
-
-    def lessThan(self):
-        self._exprPrime.place = makeNewTemp()
-        self._exprPrime.code =  [simpleExpr1.code]
-                                [simpleExpr2.code]
-<<<<<<< HEAD
-                                if isinstance()
-                                emitCode(exprPrime.place,":=",simpleExpr1.place "<", simpleExpr2.place)
-
-    
-=======
-                                emitCode(exprPrime.place,":=",simpleExpr1.place "<", simpleExpr2.place)
-
->>>>>>> 2babaa8514002b32c27ecc3611aef764a5b97d27
+    #def __init__(self, programNode, symbolTable):
+    #    self._programNode = programNode
+    #    self._symbolTable = symbolTable #list of lists containing all functions used in program 
+    #    self._program3AC = []
+#
+    #def lessThan(self):
+    #    self._exprPrime.place = makeNewTemp()
+    #    self._exprPrime.code =  [simpleExpr1.code]
+    #                            [simpleExpr2.code]
+    #                            emitCode(exprPrime.place,":=",simpleExpr1.place "<", simpleExpr2.place)

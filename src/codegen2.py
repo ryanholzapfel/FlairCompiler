@@ -172,6 +172,8 @@ class CodeGen(object):
         self.addCode("MUL 4,4,5   #multiply")
         self.addCode("ST 4,0(3)   #store product in DMEM")
         self.loadReg()
+
+    
         
     def generate(self):
         self.initializeMain()
