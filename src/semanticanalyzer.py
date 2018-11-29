@@ -37,11 +37,11 @@ class SemanticAnalyzer(object):
         # 		self._typelist[defID][formal.identifier().identifier()] = formal.types()
         
         """
-        dict entry --> prog/fn ID : [[formal ids(strings)], [formal types("I" or "B")], return value ("I" or "B")]
+        dict entry --> prog/fn ID : [[(0)formal ids(strings)], [(1)formal types("I" or "B")], [(2)called by these fnIDs], [(3)calls these fnIDs], (4)return value ("I" or "B")]
         """
         #this is serving as our symbol table
         programID = node.identifier().identifier()
-        self._typelist[programID] = [[],[]]
+        self._typelist[programID] = [[],[],[],[]]
         if not node.formals() == None:
             for formal in node.formals().neformals():
                 self._typelist[programID][0].append(formal.identifier().identifier())
@@ -49,7 +49,7 @@ class SemanticAnalyzer(object):
         if not node.definitions() == None:   
             for deff in node.definitions().deffs():
                 defID = deff.identifier().identifier()
-                self._typelist[defID] = [[],[]]
+                self._typelist[defID] = [[],[],[],[]]
                 for formal in deff.formals().neformals():
                     self._typelist[defID][0].append(formal.identifier().identifier())
                     self._typelist[defID][1].append(self.check_return(formal.types()))
@@ -150,7 +150,8 @@ class SemanticAnalyzer(object):
             return self.check_call(node)
 
     def check_call(self, node):
-        #pass
+        self._typelist[self._currentID][3].append(node.identifier())
+        self._typelist[node.identifier()][2].append(self._currentID)
         return "I"
                 
                 
