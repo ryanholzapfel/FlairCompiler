@@ -42,23 +42,24 @@ def program3AC(returnExpr): #returnExpr is the return expression from the progra
     id = "t1"
     acList = []
     #need a backlog/temp list for the case where both sides of an operator are expressions
+    
 
 
 
 def walkExpr(expr):
     if not expr.exprprime() == None:
         pass
-    walkSimpleExpr(expr.sexpr())
+    return walkSimpleExpr(expr.sexpr())
 
 def walkSimpleExpr(simpleexpr):
     if not simpleexpr.seprime() == None:
         pass
-    walkTerm(simpleexpr.term())
+    return walkTerm(simpleexpr.term())
 
 def walkTerm(term):
     if not term.termprime() == None:
         pass
-    walkFactor(term.factor())
+    return walkFactor(term.factor())
 
 def walkFactor(factor):
     if isinstance(factor,Literal_Node):
