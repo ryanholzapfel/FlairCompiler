@@ -1,5 +1,22 @@
 from semanticactions import *
-#from threeACGen import *
+from enum import Enum
+#from threeACGen import GenExpression
+
+class GenExpression(Enum):
+    genMult     = 1
+    genDiv      = 2
+    genAdd      = 3
+    genSubt     = 4
+    genLess     = 5
+    genEqual    = 6
+    genOr       = 7
+    genIf       = 8
+    genAnd      = 9
+    genNot      = 10
+    genNeg      = 11
+    genPrint    = 12
+    genReturn   = 13
+    genBool     = 14
 
 class CodeGen(object):
     def __init__(self, programNode, symbolTable):
@@ -167,14 +184,13 @@ class CodeGen(object):
         #for var in functVars:
 
     # table to access generating funtuons for tm code
-    gen_table = {
-        gen_tm.gen_mult : genMult
 
-    }
+
     def genBody(self,threeACList, lastLiteral):
         self._lastLiteral = lastLiteral
         self._threeACList = threeACList
-
+        currentOffset = self._nextOffset
+    
         if len(tempList) == 0:
             generate()
         
@@ -183,24 +199,32 @@ class CodeGen(object):
         tempOperator = tempCode[0]
         tempArg1 = tempCode[1]
         tempArg2 = tempCode[2]
-        tempPlace = tempCode[3]
+        tempPlace = tempCode[3].strip(t)
 
-        if tempArg1 != None and tempArg2!= None and tempOperator!= None:
-            self.addCode()
+        if tempArg1 != None and tempArg2 != None and tempOperator != None:
+            genTemp = tempOperator.get(gen_table)
+            genTemp(tempPlace, tempArg2, tempArg1, currentOffset ) # for doubler tempArg1 would be the variable 2 that is stored inside of doubler probably obtained from tree?
+        elif tempArg1 == None and tempArg2 != None and tempOperator == None:
+            self._nextOffset += 1
 
-
-    def genMult(self, a,b,c): #r2 is possibly not zero a,b,c is possibly t1,t2,t3
+    def genMult(self, a,b,c, offset): #r2 is possibly not zero a,b,c is possibly t1,t2,t3
         self.saveReg()
-        self.addCode("LDA 3,{}(0) #".format(a))
-        self.addCode("LD 4,{}(0)  #".format(b))
-        self.addCode("LD 5,{}(0)  #".format(c))
-        self.addCode("MUL 4,4,5   #multiply")
-        self.addCode("ST 4,0(3)   #store product in DMEM") # this should be stored in the function offset return not in a hard coded spot
+        self.addCode("LDA 3,{}({}) # load return adress".format(a, offset)) # think about offset plus one inside of every function then subtract on for return address might be helpful
+        self.addCode("LD 4,{}(0)  # load cmd line arg 1".format(b))
+        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(c))
+        self.addCode("MUL 4,4,5   # multiply")
+        self.addCode("ST 4,{}({})  # store product in DMEM at same return address handed in".format(a, offset)) # this should be stored in the function offset return not in a hard coded spot
         self.loadReg()
-
+        self.addCode("LDA 7,0,(6) # branch back using r7") #still considering what the offset should be
         
+
+    gen_table = {
+        GenExpression.genMult : genMult
+         }   
+
     def generate(self):
         self.initializeMain()
-        
+
+
 
         return self._programString
