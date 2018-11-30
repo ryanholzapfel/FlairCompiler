@@ -1,4 +1,5 @@
 from semanticactions import *
+from enum import Enum
 
 # This class should take in a tree node program and return a list of lists that has quadruples.
 # The list will be inorder tree traversal of the program node.
@@ -20,16 +21,16 @@ class GenExpression(Enum):
     genReturn   = 13
     genBool     = 14
 
-class threeACGen(object):
-    def __init__(self, programNode, symbolTable):
-        self._programNode = programNode
-        self._symbolTable = symbolTable #list of lists containing all functions used in program 
-        self._program3AC = []
+# class threeACGen(object):
+#     def __init__(self, programNode, symbolTable):
+#         self._programNode = programNode
+#         self._symbolTable = symbolTable #list of lists containing all functions used in program 
+#         self._program3AC = []
 
-    def lessThan(self):
-        self._exprPrime.place = makeNewTemp()
-        self._exprPrime.code =  [simpleExpr1.code]
-                                [simpleExpr2.code]
+#     def lessThan(self):
+#         self._exprPrime.place = makeNewTemp()
+#         self._exprPrime.code =  [simpleExpr1.code]
+#                                 [simpleExpr2.code]
 
 def idInc(id):
     num = int(id[1:])
@@ -40,9 +41,10 @@ def new3AC(id,op,a1,a2):
 
 def program3AC(returnExpr): #returnExpr is the return expression from the program node
     id = "t1"
-    acList = []
+    acList = [] #[[id, op, arg1, arg2]]
     #need a backlog/temp list for the case where both sides of an operator are expressions
-    
+    acList.append(["t1", None, walkExpr(returnExpr), None])
+    print(acList)
 
 
 
@@ -71,6 +73,6 @@ def walkFactor(factor):
     elif isinstance(factor, Call_Node):
         pass
     else: #make sure I didn't forget any...
-        walkExpr(factor)
-                                emitCode(exprPrime.place,":=",simpleExpr1.place "<", simpleExpr2.place)
+        return walkExpr(factor)
+                                #emitCode(exprPrime.place,":=",simpleExpr1.place "<", simpleExpr2.place)
 
