@@ -1,4 +1,5 @@
 from semanticactions import *
+#from threeACGen import *
 
 class CodeGen(object):
     def __init__(self, programNode, symbolTable):
@@ -13,6 +14,7 @@ class CodeGen(object):
         self._availableIMEM = ["locked",0,0,0,0,1,1,"locked"] #locked = reserved (PC and const. 0), 0= not in use, 1= in use
         self._currentLabel = 1
         self._nextOffset = 11 # this is the program arg offset that is then used as the next function offset thin number will grow in accordance to the number of args and function vars
+        self._lastLiteral = []
 
     def toggleIMEM(self, regNum):
         if self._availableIMEM[regNum] == 0:
@@ -164,6 +166,29 @@ class CodeGen(object):
         self._nextOffset += len(self._symbolTable[self._programName][functName][0]) # sets the next function offset
         #for var in functVars:
 
+    # table to access generating funtuons for tm code
+    gen_table = {
+        gen_tm.gen_mult : genMult
+
+    }
+    def genBody(self,threeACList, lastLiteral):
+        self._lastLiteral = lastLiteral
+        self._threeACList = threeACList
+
+        if len(tempList) == 0:
+            generate()
+        
+        tempCode = templist.pop
+
+        tempOperator = tempCode[0]
+        tempArg1 = tempCode[1]
+        tempArg2 = tempCode[2]
+        tempPlace = tempCode[3]
+
+        if tempArg1 != None and tempArg2!= None and tempOperator!= None:
+            self.addCode()
+
+
     def genMult(self, a,b,c): #r2 is possibly not zero a,b,c is possibly t1,t2,t3
         self.saveReg()
         self.addCode("LDA 3,{}(0) #".format(a))
@@ -173,7 +198,6 @@ class CodeGen(object):
         self.addCode("ST 4,0(3)   #store product in DMEM") # this should be stored in the function offset return not in a hard coded spot
         self.loadReg()
 
-    
         
     def generate(self):
         self.initializeMain()
