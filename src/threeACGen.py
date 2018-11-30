@@ -50,8 +50,11 @@ def program3AC(returnExpr): #returnExpr is the return expression from the progra
 
 def walkExpr(expr):
     if not expr.exprprime() == None:
+        #find which operation node
+        #find value on right side of operator
         pass
-    return walkSimpleExpr(expr.sexpr())
+    left = walkSimpleExpr(expr.sexpr())
+    return left #[operator, left, right]
 
 def walkSimpleExpr(simpleexpr):
     if not simpleexpr.seprime() == None:
