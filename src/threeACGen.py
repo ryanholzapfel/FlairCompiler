@@ -41,20 +41,27 @@ def new3AC(id,op,a1,a2):
 
 def program3AC(returnExpr): #returnExpr is the return expression from the program node
     id = "t1"
-    acList = [] #[[id, op, arg1, arg2]]
+    acList = [] #[[op, arg1, arg2, id]]
     #need a backlog/temp list for the case where both sides of an operator are expressions
-    acList.append(["t1", None, walkExpr(returnExpr), None])
+    #acList.append(["t1", None, walkExpr(returnExpr), None])
+    walkExpr(returnExpr)
     print(acList)
 
 
 
-def walkExpr(expr):
+def walkExpr(id,expr):
     if not expr.exprprime() == None:
         #find which operation node
         #find value on right side of operator
-        pass
-    left = walkSimpleExpr(expr.sexpr())
-    return left #[operator, left, right]
+        if isinstance(expr.exprprime(), EqualTo_Node):
+            op = GenExpression.genEqual
+        else:
+            op = GenExpression.genLess
+        rid = idInc(id)
+        right = walkSimpleExpr(expr.exprprime().simpleexpr())
+        walkSimpleExpr(expr.sexpr())
+    #return walkSimpleExpr(expr.sexpr())
+    
 
 def walkSimpleExpr(simpleexpr):
     if not simpleexpr.seprime() == None:
