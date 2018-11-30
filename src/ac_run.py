@@ -1,10 +1,10 @@
 import sys
 import os
 from semanticanalyzer import SemanticAnalyzer
-from codegen2 import CodeGen
+#from codegen2 import CodeGen
 from parser import Parser
 from scanner import Scanner
-from threeACGen import program3AC
+from threeACGen import ThreeACGen
 
 def genTMFileName():
     fl = fileName.split("/")
@@ -30,4 +30,5 @@ parser = Parser(scanner)
 
 #parse the program and save the program node (contains all semantic actions)
 programNode = parser.parse()
-program3AC(programNode.body().statementlist().returnstatement())
+tac = ThreeACGen(programNode)
+tac.program3AC(programNode.body().statementlist().returnstatement())
