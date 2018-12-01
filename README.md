@@ -8,6 +8,8 @@ Ryan Holzapfel, Nicholas Rausch, Usman Wariach
 * When a number is followed by letters, the scanner returns a number token followed by an identifier token (it should return an invalid number error)
 * The scanner does not check for number size (should be limited to range 2^-32 to 2^32 -1) PARTIALLY FIXED (can check positive values only)
 * Creating the proper semantic actions for if-then-else expressions seems to cause issues. We think the issue stems from not having semantic actions associated with primes?
+* The code generator in the previous version works on print one only in the current version we got doubler to generate some tm code but the tm code is not operable 
+* The current version has now also broken print-one tm code this was expected as the design to handle Doubler is somewhat different we expect to fix this in the near future
 
 ### Features Not Implemented
 * The error handler does not filter Python errors out. It just passes everything through. (IN PROGRESS)
@@ -31,6 +33,7 @@ No compilation/building necessary for python3.
 * Executing the command `./flairf ./programs/<program name>` from the top level directory executes the parser (and scanner) on the program, prints the AST tree representation if the program is successfully parsed, or prints a relevent error message if it is not.
 * Executing the command `./flairv ./programs/<program name>` from the top level directory executes the parser on the program and prints the symbol table.
 * Executing the command `./flairc ./programs/<program name>` from the top level directory executes the generator and outputs a TM program with the same name as the flair program in the programs directory
+* Exicuting the command `./flairc <program name>` ex: `./flairc Doubler` from the top level directory will now work --exception for existing_programs run `./flairc existing_programs/<program name>`
 
 ## Architecture and Design Decisions
 The scanner and flair token list are modeled after the class examples. We modeled each punctuation character and end of file as its own token type, and use the token/value pair for integers and words. 
@@ -54,6 +57,8 @@ We will probably expand/improve on codegen2.py going forward, but for the time b
 Three address code generation works by checking each level of the tree below a return expression node. At each level, if there is an operator, it creates a three address code with the operator it finds, and creates two new three address code identifiers for the two operators, and looks at their respective trees.
 If there is no operation found, it walks the next level down the tree. When it gets to the factor level, it checks for literals and identifiers, and if one of those are found, it's value/id is passed into a new three address code. A possible optimization would be to pass the value/id back to the three address code where the operation is instead of having it in its own three address code. 
 Currently, we are unable to process function calls or complex expressions (factors that resolve to expressions).
+
+Currently broken tm code is generated for Doubler.flr we still see this as progress as now our code generator is morphing from a hard coded version to a more automated compiler that will be able to handle more than just one program
 
 ## Files specific to this submission
 Project 6

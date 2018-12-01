@@ -52,7 +52,8 @@ class ThreeACGen():
         #need a backlog/temp list for the case where both sides of an operator are expressions
         #acList.append(["t1", None, walkExpr(returnExpr), None])
         self.walkExpr(id,returnExpr)
-        print(self._acList)
+        #print(self._acList)
+        return(self._acList)
 
 
 

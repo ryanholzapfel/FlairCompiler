@@ -1,6 +1,8 @@
 from semanticactions import *
 from enum import Enum
 from threeACGen import ThreeACGen
+from parser import Parser
+from scanner import Scanner
 
 class GenExpression(Enum):
     genMult     = 1
@@ -34,6 +36,8 @@ class CodeGen(object):
         self._lastLiteral = []
         self._functNumber = 0
         self._ACGen = ThreeACGen
+        self._generatedACList = []
+        self._temp3ACList = []
 
     def toggleIMEM(self, regNum):
         if self._availableIMEM[regNum] == 0:
@@ -91,12 +95,13 @@ class CodeGen(object):
 
         #IMPORTANT: we still need to handle 0 arg cases we can do this by looking at the bottom of the program node to see what value is returned, 
         # then load that as our arg, this will probably only be useful in print one style cases we only do this if symbol table has 0 args
-        treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal() #will this work for any zero arg case????
+        #treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal() #will this work for any zero arg case????
         # if isinstance(temp_arg, Integer_Node):
         #     treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal().integer()
         # else:
         #     treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal().boolean()
         if len(self._symbolTable[self._programName][0]) == 0:
+            treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal()
             self.addCode('LDC 2,{}(0) #load zero arg case'.format(treeValue))
             self.addCode('ST 2, 1(0) #Store zero arg case to dmem 1') # store tree value to dmem 1 we now have our arg for 0 arg programs
 
@@ -186,45 +191,102 @@ class CodeGen(object):
         #functVars = self._symbolTable[self._programName][functName][0] # was intended for something else likley uneeded
         self._nextOffset = self._nextOffset + len(self._symbolTable[self._programName][0]) # sets the next function offset
         #for var in functVars:
-        generatedACList = self._ACGen(self._programNode)
-        self.startBody(generatedACList)
 
-    # table to access generating funtuons for tm code
+        programNode = self._programNode
+        tac = ThreeACGen(programNode)
+        tac.program3AC(programNode.body().statementlist().returnstatement())
+        self._generatedACList = tac.program3AC(programNode.body().statementlist().returnstatement())
+        print(self._generatedACList)
+        self.startBody(self._generatedACList)
+
+    # table to access generating functuons for tm code
 
     def startBody(self,threeACList):
         #self._lastLiteral = lastLiteral
-        print(str(threeACList))
+        
         self._threeACList = threeACList
 
         self.genBody()
+
+    def getOp(self):
+        tempCode = self._temp3ACList.pop()
+        #print(tempCode)
+        tempOperator = tempCode[0]
+        #print(tempCode[0])
+
+        if tempOperator == None:
+            self.getOp()
+        else:
+            return tempCode[0]
+
+    def getArg1(self):
+        tempCode = self._temp3ACList.pop()
+
+        tempArg = tempCode[2]
+
+        if tempArg == None:
+            self.getArg1()
+
+        return tempArg
+
+    def getArg2(self):
+        tempCode = self._temp3ACList.pop()
+
+        tempArg = tempCode[2]
+
+        if tempArg == None:
+            self.getArg2()
+
+        return tempArg
+            
 
     def genBody(self):
 
         currentOffset = self._nextOffset
         tempList = self._threeACList
+        
         if tempList == []:
             generate()
         
-        tempCode = list(self._threeACList).pop()
-
-        tempOperator = tempCode[0]
-        tempArg1 = tempCode[1]
-        tempArg2 = tempCode[2]
-        tempPlace = tempCode[3].strip(t)
-
-        #if tempArg1 != None and tempArg2 != None and tempOperator != None:
-        genTemp = tempOperator.get(gen_table)
-        genTemp(tempPlace, tempArg2, tempArg1, currentOffset ) # for doubler tempArg1 would be the variable 2 that is stored inside of doubler probably obtained from tree?
         
-        genBody()
+        self._temp3ACList = self._threeACList
+        tempCode = self._temp3ACList.pop()
+        tempOperator = tempCode[0]
+        while tempOperator == None:
+            tempCode = self._temp3ACList.pop()
+            tempOperator = tempCode[0]
+
+        self._temp3ACList = self._threeACList
+        tempCode = self._temp3ACList.pop()
+        tempArg1 = tempCode[0]
+        while tempArg1 == None:
+            tempCode = self._temp3ACList.pop()
+            tempArg1 = tempCode[2]
+
+        self._temp3ACList = self._threeACList
+        tempCode = self._temp3ACList.pop()
+        tempArg1 = tempCode[0]
+        while tempArg1 == None:
+            tempCode = self._temp3ACList.pop()
+            tempArg1 = tempCode[2]
+        if self._threeACList != []:
+            tempCode = list(self._threeACList).pop()
+            tempPlace = tempCode[3].strip("t")
+
+
+            #if tempArg1 != None and tempArg2 != None and tempOperator != None:
+            genTemp = tempOperator.get(gen_table)
+            genTemp(tempPlace, tempArg2, tempArg1, currentOffset ) # for doubler tempArg1 would be the variable 2 that is stored inside of doubler probably obtained from tree?
+
+            genBody()
 
     def genMult(self, a,b,c, offset): #r2 is possibly not zero a,b,c is possibly t1,t2,t3
         self.saveReg()
         self.addCode("LDA 3,{}({}) # load return adress".format(a, offset)) # think about offset plus one inside of every function then subtract on for return address might be helpful
-        if tempArg2 != None:
-            self.addCode("LD 4,{}(0)  # load cmd line arg 1".format(b))
-        if tempArg1 != None:
-            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(c))
+        
+        self.addCode("LD 4,{}(0)  # load cmd line arg 1".format(b))
+        
+        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(c))
         self.addCode("MUL 4,4,5   # multiply")
         if tempArg2 != None:
             self.addCode("ST 4,{}({})  # store product in DMEM at same return address handed in".format(a, offset)) # this should be stored in the function offset return not in a hard coded spot
@@ -240,6 +302,7 @@ class CodeGen(object):
          }   
 
     def generate(self):
+        
         self.initializeMain()
 
 
