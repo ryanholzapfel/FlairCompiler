@@ -1,6 +1,6 @@
 from semanticactions import *
 from enum import Enum
-#from threeACGen import GenExpression
+from threeACGen import ThreeACGen
 
 class GenExpression(Enum):
     genMult     = 1
@@ -32,6 +32,8 @@ class CodeGen(object):
         self._currentLabel = 1
         self._nextOffset = 11 # this is the program arg offset that is then used as the next function offset thin number will grow in accordance to the number of args and function vars
         self._lastLiteral = []
+        self._functNumber = 0
+        self._ACGen = ThreeACGen
 
     def toggleIMEM(self, regNum):
         if self._availableIMEM[regNum] == 0:
@@ -125,7 +127,9 @@ class CodeGen(object):
     def initializeMain(self): #
         self.genPointers()
         self.storeReturn()
-        
+
+        self.genFunction()
+
         thisLabel = self.currentLabel()                                                  # this should be factored out                           
         self._jumpsToComplete.append((self.currentLine() ,thisLabel, 'uncondtional' ))   # this should be factored out       
         self._labelData[thisLabel] = self.currentLine() + 1                              # this should be factored out                       
@@ -157,8 +161,8 @@ class CodeGen(object):
         self.addCode("HALT 0,0,0  #stop execution; end of program")
 
     def functCount(self):#literally only keeps track of how many times genFunction is called usefull to know where in the symbol table you are
-        functNumber += 1
-        return functNumber
+        self._functNumber += 1
+        return self._functNumber
 
     def genFunction(self):
         #first we establish the offset in dmem for each function this will be 12 for a 1 or 0 arg program to a finite number no more than 1000
@@ -166,10 +170,10 @@ class CodeGen(object):
             self._nextOffset += 1
         else:
             self._nextOffset += len(self._symbolTable[self._programName][0])
-        tempFunctNumber = functCount()
-        functName = self._symbolTable[self._programName][tempFunctNumber()] # im gonna store the funct name to help in debugging tm code this will be added to the
+        tempFunctNumber = self.functCount()
+        functName = self._symbolTable[self._programName][tempFunctNumber] # im gonna store the funct name to help in debugging tm code this will be added to the
            # begining of the function in the tm code
-        self._symbolTable[self._programName][tempFunctNumber().append("offset:"+self._nextOffset)] #this will append the functions offset to the list in the symbol table related to that specific funct
+        self._symbolTable[self._programName][tempFunctNumber].append("offset:"+"self._nextOffset") #this should but is broken currently uneeded append the functions offset to the list in the symbol table related to that specific funct
         
         #thinking about adding the offset to the symbol table at this point using "offest:" as a delimiter this way function offsets can be searched by
         # key <functName> then in the list of values search for "offset:" then strip offset: producing an int
@@ -178,42 +182,55 @@ class CodeGen(object):
         # OR print 
         # OR return
         # i think the symbol table needs to be modified to include these not sure
-        self.addCode("*-------------function {}".format(functName))
-        functVars = self._symbolTable[self._programName][functName][0]
-        self._nextOffset += len(self._symbolTable[self._programName][functName][0]) # sets the next function offset
+        self.addCode("*-------------function {}".format(tempFunctNumber)) # replaced functName with functNumber because i messed up call to find name in line 173
+        #functVars = self._symbolTable[self._programName][functName][0] # was intended for something else likley uneeded
+        self._nextOffset = self._nextOffset + len(self._symbolTable[self._programName][0]) # sets the next function offset
         #for var in functVars:
+        generatedACList = self._ACGen(self._programNode)
+        self.startBody(generatedACList)
 
     # table to access generating funtuons for tm code
 
-
-    def genBody(self,threeACList, lastLiteral):
-        self._lastLiteral = lastLiteral
+    def startBody(self,threeACList):
+        #self._lastLiteral = lastLiteral
+        print(str(threeACList))
         self._threeACList = threeACList
+
+        self.genBody()
+
+    def genBody(self):
+
         currentOffset = self._nextOffset
-    
-        if len(tempList) == 0:
+        tempList = self._threeACList
+        if tempList == []:
             generate()
         
-        tempCode = templist.pop
+        tempCode = list(self._threeACList).pop()
 
         tempOperator = tempCode[0]
         tempArg1 = tempCode[1]
         tempArg2 = tempCode[2]
         tempPlace = tempCode[3].strip(t)
 
-        if tempArg1 != None and tempArg2 != None and tempOperator != None:
-            genTemp = tempOperator.get(gen_table)
-            genTemp(tempPlace, tempArg2, tempArg1, currentOffset ) # for doubler tempArg1 would be the variable 2 that is stored inside of doubler probably obtained from tree?
-        elif tempArg1 == None and tempArg2 != None and tempOperator == None:
-            self._nextOffset += 1
+        #if tempArg1 != None and tempArg2 != None and tempOperator != None:
+        genTemp = tempOperator.get(gen_table)
+        genTemp(tempPlace, tempArg2, tempArg1, currentOffset ) # for doubler tempArg1 would be the variable 2 that is stored inside of doubler probably obtained from tree?
+        
+        genBody()
 
     def genMult(self, a,b,c, offset): #r2 is possibly not zero a,b,c is possibly t1,t2,t3
         self.saveReg()
         self.addCode("LDA 3,{}({}) # load return adress".format(a, offset)) # think about offset plus one inside of every function then subtract on for return address might be helpful
-        self.addCode("LD 4,{}(0)  # load cmd line arg 1".format(b))
-        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(c))
+        if tempArg2 != None:
+            self.addCode("LD 4,{}(0)  # load cmd line arg 1".format(b))
+        if tempArg1 != None:
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(c))
         self.addCode("MUL 4,4,5   # multiply")
-        self.addCode("ST 4,{}({})  # store product in DMEM at same return address handed in".format(a, offset)) # this should be stored in the function offset return not in a hard coded spot
+        if tempArg2 != None:
+            self.addCode("ST 4,{}({})  # store product in DMEM at same return address handed in".format(a, offset)) # this should be stored in the function offset return not in a hard coded spot
+        else:
+            self.addCode("ST 4,1({})  # store product in DMEM at same return address handed in".format(offset))
+
         self.loadReg()
         self.addCode("LDA 7,0,(6) # branch back using r7") #still considering what the offset should be
         
