@@ -37,7 +37,7 @@ class SemanticAnalyzer(object):
         # 		self._typelist[defID][formal.identifier().identifier()] = formal.types()
         
         """
-        dict entry --> prog/fn ID : [[(0)formal ids(strings)], [(1)formal types("I" or "B")], [(2)called by these fnIDs], [(3)calls these fnIDs], (4)return value ("I" or "B")]
+        dict entry --> prog/fn ID (key fn.) : [[(0)formal ids for key fn.(strings)], [(1)formal types of items in (0) ("I" or "B")], [(2)key fn. called by these fnIDs], [(3)key fn. calls these fnIDs], (4)type of return value for key fn.("I" or "B")]
         """
         #this is serving as our symbol table
         programID = node.identifier().identifier()
