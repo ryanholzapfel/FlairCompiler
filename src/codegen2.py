@@ -38,6 +38,9 @@ class CodeGen(object):
         self._ACGen = ThreeACGen
         self._temp3ACList = []
         self._functionList = []
+        self._tempCode = []
+        
+        self._offsetList = []
 
     def toggleIMEM(self, regNum):
         if self._availableIMEM[regNum] == 0:
@@ -129,9 +132,11 @@ class CodeGen(object):
         self.addCode("LD 3,4(5)   #load DMEM to IMEM")
         self.addCode("LD 4,5(5)   #load DMEM to IMEM")
 
-    def initializeMain(self): #
+    def initializeMain(self): # This Program Literally starts here
         self.genPointers()
         self.storeReturn()
+        
+        self.setFunctionList()
 
         self.genFunction()
 
@@ -171,26 +176,25 @@ class CodeGen(object):
 
     def genFunction(self):
         #first we establish the offset in dmem for each function this will be 12 for a 1 or 0 arg program to a finite number no more than 1000
-        if len(self._symbolTable[self._programName][0]) == 0:
-            self._nextOffset += 1
+        functionList = self.getFunctionList()
+        self._offsetList.append(self._nextOffset)
+        if len(functionList) == 1:
+            self._nextOffset += 2 # +2 might cauz issues ttry +1
         else:
-            self._nextOffset += len(self._symbolTable[self._programName][0])
-        tempFunctNumber = self.functCount()
-        functName = self._symbolTable[self._programName][tempFunctNumber] # im gonna store the funct name to help in debugging tm code this will be added to the
-           # begining of the function in the tm code
-        self._symbolTable[self._programName][tempFunctNumber].append("offset:"+"self._nextOffset") #this should but is broken currently uneeded append the functions offset to the list in the symbol table related to that specific funct
+            self._nextOffset
+            tempFunctNumber = self.functCount()
+            tempFunctionName = funcctionList[tempFunctNumber]
+            functionArgs = self._symbolTable[tempFunctionName][0]
+            numberOfArgs = len(functionArgs)
+            self._nextOffset += numberOfArgs +1
+
+            # begining of the function in the tm code
         
-        #thinking about adding the offset to the symbol table at this point using "offest:" as a delimiter this way function offsets can be searched by
-        # key <functName> then in the list of values search for "offset:" then strip offset: producing an int
-        
-        #IMPORTANT: may need to check if theres an if statement
-        # OR print 
-        # OR return
-        # i think the symbol table needs to be modified to include these not sure
-        self._programString += ("*-------------function {}".format(tempFunctNumber)) # replaced functName with functNumber because i messed up call to find name in line 173
-        #functVars = self._symbolTable[self._programName][functName][0] # was intended for something else likley uneeded
-        self._nextOffset = self._nextOffset + len(self._symbolTable[self._programName][0]) # sets the next function offset
-        #for var in functVars:
+            #IMPORTANT: may need to check if theres an if statement
+            # OR print 
+            # OR return
+            # i think the symbol table needs to be modified to include these not sure
+            self._programString += ("*-------------function {}".format(tempFunctionName)) # replaced functName with functNumber because i messed up call to find name in line 173
 
         programNode = self._programNode
         tac = ThreeACGen(programNode)
@@ -264,44 +268,36 @@ class CodeGen(object):
                     tempArg1 = temp3ACList[tempArg1place][2]
                     tempArg2 = temp3ACList[tempArg2place][2]
                     #threeACCode =[tempOperator,tempArg1, tempArg2, tempCode[3]]
-                    
+                    self._tempCode = tempCode
+                    print('self._temp')
+                    print(self._tempCode)
                     genTemp = tempOperator.get(gen_table)
                     genTemp(tempArg1, tempArg2, tempCode[3])
                     #genOperator(threeACCode)
                     break
 
-            self._temp3ACList = self.get3AC()
+                self._temp3ACList = self.get3AC()
             
-            print(" should be the full 3 ac list from arg 1" )
-            print(self.get3AC())
-            print(tempCode)
-            tempPlaceArg1 = int(tempCode[1].strip('t'))
-            temp3ACList = self.get3AC()
+                print(" should be the full 3 ac list from arg 1" )
+                print(self.get3AC())
+           
+                tempPlaceArg1 = int(self._tempCode[1].strip('t'))
+                temp3ACList = self.get3AC()
 
 
 
-            # tempCode = self._temp3ACList.pop()
-            # tempArg1 = tempCode[2]
-            # while tempArg1 == None:
-            #     tempCode = self._temp3ACList.pop()
-            #     tempArg1 = tempCode[2]
+                # tempCode = self._temp3ACList.pop()
+                # tempArg1 = tempCode[2]
+                # while tempArg1 == None:
+                #     tempCode = self._temp3ACList.pop()
+                #     tempArg1 = tempCode[2]
 
-            # self._temp3ACList = self.get3AC()
-            # tempCode = self._temp3ACList.pop()
-            # tempArg1 = tempCode[2]
-            # while tempArg2 == None:
-            #     tempCode = self._temp3ACList.pop()
-            #     tempArg2 = tempCode[2]
-            if self._temp3ACList != []:
-                tempCode = self._threeACList.pop()
-                tempPlace = tempCode[3].strip("t")
-
-
-                #if tempArg1 != None and tempArg2 != None and tempOperator != None:
-                genTemp = tempOperator.get(gen_table)
-                genTemp(tempPlace, tempArg2, tempArg1, currentOffset ) # for doubler tempArg1 would be the variable 2 that is stored inside of doubler probably obtained from tree?
-
-                genBody()
+                # self._temp3ACList = self.get3AC()
+                # tempCode = self._temp3ACList.pop()
+                # tempArg1 = tempCode[2]
+                # while tempArg2 == None:
+                #     tempCode = self._temp3ACList.pop()
+                #     tempArg2 = tempCode[2]
 
     def genMult(self, tempArg1, tempArg2, tempPlace): #r2 is possibly not zero a,b,c is possibly t1,t2,t3
         # get offset from symbol table
