@@ -37,6 +37,7 @@ class CodeGen(object):
         self._functNumber = 0
         self._ACGen = ThreeACGen
         self._temp3ACList = []
+        self._functionList = []
 
     def toggleIMEM(self, regNum):
         if self._availableIMEM[regNum] == 0:
@@ -337,4 +338,14 @@ class CodeGen(object):
         
     def get3AC(self):
         temp = self._temp3ACList
+        return temp
+
+    def setFunctionList(self):
+        fnList = [self._programName]
+        for deff in self._programNode.definitions().deffs():
+            fnList.append(deff.identifier().identifier())
+        self._functionList =  fnList
+
+    def getFunctionList(self):
+        temp = self._functionList
         return temp
