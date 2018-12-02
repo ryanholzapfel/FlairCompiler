@@ -47,7 +47,7 @@ class ThreeACGen():
         self._acList.append([op,a1,a2,id])
 
     def program3AC(self,returnExpr): #returnExpr is the return expression from the program node
-        id = "t1"
+        id = "t0"
         #acList = [] #[[op, arg1, arg2, id]]
         #need a backlog/temp list for the case where both sides of an operator are expressions
         #acList.append(["t1", None, walkExpr(returnExpr), None])

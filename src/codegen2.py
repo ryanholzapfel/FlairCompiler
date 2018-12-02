@@ -186,7 +186,7 @@ class CodeGen(object):
         # OR print 
         # OR return
         # i think the symbol table needs to be modified to include these not sure
-        self.addCode("*-------------function {}".format(tempFunctNumber)) # replaced functName with functNumber because i messed up call to find name in line 173
+        self._programString += ("*-------------function {}".format(tempFunctNumber)) # replaced functName with functNumber because i messed up call to find name in line 173
         #functVars = self._symbolTable[self._programName][functName][0] # was intended for something else likley uneeded
         self._nextOffset = self._nextOffset + len(self._symbolTable[self._programName][0]) # sets the next function offset
         #for var in functVars:
@@ -234,57 +234,82 @@ class CodeGen(object):
 
     def genBody(self):
 
-        currentOffset = self._nextOffset
-        tempList = self.get3AC()
+        lastIndex = -1
+        while lastIndex != 0:
         
-        if tempList == []:
-            return None
-        
-        
-        self._temp3ACList = self.get3AC()
-        print(" should be the full 3 ac list from opererator" )
-        print(self.get3AC())
-        tempCode = self._temp3ACList.pop()
-        print(tempCode)
-        tempOperator = tempCode[0]
-        while tempOperator == None:
-            tempCode = self._temp3ACList.pop()
-            tempOperator = tempCode[0]
+            #maybe move out of while loop?
+            currentOffset = self._nextOffset
+            tempList = self.get3AC()
+            
+            if tempList == []:
+                return None
+            
+            
+            self._temp3ACList = self.get3AC()
+            print(" should be the full 3 ac list from opererator" )
+            print(self.get3AC())
+            temp3ACList = self._temp3ACList
+            print(temp3ACList)
 
-        self._temp3ACList = self.get3AC()
-        print(" should be the full 3 ac list from arg 1" )
-        print(self.get3AC())
+            for index in range(len(temp3ACList)-1,0):
+                tempCode = temp3ACList[index]
+                tempOperator = tempCode[0]
+                if tempOperator != None:
+                    lastIndex = index
 
-        tempCode = self._temp3ACList.pop()
-        tempArg1 = tempCode[2]
-        while tempArg1 == None:
-            tempCode = self._temp3ACList.pop()
-            tempArg1 = tempCode[2]
+                    tempArg1place = int(tempCode[1].strip('t'))
+                    tempArg2place = int(tempCode[2].strip('t'))
 
-        self._temp3ACList = self.get3AC()
-        tempCode = self._temp3ACList.pop()
-        tempArg1 = tempCode[2]
-        while tempArg2 == None:
-            tempCode = self._temp3ACList.pop()
-            tempArg2 = tempCode[2]
-        if self._temp3ACList != []:
-            tempCode = self._threeACList.pop()
-            tempPlace = tempCode[3].strip("t")
+                    tempArg1 = temp3ACList[tempArg1place][2]
+                    tempArg2 = temp3ACList[tempArg2place][2]
+                    #threeACCode =[tempOperator,tempArg1, tempArg2, tempCode[3]]
+                    
+                    genTemp = tempOperator.get(gen_table)
+                    genTemp(tempArg1, tempArg2, tempCode[3])
+                    #genOperator(threeACCode)
+                    break
+
+            self._temp3ACList = self.get3AC()
+            
+            print(" should be the full 3 ac list from arg 1" )
+            print(self.get3AC())
+            print(tempCode)
+            tempPlaceArg1 = int(tempCode[1].strip('t'))
+            temp3ACList = self.get3AC()
 
 
-            #if tempArg1 != None and tempArg2 != None and tempOperator != None:
-            genTemp = tempOperator.get(gen_table)
-            genTemp(tempPlace, tempArg2, tempArg1, currentOffset ) # for doubler tempArg1 would be the variable 2 that is stored inside of doubler probably obtained from tree?
 
-            genBody()
+            # tempCode = self._temp3ACList.pop()
+            # tempArg1 = tempCode[2]
+            # while tempArg1 == None:
+            #     tempCode = self._temp3ACList.pop()
+            #     tempArg1 = tempCode[2]
 
-    def genMult(self, a,b,c, offset): #r2 is possibly not zero a,b,c is possibly t1,t2,t3
+            # self._temp3ACList = self.get3AC()
+            # tempCode = self._temp3ACList.pop()
+            # tempArg1 = tempCode[2]
+            # while tempArg2 == None:
+            #     tempCode = self._temp3ACList.pop()
+            #     tempArg2 = tempCode[2]
+            if self._temp3ACList != []:
+                tempCode = self._threeACList.pop()
+                tempPlace = tempCode[3].strip("t")
+
+
+                #if tempArg1 != None and tempArg2 != None and tempOperator != None:
+                genTemp = tempOperator.get(gen_table)
+                genTemp(tempPlace, tempArg2, tempArg1, currentOffset ) # for doubler tempArg1 would be the variable 2 that is stored inside of doubler probably obtained from tree?
+
+                genBody()
+
+    def genMult(self, tempArg1, tempArg2, tempPlace): #r2 is possibly not zero a,b,c is possibly t1,t2,t3
+        # get offset from symbol table
         self.saveReg()
         self.addCode("LDA 3,{}({}) # load return adress".format(a, offset)) # think about offset plus one inside of every function then subtract on for return address might be helpful
         
-        self.addCode("LD 4,{}(0)  # load cmd line arg 1".format(b))
+        self.addCode("LD 4,{}(0)  # load cmd line arg 1".format(tempArg1))
         
-        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(c))
+        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(tempArg2))
         self.addCode("MUL 4,4,5   # multiply")
         if tempArg2 != None:
             self.addCode("ST 4,{}({})  # store product in DMEM at same return address handed in".format(a, offset)) # this should be stored in the function offset return not in a hard coded spot
@@ -311,4 +336,5 @@ class CodeGen(object):
         self._temp3ACList = tempList
         
     def get3AC(self):
-        return self._temp3ACList
+        temp = self._temp3ACList
+        return temp
