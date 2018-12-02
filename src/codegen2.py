@@ -36,7 +36,6 @@ class CodeGen(object):
         self._lastLiteral = []
         self._functNumber = 0
         self._ACGen = ThreeACGen
-        self._generatedACList = []
         self._temp3ACList = []
 
     def toggleIMEM(self, regNum):
@@ -194,83 +193,82 @@ class CodeGen(object):
 
         programNode = self._programNode
         tac = ThreeACGen(programNode)
-        tac.program3AC(programNode.body().statementlist().returnstatement())
-        self._generatedACList = tac.program3AC(programNode.body().statementlist().returnstatement())
-        print(self._generatedACList)
-        self.startBody(self._generatedACList)
+        generatedACList = tac.program3AC(programNode.body().statementlist().returnstatement())
+        print(generatedACList)
+        self.set3AC(generatedACList)
+        self.genBody()
 
     # table to access generating functuons for tm code
 
-    def startBody(self,threeACList):
-        #self._lastLiteral = lastLiteral
-        
-        self._threeACList = threeACList
+    # def getOp(self):
+    #     tempCode = self._temp3ACList.pop()
+    #     #print(tempCode)
+    #     tempOperator = tempCode[0]
+    #     #print(tempCode[0])
 
-        self.genBody()
+    #     if tempOperator == None:
+    #         self.getOp()
+    #     else:
+    #         return tempCode[0]
 
-    def getOp(self):
-        tempCode = self._temp3ACList.pop()
-        #print(tempCode)
-        tempOperator = tempCode[0]
-        #print(tempCode[0])
+    # def getArg1(self):
+    #     tempCode = self._temp3ACList.pop()
 
-        if tempOperator == None:
-            self.getOp()
-        else:
-            return tempCode[0]
+    #     tempArg = tempCode[2]
 
-    def getArg1(self):
-        tempCode = self._temp3ACList.pop()
+    #     if tempArg == None:
+    #         self.getArg1()
 
-        tempArg = tempCode[2]
+    #     return tempArg
 
-        if tempArg == None:
-            self.getArg1()
+    # def getArg2(self):
+    #     tempCode = self._temp3ACList.pop()
 
-        return tempArg
+    #     tempArg = tempCode[2]
 
-    def getArg2(self):
-        tempCode = self._temp3ACList.pop()
+    #     if tempArg == None:
+    #         self.getArg2()
 
-        tempArg = tempCode[2]
-
-        if tempArg == None:
-            self.getArg2()
-
-        return tempArg
+    #     return tempArg
             
 
     def genBody(self):
 
         currentOffset = self._nextOffset
-        tempList = self._threeACList
+        tempList = self.get3AC()
         
         if tempList == []:
-            generate()
+            return None
         
         
-        self._temp3ACList = self._threeACList
+        self._temp3ACList = self.get3AC()
+        print(" should be the full 3 ac list from opererator" )
+        print(self.get3AC())
         tempCode = self._temp3ACList.pop()
+        print(tempCode)
         tempOperator = tempCode[0]
         while tempOperator == None:
             tempCode = self._temp3ACList.pop()
             tempOperator = tempCode[0]
 
-        self._temp3ACList = self._threeACList
+        self._temp3ACList = self.get3AC()
+        print(" should be the full 3 ac list from arg 1" )
+        print(self.get3AC())
+
         tempCode = self._temp3ACList.pop()
-        tempArg1 = tempCode[0]
+        tempArg1 = tempCode[2]
         while tempArg1 == None:
             tempCode = self._temp3ACList.pop()
             tempArg1 = tempCode[2]
 
-        self._temp3ACList = self._threeACList
+        self._temp3ACList = self.get3AC()
         tempCode = self._temp3ACList.pop()
-        tempArg1 = tempCode[0]
-        while tempArg1 == None:
+        tempArg1 = tempCode[2]
+        while tempArg2 == None:
             tempCode = self._temp3ACList.pop()
-            tempArg1 = tempCode[2]
-        if self._threeACList != []:
-            tempCode = list(self._threeACList).pop()
+            tempArg2 = tempCode[2]
+        if self._temp3ACList != []:
+            tempCode = self._threeACList.pop()
             tempPlace = tempCode[3].strip("t")
 
 
@@ -304,7 +302,13 @@ class CodeGen(object):
     def generate(self):
         
         self.initializeMain()
-
-
-
         return self._programString
+
+
+#--------------------------------------------------------------------------------------getter setters
+
+    def set3AC(self, tempList):
+        self._temp3ACList = tempList
+        
+    def get3AC(self):
+        return self._temp3ACList
