@@ -1,24 +1,32 @@
 from semanticactions import *
 from enum import Enum
-from threeACGen import ThreeACGen
+from threeACGen import ThreeACGen, GenExpression
 from parser import Parser
 from scanner import Scanner
 
-class GenExpression(Enum):
-    genMult     = 1
-    genDiv      = 2
-    genAdd      = 3
-    genSubt     = 4
-    genLess     = 5
-    genEqual    = 6
-    genOr       = 7
-    genIf       = 8
-    genAnd      = 9
-    genNot      = 10
-    genNeg      = 11
-    genPrint    = 12
-    genReturn   = 13
-    genBool     = 14
+
+# class GenExpression(Enum):
+#     genMult     = 1
+#     genDiv      = 2
+#     genAdd      = 3
+#     genSubt     = 4
+#     genLess     = 5
+#     genEqual    = 6
+#     genOr       = 7
+#     genIf       = 8
+#     genAnd      = 9
+#     genNot      = 10
+#     genNeg      = 11
+#     genPrint    = 12
+#     genReturn   = 13
+#     genBool     = 14
+
+# gen_table = {
+#         GenExpression.genMult : genMult
+# }
+
+
+
 
 class CodeGen(object):
     def __init__(self, programNode, symbolTable):
@@ -34,13 +42,16 @@ class CodeGen(object):
         self._currentLabel = 1
         self._nextOffset = 11 # this is the program arg offset that is then used as the next function offset thin number will grow in accordance to the number of args and function vars
         self._lastLiteral = []
-        self._functNumber = 0
+        self._functNumber = -1
         self._ACGen = ThreeACGen
         self._temp3ACList = []
         self._functionList = []
         self._tempCode = []
         
         self._offsetList = []
+
+
+
 
     def toggleIMEM(self, regNum):
         if self._availableIMEM[regNum] == 0:
@@ -104,7 +115,8 @@ class CodeGen(object):
         # else:
         #     treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal().boolean()
         if len(self._symbolTable[self._programName][0]) == 0:
-            treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal()
+            #treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal()
+            treeValue = self.get3AC()[-1][2]
             self.addCode('LDC 2,{}(0) #load zero arg case'.format(treeValue))
             self.addCode('ST 2, 1(0) #Store zero arg case to dmem 1') # store tree value to dmem 1 we now have our arg for 0 arg programs
 
@@ -135,9 +147,9 @@ class CodeGen(object):
     def initializeMain(self): # This Program Literally starts here
         self.genPointers()
         self.storeReturn()
-        
         self.setFunctionList()
 
+        
         self.genFunction()
 
         thisLabel = self.currentLabel()                                                  # this should be factored out                           
@@ -178,12 +190,13 @@ class CodeGen(object):
         #first we establish the offset in dmem for each function this will be 12 for a 1 or 0 arg program to a finite number no more than 1000
         functionList = self.getFunctionList()
         self._offsetList.append(self._nextOffset)
+        tempFunctNumber = self.functCount()
+        tempFunctionName = functionList[tempFunctNumber]
         if len(functionList) == 1:
             self._nextOffset += 2 # +2 might cauz issues ttry +1
+
         else:
             self._nextOffset
-            tempFunctNumber = self.functCount()
-            tempFunctionName = funcctionList[tempFunctNumber]
             functionArgs = self._symbolTable[tempFunctionName][0]
             numberOfArgs = len(functionArgs)
             self._nextOffset += numberOfArgs +1
@@ -194,13 +207,16 @@ class CodeGen(object):
             # OR print 
             # OR return
             # i think the symbol table needs to be modified to include these not sure
-            self._programString += ("*-------------function {}".format(tempFunctionName)) # replaced functName with functNumber because i messed up call to find name in line 173
+        self._programString += ("*-------------function {}\n".format(tempFunctionName)) # replaced functName with functNumber because i messed up call to find name in line 173
 
         programNode = self._programNode
         tac = ThreeACGen(programNode)
         generatedACList = tac.program3AC(programNode.body().statementlist().returnstatement())
         print(generatedACList)
         self.set3AC(generatedACList)
+
+        self.genProgramArgs()
+
         self.genBody()
 
     # table to access generating functuons for tm code
@@ -239,6 +255,10 @@ class CodeGen(object):
 
     def genBody(self):
 
+
+
+
+
         lastIndex = -1
         while lastIndex != 0:
         
@@ -254,35 +274,48 @@ class CodeGen(object):
             print(" should be the full 3 ac list from opererator" )
             print(self.get3AC())
             temp3ACList = self._temp3ACList
-            print(temp3ACList)
+            
+            reversed3ACList = list(reversed(temp3ACList))
+            print(reversed3ACList)
 
-            for index in range(len(temp3ACList)-1,0):
-                tempCode = temp3ACList[index]
+            for tempCode in reversed3ACList:
+                tempCodeIndex = temp3ACList.index(tempCode)
+                #tempCode = reversed3ACList[tempCodeIndex]
                 tempOperator = tempCode[0]
+                print('inside for loop')
+                print(tempCode)
                 if tempOperator != None:
-                    lastIndex = index
+                    print('tempOP')
+                    print(tempOperator)
+                    lastIndex =  tempCodeIndex
 
                     tempArg1place = int(tempCode[1].strip('t'))
                     tempArg2place = int(tempCode[2].strip('t'))
+                    print('this is arg 2')
+                    print(tempArg2place)
 
                     tempArg1 = temp3ACList[tempArg1place][2]
                     tempArg2 = temp3ACList[tempArg2place][2]
                     #threeACCode =[tempOperator,tempArg1, tempArg2, tempCode[3]]
                     self._tempCode = tempCode
-                    print('self._temp')
+                    print('self._temp inside of for loop inside if state')
                     print(self._tempCode)
-                    genTemp = tempOperator.get(gen_table)
-                    genTemp(tempArg1, tempArg2, tempCode[3])
+                    #genTemp = gen_table.get(tempOperator)
+                    print('3ac values arg1 arg2 tempPlace')
+                    print(tempArg1, tempArg2, tempCode[3])
+                    self.genMult(tempArg1, tempArg2, tempCode[3])
+
                     #genOperator(threeACCode)
                     break
 
-                self._temp3ACList = self.get3AC()
+                # self._temp3ACList = self.get3AC()
             
-                print(" should be the full 3 ac list from arg 1" )
-                print(self.get3AC())
+                # print(" should be the full 3 ac list from arg 1" )
+                # print(self.get3AC())
+                # print(self._tempCode)
            
-                tempPlaceArg1 = int(self._tempCode[1].strip('t'))
-                temp3ACList = self.get3AC()
+                # tempPlaceArg1 = int(tempCode[1].strip('t'))
+                # temp3ACList = self.get3AC()
 
 
 
@@ -299,27 +332,32 @@ class CodeGen(object):
                 #     tempCode = self._temp3ACList.pop()
                 #     tempArg2 = tempCode[2]
 
+    
+        
     def genMult(self, tempArg1, tempArg2, tempPlace): #r2 is possibly not zero a,b,c is possibly t1,t2,t3
         # get offset from symbol table
+        offset = self._offsetList[self._functNumber]
+        functionName = self._functionList[self._functNumber]
+        tPlace = int(tempPlace.strip('t'))
+        if str(tempArg2).isalpha():
+            arg2Offset = self._symbolTable[functionName][0].index(tempArg2)
+        if str(tempArg1).isalpha():
+            arg1Offset = self._symbolTable[functionName][0].index(tempArg1)
+            
         self.saveReg()
-        self.addCode("LDA 3,{}({}) # load return adress".format(a, offset)) # think about offset plus one inside of every function then subtract on for return address might be helpful
+        self.addCode("LDA 3,{}(0) # load return adress".format(tPlace + offset)) # think about offset plus one inside of every function then subtract on for return address might be helpful
         
         self.addCode("LD 4,{}(0)  # load cmd line arg 1".format(tempArg1))
         
-        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(tempArg2))
+        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset ))
         self.addCode("MUL 4,4,5   # multiply")
         if tempArg2 != None:
-            self.addCode("ST 4,{}({})  # store product in DMEM at same return address handed in".format(a, offset)) # this should be stored in the function offset return not in a hard coded spot
+            self.addCode("ST 4,{}(0)  # store product in DMEM at same return address handed in".format(tPlace + offset)) # this should be stored in the function offset return not in a hard coded spot
         else:
             self.addCode("ST 4,1({})  # store product in DMEM at same return address handed in".format(offset))
 
         self.loadReg()
-        self.addCode("LDA 7,0,(6) # branch back using r7") #still considering what the offset should be
-        
-
-    gen_table = {
-        GenExpression.genMult : genMult
-         }   
+        #self.addCode("LDA 7,0(6) # branch back using r7") #still considering what the offset should be
 
     def generate(self):
         
