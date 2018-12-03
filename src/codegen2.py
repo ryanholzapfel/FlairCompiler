@@ -114,7 +114,8 @@ class CodeGen(object):
         #     treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal().integer()
         # else:
         #     treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal().boolean()
-        if len(self._symbolTable[self._programName][0]) == 0:
+        #if len(self._symbolTable[self._programName][0]) == 0:
+        if len(self.get3AC()) == 1: #if there is only one 3AC, the program just prints a number
             #treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal()
             treeValue = self.get3AC()[-1][2]
             self.addCode('LDC 2,{}(0) #load zero arg case'.format(treeValue))
@@ -254,6 +255,9 @@ class CodeGen(object):
             
 
     def genBody(self):
+        if len(self.get3AC()) == 1:
+            #genPrint to return/print a single value
+            pass
 
 
 
@@ -266,8 +270,6 @@ class CodeGen(object):
             currentOffset = self._nextOffset
             tempList = self.get3AC()
             
-            if tempList == []:
-                return None
             
             
             self._temp3ACList = self.get3AC()
