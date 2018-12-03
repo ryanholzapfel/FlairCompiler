@@ -216,7 +216,7 @@ class CodeGen(object):
         print(generatedACList)
         self.set3AC(generatedACList)
 
-        self.genProgramArgs()
+        
 
         self.genBody()
 
@@ -255,15 +255,18 @@ class CodeGen(object):
             
 
     def genBody(self):
-        if len(self.get3AC()) == 1:
-            #genPrint to return/print a single value
-            pass
-
-
-
-
-
         lastIndex = -1
+        if len(self.get3AC()) == 1:
+            treeValue = self.get3AC()[-1][2]
+            self.addCode('LDC 2,{}(0) #load zero arg case'.format(treeValue))
+            self.addCode('ST 2, 1(0) #Store zero arg case to dmem 1') # store tree value to dmem 1 we now have our arg for 0 arg programs
+            lastIndex = 0
+
+
+
+
+
+        
         while lastIndex != 0:
         
             #maybe move out of while loop?
@@ -308,7 +311,7 @@ class CodeGen(object):
                     self.genMult(tempArg1, tempArg2, tempCode[3])
 
                     #genOperator(threeACCode)
-                    break
+                    
 
                 # self._temp3ACList = self.get3AC()
             
@@ -361,6 +364,14 @@ class CodeGen(object):
         self.loadReg()
         #self.addCode("LDA 7,0(6) # branch back using r7") #still considering what the offset should be
 
+    def genPrint(self, tempArg1, tempArg2, tempPlace):
+        self.saveReg()
+        self.addCode("LDC 2,{}(0)  # load cmd line arg 1".format(tempArg1))
+        self.addCode("ST 2,{}(0)  # store cmd line arg 1".format(tempPlace + self._nextOffset))
+        self.loadReg()
+    
+    
+    
     def generate(self):
         
         self.initializeMain()
