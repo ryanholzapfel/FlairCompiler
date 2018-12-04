@@ -99,6 +99,7 @@ class CodeGen(object):
         self.setFunctionList() 
         self.genFunction()
         #label generation previously happened here is now factered out into a def genLabels()
+        self.genLabels()
         self.returnMain()
 
         jumpLines = "".join(self.genJump()) #make a jump for later make sure to create jump lines last
@@ -139,12 +140,12 @@ class CodeGen(object):
         tempFunctNumber = self.functCount()
         tempFunctionName = functionList[tempFunctNumber]
         if len(functionList) == 1:
-            self.genLabels()
+            #self.genLabels() did not work as intended
             self._nextOffset += 1 # +2 might cauz issues ttry +1
 
         else: # gets the number of args for a function and changes the offset to reflect that
             #//TODO  check that the offset is getting set correctly we may be accidentally changing the offset multipe times
-            self.genLabels()
+            #self.genLabels() did not work as intended
             self._nextOffset
             functionArgs = self._symbolTable[tempFunctionName][0]
             numberOfArgs = len(functionArgs)
