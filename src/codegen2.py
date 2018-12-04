@@ -3,30 +3,9 @@ from enum import Enum
 from threeACGen import ThreeACGen, GenExpression
 from parser import Parser
 from scanner import Scanner
-
-
-# class GenExpression(Enum):
-#     genMult     = 1
-#     genDiv      = 2
-#     genAdd      = 3
-#     genSubt     = 4
-#     genLess     = 5
-#     genEqual    = 6
-#     genOr       = 7
-#     genIf       = 8
-#     genAnd      = 9
-#     genNot      = 10
-#     genNeg      = 11
-#     genPrint    = 12
-#     genReturn   = 13
-#     genBool     = 14
-
 # gen_table = {
 #         GenExpression.genMult : genMult
 # }
-
-
-
 
 class CodeGen(object):
     def __init__(self, programNode, symbolTable):
@@ -49,9 +28,6 @@ class CodeGen(object):
         self._tempCode = []
         self._offsetList = []
         self._NumberOfProgArgs = []
-
-
-
 
     def toggleIMEM(self, regNum):
         if self._availableIMEM[regNum] == 0:
@@ -98,9 +74,7 @@ class CodeGen(object):
         pass
     
     def genProgramArgs(self): # this is currently unused
-    
         if len(self.get3AC()) == 1: #if there is only one 3AC, the program just prints a number
-            #treeValue = self._programNode.body().statementlist().returnstatement().sexpr().term().factor().literal()
             treeValue = self.get3AC()[-1][2]
             self.addCode('LDC 2,{}(0) #load zero arg case'.format(treeValue))
             self.addCode('ST 2, 1(0) #Store zero arg case to dmem 1') # store tree value to dmem 1 we now have our arg for 0 arg programs
@@ -122,43 +96,35 @@ class CodeGen(object):
     def initializeMain(self): # This Program Literally starts here
         self.genPointers()
         self.storeReturn()
-        self.setFunctionList()
-
-        
+        self.setFunctionList() 
         self.genFunction()
+        #label generation previously happened here is now factered out into a def genLabels()
+        self.returnMain()
 
-        
-        thisLabel = self.currentLabel()                                                 # this should be factored out
+        jumpLines = "".join(self.genJump()) #make a jump for later make sure to create jump lines last
+        self._programString = self._programString + jumpLines
+
+    def genLabels(self):  
+        thisLabel = self.currentLabel()   # sets thisLabel to the current label number and increments it by 1
         # // TODO jumpsToComplete is not handled correctly it should create a jump every time a function is created  
         #  right now it only creates one jump for the whole program
         self._jumpsToComplete.append((self.currentLine() ,thisLabel, 'uncondtional' ))   # this should be factored out       
         self._labelData[thisLabel] = self.currentLine() + 1                              # this should be factored out                       
-        self.incrementLine()                                                             # this should be factored out
-        self.returnMain()
-
-
-
-        jumpLines = "".join(self.genJump()) #make a jump for later make sure to create jump lines last
-        self._programString = self._programString + jumpLines
+        self.incrementLine()
 
     def storeReturn(self):
         #// TODO storeReturn should store return addresses acording to the function its called in not just a general location
         self.addCode("LDA 1,6(7)  #load return address")
         self.addCode("ST 1,1(6)   #store return address")
 
+        #// TODO make sure that genJump is constructing jumps proberly and often enough
+        #// TODO labelData  should know what line it is so that it can jump back to the next incrementeed line properly
     def genJump(self): #generates jump stats via backpatching, label data, and jumps to complete. all jump statements must be generated last, but before return statment generation
         for jumps in self._jumpsToComplete:
             self._jumpString.append(str(jumps[0]) + ": LDA 7, {}(0)\n".format(self._labelData['label' + str(1 + self._jumpsToComplete.index(jumps))]))
         return self._jumpString
     
     def returnMain(self):#wip previously worked as ("LDC 2, 1 (0)" #literal one)
-        #hardcode literal 1
-        #self.addCode("LDC 2,1(0)  #literal one")
-        #end hardcode
-        #not hardcoded WIP
-        #self.addCode("LDC 2,{}(0)  #literal one".format(commandArg))#need to save command line arg here
-        #
-        
         self.addCode("OUT 2,0,0   #return result of main")
         self.addCode("HALT 0,0,0  #stop execution; end of program")
 
@@ -173,15 +139,16 @@ class CodeGen(object):
         tempFunctNumber = self.functCount()
         tempFunctionName = functionList[tempFunctNumber]
         if len(functionList) == 1:
+            self.genLabels()
             self._nextOffset += 1 # +2 might cauz issues ttry +1
 
-        else:
+        else: # gets the number of args for a function and changes the offset to reflect that
+            #//TODO  check that the offset is getting set correctly we may be accidentally changing the offset multipe times
+            self.genLabels()
             self._nextOffset
             functionArgs = self._symbolTable[tempFunctionName][0]
             numberOfArgs = len(functionArgs)
             self._nextOffset += numberOfArgs +1
-
-            # begining of the function in the tm code
         
             #IMPORTANT: may need to check if theres an if statement
             # OR print 
@@ -194,8 +161,6 @@ class CodeGen(object):
         generatedACList = tac.program3AC(programNode.body().statementlist().returnstatement())
         print(generatedACList)
         self.set3AC(generatedACList)
-
-        
         self.genBody()
 
     def genBody(self):
@@ -221,9 +186,6 @@ class CodeGen(object):
             #maybe move out of while loop?
             currentOffset = self._nextOffset
             tempList = self.get3AC()
-            
-            
-            
             self._temp3ACList = self.get3AC()
             print(" should be the full 3 ac list from opererator" )
             print(self.get3AC())
@@ -290,8 +252,6 @@ class CodeGen(object):
         self.addCode("LDC 2,{}(0)  # load cmd line arg 1".format(tempArg1))
         self.addCode("ST 2,{}(0)  # store cmd line arg 1".format(tempPlace + self._nextOffset))
         self.loadReg()
-    
-    
     
     def generate(self):
         
