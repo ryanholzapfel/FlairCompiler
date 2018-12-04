@@ -73,11 +73,11 @@ class CodeGen(object):
     def savePointers(self):
         pass
     
-    def genProgramArgs(self): # this is currently unused
+    def genKnownProgramArgs(self): # this is currently unused
         if len(self.get3AC()) == 1: #if there is only one 3AC, the program just prints a number
             treeValue = self.get3AC()[-1][2]
             self.addCode('LDC 2,{}(0) #load zero arg case'.format(treeValue))
-            self.addCode('ST 2, 1(0) #Store zero arg case to dmem 1') # store tree value to dmem 1 we now have our arg for 0 arg programs
+
 
     def saveReg(self): # typically used to store imem before a function call to save current state of main prog stored from dmem 6-10
         self.addCode("ST 0,1(5)   #save IMEM to DMEM")
@@ -95,8 +95,16 @@ class CodeGen(object):
 
     def initializeMain(self): # This Program Literally starts here
         self.genPointers()
-        self.storeReturn()
+        #self.storeReturn()
         self.setFunctionList() 
+        self.setNumberOfProgArgs()
+        programArgs = self.getNumberOfProgArgs()
+        for arg in programArgs:
+            count = 1
+            self.addCode('LD 2,{}(0) #load program arg {} to dmem'.format(count, arg))
+            self.addCode('ST 2, {}(0) #Store cmd Line arg {} case to dmem {}'.format(count + self._nextOffset, arg, count + self._nextOffset))
+            self._nextOffset += 1
+            count += 1
         self.genFunction()
         #label generation previously happened here is now factered out into a def genLabels()
         self.genLabels() # //TODO genLabels should be in a location that it can gen a label for every function that may need it
@@ -170,18 +178,8 @@ class CodeGen(object):
         if len(self.get3AC()) == 1:
             treeValue = self.get3AC()[-1][2]
             self.addCode('LDC 2,{}(0) #load zero arg case'.format(treeValue))
-            self.addCode('ST 2, 1(0) #Store zero arg case to dmem 1') # store tree value to dmem 1 we now have our arg for 0 arg programs
+            self.addCode('ST 2, 11(0) #Store zero arg case to dmem 11') # store tree value to dmem 1 we now have our arg for 0 arg programs
             lastIndex = 0
-
-        # here wee need to load cmd line args into dmem
-
-        cmdLineArgs = self.getNumberOfProgArgs()
-        for arg in cmdLineArgs:
-            count = 1
-            self.addCode('LDC 2,{}(0) #load zero arg case'.format(count,'cmd line'+ arg))
-            self.addCode('ST 2, {}(0) #Store cmd Line arg {} case to dmem {}'.format(count + self._nextOffset, arg, count + self._nextOffset))
-            self._nextOffset += 1
-            count += 1
 
         while lastIndex != 0:
         
@@ -232,26 +230,26 @@ class CodeGen(object):
         functionName = self._functionList[self._functNumber]
         tPlace = int(tempPlace.strip('t'))
         if str(tempArg2).isalpha():
-            arg2Offset = (self._symbolTable[functionName][0].index(tempArg2)) + 1 # we add 1 to align the index with args in dmem
+            arg2Offset = (self._symbolTable[functionName][0].index(tempArg2))  # we add 1 to align the index with args in dmem
         if str(tempArg1).isalpha():
-            arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) + 1
+            arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
             
-        self.saveReg()
+        #self.saveReg()
         self.addCode("LDA 3,{}(0) # load return adress".format(tPlace + offset)) # think about offset plus one inside of every function then subtract on for return address might be helpful
-        self.addCode("LD 4,{}(0)  # load cmd line arg 1".format(tempArg1))
-        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset  )) # this offset should be 12 i think code returns 11
-        self.addCode("MUL 4,4,5   # multiply")
-        if tempArg2 != None:
-            self.addCode("ST 4,{}(0)  # store product in DMEM at same return address handed in".format(tPlace + offset)) # //TODO this should be stored in the function offset return not in a hard coded spot
+        if isinstance(tempArg1,int):
+            self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
         else:
-            self.addCode("ST 4,{}(0)  # store product in DMEM at same return address handed in".format(offset + 1))
-        self.loadReg()
+            self.addCode("LD 4,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg1Offset + offset  ))
+        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
+        self.addCode("MUL 4,4,5   # multiply")
+        self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
+        #self.loadReg()
 
     def genPrint(self, tempArg1, tempArg2, tempPlace):
-        self.saveReg()
+        #self.saveReg()
         self.addCode("LDC 2,{}(0)  # load cmd line arg 1".format(tempArg1))
         self.addCode("ST 2,{}(0)  # store cmd line arg 1".format(tempPlace + self._nextOffset))
-        self.loadReg()
+        #self.loadReg()
     
     def generate(self):
         
