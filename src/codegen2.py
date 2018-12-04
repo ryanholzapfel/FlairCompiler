@@ -99,7 +99,7 @@ class CodeGen(object):
         self.setFunctionList() 
         self.genFunction()
         #label generation previously happened here is now factered out into a def genLabels()
-        self.genLabels()
+        self.genLabels() # //TODO genLabels should be in a location that it can gen a label for every function that may need it
         self.returnMain()
 
         jumpLines = "".join(self.genJump()) #make a jump for later make sure to create jump lines last
@@ -126,6 +126,7 @@ class CodeGen(object):
         return self._jumpString
     
     def returnMain(self):#wip previously worked as ("LDC 2, 1 (0)" #literal one)
+        self.addCode("LD 2,11(0)  # load return address from dmem in imem")
         self.addCode("OUT 2,0,0   #return result of main")
         self.addCode("HALT 0,0,0  #stop execution; end of program")
 
@@ -220,33 +221,31 @@ class CodeGen(object):
                     #genTemp = gen_table.get(tempOperator)
                     print('3ac values arg1 arg2 tempPlace')
                     print(tempArg1, tempArg2, tempCode[3])
-                    self.genMult(tempArg1, tempArg2, tempCode[3])
+                    self.genMult(tempArg1, tempArg2, tempCode[3]) #//TODO tempCode[3] is returning a wrong value needs fixing
     
-        
-    def genMult(self, tempArg1, tempArg2, tempPlace): #r2 is possibly not zero a,b,c is possibly t1,t2,t3
+        # takes a 3AC in as 3 args
+    def genMult(self, tempArg1, tempArg2, tempPlace): #r2 is possibly not zero a,b,c is possibly t1,t2,t3 
         # get offset from symbol table
+        print('what gets handed into mult')
+        print(tempArg1,tempArg2,tempPlace)
         offset = self._offsetList[self._functNumber]
         functionName = self._functionList[self._functNumber]
         tPlace = int(tempPlace.strip('t'))
         if str(tempArg2).isalpha():
-            arg2Offset = self._symbolTable[functionName][0].index(tempArg2)
+            arg2Offset = (self._symbolTable[functionName][0].index(tempArg2)) + 1 # we add 1 to align the index with args in dmem
         if str(tempArg1).isalpha():
-            arg1Offset = self._symbolTable[functionName][0].index(tempArg1)
+            arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) + 1
             
         self.saveReg()
         self.addCode("LDA 3,{}(0) # load return adress".format(tPlace + offset)) # think about offset plus one inside of every function then subtract on for return address might be helpful
-        
         self.addCode("LD 4,{}(0)  # load cmd line arg 1".format(tempArg1))
-        
         self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset  )) # this offset should be 12 i think code returns 11
         self.addCode("MUL 4,4,5   # multiply")
         if tempArg2 != None:
-            self.addCode("ST 4,{}(0)  # store product in DMEM at same return address handed in".format(tPlace + offset)) # this should be stored in the function offset return not in a hard coded spot
+            self.addCode("ST 4,{}(0)  # store product in DMEM at same return address handed in".format(tPlace + offset)) # //TODO this should be stored in the function offset return not in a hard coded spot
         else:
-            self.addCode("ST 4,1({})  # store product in DMEM at same return address handed in".format(offset))
-
+            self.addCode("ST 4,{}(0)  # store product in DMEM at same return address handed in".format(offset + 1))
         self.loadReg()
-        #self.addCode("LDA 7,0(6) # branch back using r7") #still considering what the offset should be
 
     def genPrint(self, tempArg1, tempArg2, tempPlace):
         self.saveReg()
