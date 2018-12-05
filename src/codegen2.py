@@ -107,12 +107,17 @@ class CodeGen(object):
         self.setFunctionList() 
         self.setNumberOfProgArgs()
         programArgs = self.getNumberOfProgArgs()
+        count = 1
+        
         for arg in programArgs:
-            count = 1
             self.addCode('LD 2,{}(0) #load program arg {} to dmem'.format(count, arg))
-            self.addCode('ST 2, {}(0) #Store cmd Line arg {} case to dmem {}'.format(count + self._nextOffset, arg, count + self._nextOffset))
             self._nextOffset += 1
+            self.addCode('ST 2, {}(0) #Store cmd Line arg {} case to dmem {}'.format( self._nextOffset , arg, self._nextOffset))
+            
+            self._offsetList.append(self._nextOffset)
             count += 1
+        print('this is the offset list')
+        print(self._offsetList)
         self.genFunction()
         #label generation previously happened here is now factered out into a def genLabels()
         self.genLabels() # //TODO genLabels should be in a location that it can gen a label for every function that may need it
@@ -153,7 +158,7 @@ class CodeGen(object):
     def genFunction(self):
         #first we establish the offset in dmem for each function this will be 12 for a 1 or 0 arg program to a finite number no more than 1000
         functionList = self.getFunctionList()
-        self._offsetList.append(self._nextOffset)
+        #self._offsetList.append(self._nextOffset)
         tempFunctNumber = self.functCount()
         tempFunctionName = functionList[tempFunctNumber]
         if len(functionList) == 1:
@@ -215,8 +220,11 @@ class CodeGen(object):
 
                     tempArg1place = int(tempCode[1].strip('t'))
                     tempArg2place = int(tempCode[2].strip('t'))
-                    print('this is arg 2')
+                    print('this is arg 2 place')
                     print(tempArg2place)
+
+                    print('this is arg 1 place')
+                    print(tempArg1place)
 
                     tempArg1 = temp3ACList[tempArg1place][2]
                     tempArg2 = temp3ACList[tempArg2place][2]
@@ -244,11 +252,11 @@ class CodeGen(object):
             arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
             
         #self.saveReg()
-        self.addCode("LDA 3,{}(0) # load return adress".format(tPlace + offset)) # think about offset plus one inside of every function then subtract on for return address might be helpful
+        self.addCode("LDA 3,{}(0) # load return adress".format(offset -1)) # think about offset plus one inside of every function then subtract on for return address might be helpful
         if isinstance(tempArg1,int):
             self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
         else:
-            self.addCode("LD 4,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg1Offset + offset  ))
+            self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(arg1Offset + offset  ))
         self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
         self.addCode("MUL 4,4,5   # multiply")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
@@ -268,13 +276,13 @@ class CodeGen(object):
             arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
             
         #self.saveReg()
-        self.addCode("LDA 3,{}(0) # load return adress".format(tPlace + offset)) # think about offset plus one inside of every function then subtract on for return address might be helpful
+        self.addCode("LDA 3,{}(0) # load return adress".format(offset -1)) # think about offset plus one inside of every function then subtract on for return address might be helpful
         if isinstance(tempArg1,int):
             self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
         else:
             self.addCode("LD 4,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg1Offset + offset  ))
         self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
-        self.addCode("DIV 4,4,5   # multiply")
+        self.addCode("DIV 4,4,5   # Divide")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
         #self.loadReg()
 
@@ -292,13 +300,13 @@ class CodeGen(object):
             arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
             
         #self.saveReg()
-        self.addCode("LDA 3,{}(0) # load return adress".format(tPlace + offset)) # think about offset plus one inside of every function then subtract on for return address might be helpful
+        self.addCode("LDA 3,{}(0) # load return adress".format( offset -1 )) # think about offset plus one inside of every function then subtract one for return address might be helpful
         if isinstance(tempArg1,int):
             self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
         else:
             self.addCode("LD 4,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg1Offset + offset  ))
         self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
-        self.addCode("ADD 4,4,5   # multiply")
+        self.addCode("ADD 4,4,5   # Add")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
         #self.loadReg()
 
@@ -316,13 +324,13 @@ class CodeGen(object):
             arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
             
         #self.saveReg()
-        self.addCode("LDA 3,{}(0) # load return adress".format(tPlace + offset)) # think about offset plus one inside of every function then subtract on for return address might be helpful
+        self.addCode("LDA 3,{}(0) # load return adress".format(offset -1)) # think about offset plus one inside of every function then subtract on for return address might be helpful
         if isinstance(tempArg1,int):
             self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
         else:
             self.addCode("LD 4,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg1Offset + offset  ))
         self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
-        self.addCode("SUB 4,4,5   # multiply")
+        self.addCode("SUB 4,4,5   # Subtract")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
         #self.loadReg()
 
