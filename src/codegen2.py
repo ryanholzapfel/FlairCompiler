@@ -120,19 +120,14 @@ class CodeGen(object):
         print(self._offsetList)
         self.genFunction()
         #label generation previously happened here is now factered out into a def genLabels()
-        self.genLabels() # //TODO genLabels should be in a location that it can gen a label for every function that may need it
+        #self.genLabels() # //TODO genLabels should be in a location that it can gen a label for every function that may need it
         self.returnMain()
 
+        # initiates back patching tm code generation genJump
         jumpLines = "".join(self.genJump()) #make a jump for later make sure to create jump lines last
-        self._programString = self._programString + jumpLines
+        self._programString = self._programString + jumpLines 
 
-    def genLabels(self):  
-        thisLabel = self.currentLabel()   # sets thisLabel to the current label number and increments it by 1
-        # // TODO jumpsToComplete is not handled correctly it should create a jump every time a function is created  
-        #  right now it only creates one jump for the whole program
-        self._jumpsToComplete.append((self.currentLine() ,thisLabel, 'uncondtional' ))   # this should be factored out       
-        self._labelData[thisLabel] = self.currentLine() + 1                              # this should be factored out                       
-        self.incrementLine()
+
 
     def storeReturn(self):
         #// TODO storeReturn should store return addresses acording to the function its called in not just a general location
@@ -181,7 +176,7 @@ class CodeGen(object):
 
         programNode = self._programNode
         tac = ThreeACGen(programNode)
-        generatedACList = tac.program3AC(programNode.body().statementlist().returnstatement())
+        generatedACList = tac.program3AC() #programNode.body().statementlist().returnstatement()
         print(generatedACList)
         self.set3AC(generatedACList)
         self.genBody()
@@ -194,7 +189,8 @@ class CodeGen(object):
             self.addCode('ST 2, 11(0) #Store zero arg case to dmem 11') # store tree value to dmem 1 we now have our arg for 0 arg programs
             lastIndex = 0
 
-        while lastIndex != 0:
+        
+        while lastIndex != 0: # while last 3ac to process  
         
             #maybe move out of while loop?
             currentOffset = self._nextOffset
@@ -202,6 +198,9 @@ class CodeGen(object):
             self._temp3ACList = self.get3AC()
             print(" should be the full 3 ac list from opererator" )
             print(self.get3AC())
+
+
+
             temp3ACList = self._temp3ACList
             
             reversed3ACList = list(reversed(temp3ACList))
@@ -213,6 +212,7 @@ class CodeGen(object):
                 tempOperator = tempCode[0]
                 print('inside for loop')
                 print(tempCode)
+
                 if tempOperator != None:
                     print('tempOP')
                     print(tempOperator)
@@ -245,6 +245,10 @@ class CodeGen(object):
         print(tempArg1,tempArg2,tempPlace)
         offset = self._offsetList[self._functNumber]
         functionName = self._functionList[self._functNumber]
+        print('funtion name')
+        print(functionName)
+        print('this is the function list')
+        print(self._functionList)
         tPlace = int(tempPlace.strip('t'))
         if str(tempArg2).isalpha():
             arg2Offset = (self._symbolTable[functionName][0].index(tempArg2))  # we add 1 to align the index with args in dmem
@@ -267,8 +271,11 @@ class CodeGen(object):
         # get offset from symbol table
         print('what gets handed into mult')
         print(tempArg1,tempArg2,tempPlace)
+
         offset = self._offsetList[self._functNumber]
+
         functionName = self._functionList[self._functNumber]
+        
         tPlace = int(tempPlace.strip('t'))
         if str(tempArg2).isalpha():
             arg2Offset = (self._symbolTable[functionName][0].index(tempArg2))  # we add 1 to align the index with args in dmem
@@ -334,6 +341,20 @@ class CodeGen(object):
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
         #self.loadReg()
 
+    
+
+
+
+
+
+    def genCall(self,tempArg1, tempArg2, tempPlace):  
+        self._functNumber += 1
+        thisLabel = self.currentLabel()   # sets thisLabel to the current label number and increments it by 1
+        # // TODO jumpsToComplete is not handled correctly it should create a jump every time a function is created  
+        #  right now it only creates one jump for the whole program
+        self._jumpsToComplete.append((self.currentLine() ,thisLabel, 'uncondtional' ))   # this should be factored out       
+        self._labelData[thisLabel] = tempPlace      #i belive this is the jump back info                                             
+        self.incrementLine()
 
 
     def genPrint(self, tempArg1, tempArg2, tempPlace):

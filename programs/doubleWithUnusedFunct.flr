@@ -8,6 +8,11 @@ Group: Avalanche: Holzapfel*, Rausch, Wariach (language)
 
 program Doubler( n : integer );
 
+    function d (m:integer):integer
+        begin 
+            return m * 2
+        end;
+
 	begin
 
 		return n * 2
