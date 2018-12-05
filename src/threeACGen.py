@@ -39,17 +39,29 @@ class ThreeACGen():
     def __init__(self,programNode):
         self._programNode = programNode
         self._acList = []
+        self._lastID = "t-1"
 
 
 
     def idInc(self,id):
         num = int(id[1:])
-        return "t" + str(num+1)
+        nextID = "t" + str(num+1)
+        self._lastID = nextID
+        return nextID
 
     def new3AC(self,op,a1,a2,id):
         self._acList.append([op,a1,a2,id])
 
-    def program3AC(self,returnExpr, prevID): #returnExpr is the return expression from the program node
+    def program3AC(self):
+        #generate 3AC for main return
+        self.genExpr3AC(self._programNode.body().statementlist().returnstatement(), "t-1")
+        #generate 3AC for each function definition
+        for deff in self._programNode.definitions().deffs():
+            #nextID = self.idInc(self._lastID)
+            self.genExpr3AC(deff.body().statementlist().returnstatement(), self._lastID)
+        return self._acList
+
+    def genExpr3AC(self,returnExpr, prevID): #returnExpr is the return expression from the program node
         id = self.idInc(prevID)
         #id = "t0"
         #acList = [] #[[op, arg1, arg2, id]]
@@ -57,7 +69,7 @@ class ThreeACGen():
         #acList.append(["t1", None, walkExpr(returnExpr), None])
         self.walkExpr(id,returnExpr)
         #print(self._acList)
-        return self._acList
+        #return self._acList
 
 
 

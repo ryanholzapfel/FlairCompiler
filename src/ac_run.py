@@ -29,9 +29,11 @@ parser = Parser(scanner)
 #parse the program and save the program node (contains all semantic actions)
 programNode = parser.parse()
 tacGen = ThreeACGen(programNode)
-taclist = tacGen.program3AC(programNode.body().statementlist().returnstatement(), "t-1")
-for deff in programNode.definitions().deffs():
-    #print(taclist)
-    lastID = taclist[-1][-1]
-    taclist = tacGen.program3AC(deff.body().statementlist().returnstatement(), lastID)
-print(taclist)
+# taclist = tacGen.program3AC(programNode.body().statementlist().returnstatement(), "t-1")
+# for deff in programNode.definitions().deffs():
+#     #print(taclist)
+#     lastID = taclist[-1][-1]
+#     taclist = tacGen.program3AC(deff.body().statementlist().returnstatement(), lastID)
+# print(taclist)
+tacList = tacGen.program3AC()
+print(tacList)
