@@ -20,6 +20,7 @@ class GenExpression(Enum):
     genPrint    = 12
     genReturn   = 13
     genBool     = 14
+    genCall     = 15
 
 
 
@@ -48,14 +49,15 @@ class ThreeACGen():
     def new3AC(self,op,a1,a2,id):
         self._acList.append([op,a1,a2,id])
 
-    def program3AC(self,returnExpr): #returnExpr is the return expression from the program node
-        id = "t0"
+    def program3AC(self,returnExpr, startID): #returnExpr is the return expression from the program node
+        id = startID
+        #id = "t0"
         #acList = [] #[[op, arg1, arg2, id]]
         #need a backlog/temp list for the case where both sides of an operator are expressions
         #acList.append(["t1", None, walkExpr(returnExpr), None])
         self.walkExpr(id,returnExpr)
         #print(self._acList)
-        return(self._acList)
+        return self._acList
 
 
 
@@ -123,8 +125,10 @@ class ThreeACGen():
 
         else:
             n = self.walkFactor(id,term.factor())
-            if isinstance(n, Negate_Node) or isinstance(n, Call_Node) or isinstance(n, Expr_Node):
+            if isinstance(n, Negate_Node) or isinstance(n, Expr_Node):
                 pass
+            elif isinstance(n, Call_Node):
+                self.new3AC(GenExpression.genCall,None,n.identifier(),id)
             else:
                 self.new3AC(None,None,n,id)
 
@@ -134,10 +138,8 @@ class ThreeACGen():
         elif isinstance(factor, Identifier_Node):
             return factor.identifier()
         elif isinstance(factor, If_Node):
-            pass
+            return factor
         elif isinstance(factor, Call_Node):
-            pass
+            return factor
         else: #make sure I didn't forget any...
             return self.walkExpr(factor)
-                                #emitCode(exprPrime.place,":=",simpleExpr1.place "<", simpleExpr2.place)
-
