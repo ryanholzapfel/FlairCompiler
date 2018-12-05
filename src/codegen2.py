@@ -335,10 +335,6 @@ class CodeGen(object):
         #self.loadReg()
     
     def generate(self):
-<<<<<<< HEAD
-=======
-        
->>>>>>> origin/ryan-dev
         self.initializeMain()
         return self._programString
 
