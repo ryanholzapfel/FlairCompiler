@@ -628,6 +628,7 @@ class Parser:
         self.scanner = scanner
         
     def parse(self):
+        postOrder = []
         tokenCount = 0
         parseStack = []
         semanticStack = []
@@ -659,6 +660,7 @@ class Parser:
                     msg = 'cannot expand {} on {}'
                     raise ParseError(msg.format(grammarRule,t))
             elif isinstance(grammarRule, Ast_Type):
+                postOrder.append(grammarRule)
                 #print(grammarRule, "/", semanticStack)#, semanticStack)
                 actionNode = action_table.get(grammarRule) #lookup function to create node
                 actionNode(semanticStack) #call function to create node
@@ -675,4 +677,5 @@ class Parser:
         #print(semanticStack[0])
         #for item in semanticStack:
             #print(item)
+        #print(postOrder)
         return semanticStack[0]

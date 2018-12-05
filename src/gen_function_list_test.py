@@ -15,7 +15,7 @@ def genTMFileName():
 
 
 filename = input('Enter your program name ')
-fileIn = open("/home/nick3/Compiler/programs/"+ filename,"r")
+fileIn = open("/home/ryan/Compiler/programs/"+ filename,"r")
 #fileIn = open(fileName)
 flrprogram = fileIn.read()
 
@@ -28,15 +28,5 @@ programNode = parser.parse()
 sa = SemanticAnalyzer(programNode)
 symbolTable = sa.table()
 generator = CodeGen(programNode, symbolTable)
-tmprogramstr = generator.generate()
-fn = genTMFileName()
-
-#cwd = os.getcwd()
-#print(cwd)
-#print(programstr)
-
-tmpath = "./tm/"+ fn + ".tm"
-tmOut = open(tmpath, "w")
-tmOut.write(tmprogramstr)
-tmOut.close()
-
+generator.setFunctionList()
+print(generator.getFunctionList())

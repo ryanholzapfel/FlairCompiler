@@ -60,9 +60,9 @@ class Scanner:
       elif identifier == "integer":
         return Token(TokenType.NUMBER)
       elif identifier == "true":
-        return Token(TokenType.BOOLEAN, True)
+        return Token(TokenType.BOOLEAN, true)
       elif identifier == "false":
-        return Token(TokenType.BOOLEAN, False)
+        return Token(TokenType.BOOLEAN, false)
       elif identifier == "boolean":
         return Token(TokenType.BOOLEAN)
       else:
