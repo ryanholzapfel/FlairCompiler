@@ -3,10 +3,10 @@ program Doubler( n : integer );
 	function d (m: integer):integer
 	begin
 		return m*2
-		end;
+	end;
 		
 begin
 
 	return d(n)
 
-			end.
+end.

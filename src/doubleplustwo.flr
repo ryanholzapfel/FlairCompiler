@@ -1,0 +1,15 @@
+{
+
+----------Doubleplustwo Program---------
+
+Group: Avalanche: Holzapfel*, Rausch, Wariach (language)
+
+}
+
+program doubleplustwo( n : integer);
+
+	begin
+
+		return n * 2 + 2
+
+			end.

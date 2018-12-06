@@ -10,8 +10,7 @@
 8: LD 5,13(0)  # load cmd line arg 2 or other known variable from dmem
 9: ADD 4,4,5   # Add
 10: ST 4,11(0)  # store product in DMEM at same return address handed in
-12: LD 2,11(0)  # load return address from dmem in imem
-13: OUT 2,0,0   #return result of main
-14: HALT 0,0,0  #stop execution; end of program
+11: LD 2,11(0)  # load return address from dmem in imem
+12: OUT 2,0,0   #return result of main
+13: HALT 0,0,0  #stop execution; end of program
 *--------- BackPatched Jumps
-11: LDA 7, 12(0)
