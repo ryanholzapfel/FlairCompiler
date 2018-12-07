@@ -149,7 +149,7 @@ class ThreeACGen():
                 id = self.idInc(id)
                 actuals = n.actuals().actualList()
                 for actual in actuals:
-                    self.walkExpr(id,actual)
+                    self.genExpr3AC(actual,id)
             else:
                 self.new3AC(None,None,n,id)
 
