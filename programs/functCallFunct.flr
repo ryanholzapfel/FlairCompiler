@@ -5,9 +5,9 @@ program DoubleAddFunctions( n : integer, z:integer);
 		return m*2
 	end;
 		
-    function Add (b: integer, c:integer):integer
+    function Add (b: integer):integer
 	begin
-		return Mult(b + c)
+		return Mult(b )
 	end;
 		
 begin

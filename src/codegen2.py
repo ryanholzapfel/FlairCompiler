@@ -296,7 +296,8 @@ class CodeGen(object):
             self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(arg1Offset + int(offset.strip('t'))  ))
         if isinstance(offset,int):
             self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
-        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
+        else:
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
         self.addCode("MUL 4,4,5   # multiply")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
         #self.loadReg()
@@ -306,24 +307,33 @@ class CodeGen(object):
         # get offset from symbol table
         print('what gets handed into mult')
         print(tempArg1,tempArg2,tempPlace)
-
-        offset = self._argOffsetList[self._functNumber]
-
-        functionName = self._functionList[self._functNumber]
+        functionName = self._functionList[self._functNumber] 
+        offset = self._functionReturnOffsetDict[functionName]
         
+        print('funtion name')
+        print(functionName)
+        print('this is the function list')
+        print(self._functionList)
         tPlace = int(tempPlace.strip('t'))
+        print(str(tempArg2))
         if str(tempArg2).isalpha():
             arg2Offset = (self._symbolTable[functionName][0].index(tempArg2))  # we add 1 to align the index with args in dmem
-        if str(tempArg1).isalpha():
-            arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
+        #if 't' in tempArg1:
+            #arg1Offset = (self._functionReturnOffsetDict[functionName][0].index(int(tempArg1.strip('t'))))
             
         #self.saveReg()
-        self.addCode("LDA 3,{}(0) # load return adress".format(offset -1)) # think about offset plus one inside of every function then subtract on for return address might be helpful
+        if isinstance(offset, int):
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset))
+        else:
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset.strip('t'))) # think about offset plus one inside of every function then subtract on for return address might be helpful
         if isinstance(tempArg1,int):
             self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
         else:
-            self.addCode("LD 4,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg1Offset + offset  ))
-        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
+            self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(arg1Offset + int(offset.strip('t'))  ))
+        if isinstance(offset,int):
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
+        else:
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
         self.addCode("DIV 4,4,5   # Divide")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
         #self.loadReg()
@@ -358,8 +368,9 @@ class CodeGen(object):
             self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(arg1Offset + int(offset.strip('t'))  ))
         if isinstance(offset,int):
             self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
-        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
-        self.addCode("ADD 4,4,5   # multiply")
+        else:
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
+        self.addCode("ADD 4,4,5   # Add")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
         #self.loadReg()
         # takes a 3AC in as 3 args
@@ -369,25 +380,37 @@ class CodeGen(object):
         # get offset from symbol table
         print('what gets handed into mult')
         print(tempArg1,tempArg2,tempPlace)
-        offset = self._argOffsetList[self._functNumber]
-        functionName = self._functionList[self._functNumber]
+        functionName = self._functionList[self._functNumber] 
+        offset = self._functionReturnOffsetDict[functionName]
+        
+        print('funtion name')
+        print(functionName)
+        print('this is the function list')
+        print(self._functionList)
         tPlace = int(tempPlace.strip('t'))
+        print(str(tempArg2))
         if str(tempArg2).isalpha():
             arg2Offset = (self._symbolTable[functionName][0].index(tempArg2))  # we add 1 to align the index with args in dmem
+        #if 't' in tempArg1:
+            #arg1Offset = (self._functionReturnOffsetDict[functionName][0].index(int(tempArg1.strip('t'))))
         if str(tempArg1).isalpha():
             arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
-            
         #self.saveReg()
-        self.addCode("LDA 3,{}(0) # load return adress".format(offset -1)) # think about offset plus one inside of every function then subtract on for return address might be helpful
+        if isinstance(offset, int):
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset))
+        else:
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset.strip('t'))) # think about offset plus one inside of every function then subtract on for return address might be helpful
         if isinstance(tempArg1,int):
             self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
         else:
-            self.addCode("LD 4,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg1Offset + offset  ))
-        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
+            self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(1 + arg1Offset + int(str(offset).strip('t'))  ))
+        if isinstance(offset,int):
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(1 + arg2Offset + offset)) # this offset should be 12 i think code returns 11
+        else:
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
         self.addCode("SUB 4,4,5   # Subtract")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
         #self.loadReg()
-
     
 
 

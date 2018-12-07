@@ -12,6 +12,6 @@ program DoubleAddFunctions( n : integer, z:integer);
 		
 begin
 
-	return Add(Mult(z))
+	return Add( Mult(z))
 
 end.

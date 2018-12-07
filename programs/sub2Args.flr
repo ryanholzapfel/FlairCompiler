@@ -1,0 +1,13 @@
+{
+
+----------subtracting Program---------
+
+}
+
+program sub( n : integer, m:integer );
+
+	begin
+
+		return n - m
+
+	end.
