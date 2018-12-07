@@ -5,10 +5,11 @@
 *-------------function Doubler
 5: LDA 3,1(0) # load return adress
 6: LDC 4,2(0)  # load cmd line arg 1
-7: MUL 4,4,5   # multiply
-8: ST 4,11(0)  # store product in DMEM at same return address handed in
-9: LD 2,11(0)  # load return address from dmem in imem
-10: OUT 2,0,0   #return result of main
-11: HALT 0,0,0  #stop execution; end of program
+7: LD 5,12(0)  # load cmd line arg 2 or other known variable from dmem
+8: MUL 4,4,5   # multiply
+9: ST 4,11(0)  # store product in DMEM at same return address handed in
+10: LD 2,11(0)  # load return address from dmem in imem
+11: OUT 2,0,0   #return result of main
+12: HALT 0,0,0  #stop execution; end of program
 *--------- BackPatched Jumps
 4: LDA 7, t1(0)

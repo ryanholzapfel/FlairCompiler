@@ -181,6 +181,7 @@ class CodeGen(object):
         generatedACList = tac.program3AC() #programNode.body().statementlist().returnstatement()
         print(generatedACList)
         self.set3AC(generatedACList)
+        self._functionReturnOffsetDict[self._programName] = 11
         self.genBody()
 
     def genBody(self):
@@ -282,13 +283,17 @@ class CodeGen(object):
             #arg1Offset = (self._functionReturnOffsetDict[functionName][0].index(int(tempArg1.strip('t'))))
             
         #self.saveReg()
-        self.addCode("LDA 3,{}(0) # load return adress".format(offset.strip('t'))) # think about offset plus one inside of every function then subtract on for return address might be helpful
+        if isinstance(offset, int):
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset))
+        else:
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset.strip('t'))) # think about offset plus one inside of every function then subtract on for return address might be helpful
         if isinstance(tempArg1,int):
             self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
         else:
             self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(arg1Offset + int(offset.strip('t'))  ))
         if isinstance(offset,int):
             self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
+        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(offset.strip('t') ) ) )
         self.addCode("MUL 4,4,5   # multiply")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
         #self.loadReg()
@@ -386,7 +391,8 @@ class CodeGen(object):
         self._labelData[thisLabel] = check3ACgenCallList[count + 1][3]      #i belive this is the jump back info                                             
         self.incrementLine()
         #self._temp3ACList[count][1] = self._temp3ACList[count][2]
-        self._temp3ACList[count][1] = check3ACgenCallList[count + 1][3]
+        self._temp3ACList[count][1] = check3ACgenCallList[count + 1][3] # pretty sure we dont need this as this info is stored in 2 other locations
+
 
     def genPrint(self, tempArg1, tempArg2, tempPlace):
         #self.saveReg()

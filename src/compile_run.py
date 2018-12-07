@@ -6,11 +6,11 @@ from scanner import Scanner
 from semanticanalyzer import SemanticAnalyzer
 
 def genTMFileName():
-    #fl = fileName.split("/")
-    #flairFN = fl[-1]
-    #flairFN = flairFN.strip(".flr")
-    #return flairFN
-    return "print-one"
+    fl = fileName.split("/")
+    flairFN = fl[-1]
+    flairFN = flairFN.strip(".flr")
+    return flairFN
+    #return "print-one"
 
 
 
