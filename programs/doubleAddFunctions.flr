@@ -1,4 +1,4 @@
-program DoubleAddFunctions( z : integer);
+program DoubleAddFunctions( n : integer, z:integer);
 
 	function Mult (m: integer):integer
 	begin

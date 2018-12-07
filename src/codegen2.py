@@ -156,7 +156,7 @@ class CodeGen(object):
         #first we establish the offset in dmem for each function this will be 12 for a 1 or 0 arg program to a finite number no more than 1000
         functionList = self.getFunctionList()
         #self._argOffsetList.append(self._nextOffset)
-        tempFunctNumber = self.functCount()
+        tempFunctNumber = self.functCount() #increments for (at least) program name
         tempFunctionName = functionList[tempFunctNumber]
         if len(functionList) == 1:
             #self.genLabels() did not work as intended
@@ -165,7 +165,6 @@ class CodeGen(object):
         else: # gets the number of args for a function and changes the offset to reflect that
             #//TODO  check that the offset is getting set correctly we may be accidentally changing the offset multipe times
             #self.genLabels() did not work as intended
-            self._nextOffset
             functionArgs = self._symbolTable[tempFunctionName][0]
             numberOfArgs = len(functionArgs)
             self._nextOffset += numberOfArgs +1
@@ -334,24 +333,36 @@ class CodeGen(object):
         # get offset from symbol table
         print('what gets handed into mult')
         print(tempArg1,tempArg2,tempPlace)
-        offset = self._argOffsetList[self._functNumber]
-        functionName = self._functionList[self._functNumber]
+        functionName = self._functionList[self._functNumber] 
+        offset = self._functionReturnOffsetDict[functionName]
+        
+        print('funtion name')
+        print(functionName)
+        print('this is the function list')
+        print(self._functionList)
         tPlace = int(tempPlace.strip('t'))
+        print(str(tempArg2))
         if str(tempArg2).isalpha():
             arg2Offset = (self._symbolTable[functionName][0].index(tempArg2))  # we add 1 to align the index with args in dmem
-        if str(tempArg1).isalpha():
-            arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
+        #if 't' in tempArg1:
+            #arg1Offset = (self._functionReturnOffsetDict[functionName][0].index(int(tempArg1.strip('t'))))
             
         #self.saveReg()
-        self.addCode("LDA 3,{}(0) # load return adress".format( offset -1 )) # think about offset plus one inside of every function then subtract one for return address might be helpful
+        if isinstance(offset, int):
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset))
+        else:
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset.strip('t'))) # think about offset plus one inside of every function then subtract on for return address might be helpful
         if isinstance(tempArg1,int):
             self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
         else:
-            self.addCode("LD 4,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg1Offset + offset  ))
-        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
-        self.addCode("ADD 4,4,5   # Add")
+            self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(arg1Offset + int(offset.strip('t'))  ))
+        if isinstance(offset,int):
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
+        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
+        self.addCode("ADD 4,4,5   # multiply")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
         #self.loadReg()
+        # takes a 3AC in as 3 args
 
         # takes a 3AC in as 3 args
     def genSubt(self, tempArg1, tempArg2, tempPlace): #r2 is possibly not zero a,b,c is possibly t1,t2,t3 
@@ -392,7 +403,7 @@ class CodeGen(object):
         # // TODO jumpsToComplete is not handled correctly it should create a jump every time a function is created  
         #  right now it only creates one jump for the whole program
         self._jumpsToComplete.append((self.currentLine() ,thisLabel, 'uncondtional' ))   # this should be factored out       
-        self._labelData[thisLabel] = check3ACgenCallList[count + 1][3]      #i belive this is the jump back info                                             
+        self._labelData[thisLabel] = threeAC[1]      #i belive this is the jump back info                                             
         self.incrementLine()
         #self._temp3ACList[count][1] = self._temp3ACList[count][2]
         self._temp3ACList[count][1] = check3ACgenCallList[count + 1][3] # pretty sure we dont need this as this info is stored in 2 other locations

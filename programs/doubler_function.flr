@@ -1,8 +1,8 @@
-program Doubler( n : integer );
+program Doubler( n : integer, z:integer );
 
-	function d (m: integer):integer
+	function d (m: integer, b :integer):integer
 	begin
-		return m*2
+		return m*b
 	end;
 		
 begin
