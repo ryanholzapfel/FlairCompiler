@@ -146,11 +146,11 @@ class ThreeACGen():
             elif isinstance(n, Call_Node):
                 #self.new3AC(GenExpression.genCall,self._acList[-1][-1],n.identifier(),id)
                 self.new3AC(GenExpression.genCall,None,n.identifier(),id)
-                id = self.idInc(id)
+            
                 actuals = n.actuals().actualList()
                 for actual in actuals:
                     id = self.idInc(id)
-                    self.walkExpr(id,actual)
+                    self.walkExpr(id,actual) #t2,t3
             else:
                 self.new3AC(None,None,n,id)
 
