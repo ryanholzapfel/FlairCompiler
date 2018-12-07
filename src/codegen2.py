@@ -228,6 +228,10 @@ class CodeGen(object):
                     
 
                 if tempOperator != None:
+                    if tempCode[-1] in list(self._labelData.values()):
+                        for key in self._labelData.keys():
+                            if self._labelData[key] == tempCode[-1] :
+                                self._labelData[key] = self._currentLine
                     print('tempOP')
                     print(tempOperator)
                     lastIndex =  tempCodeIndex
@@ -293,7 +297,7 @@ class CodeGen(object):
             self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(arg1Offset + int(offset.strip('t'))  ))
         if isinstance(offset,int):
             self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
-        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(offset.strip('t') ) ) )
+        self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
         self.addCode("MUL 4,4,5   # multiply")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
         #self.loadReg()

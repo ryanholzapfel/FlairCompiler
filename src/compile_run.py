@@ -6,7 +6,7 @@ from scanner import Scanner
 from semanticanalyzer import SemanticAnalyzer
 
 def genTMFileName():
-    fl = fileName.split("/")
+    fl = filename.split("/")
     flairFN = fl[-1]
     flairFN = flairFN.strip(".flr")
     return flairFN
@@ -15,7 +15,7 @@ def genTMFileName():
 
 
 filename = input('Enter your program name ')
-fileIn = open("/home/nick3/Compiler/programs/"+ filename,"r")
+fileIn = open("/home/ryan/Compiler/programs/"+ filename,"r")
 #fileIn = open(fileName)
 flrprogram = fileIn.read()
 
