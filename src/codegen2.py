@@ -284,7 +284,8 @@ class CodeGen(object):
             arg2Offset = (self._symbolTable[functionName][0].index(tempArg2))  # we add 1 to align the index with args in dmem
         #if 't' in tempArg1:
             #arg1Offset = (self._functionReturnOffsetDict[functionName][0].index(int(tempArg1.strip('t'))))
-            
+        if str(tempArg1).isalpha():
+            arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
         #self.saveReg()
         if isinstance(offset, int):
             self.addCode("LDA 3,{}(0) # load return adress".format(offset))
@@ -293,15 +294,16 @@ class CodeGen(object):
         if isinstance(tempArg1,int):
             self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
         else:
-            self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(arg1Offset + int(offset.strip('t'))  ))
+            self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(1 + arg1Offset + int(str(offset).strip('t'))  ))
         if isinstance(offset,int):
-            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(1 + arg2Offset + offset)) # this offset should be 12 i think code returns 11
         else:
             self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
-        self.addCode("MUL 4,4,5   # multiply")
+        self.addCode("MUL 4,4,5   # Multiply")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
         #self.loadReg()
-        # takes a 3AC in as 3 args
+    
+
 
     def genDiv(self, tempArg1, tempArg2, tempPlace): #r2 is possibly not zero a,b,c is possibly t1,t2,t3 
         # get offset from symbol table
@@ -320,7 +322,8 @@ class CodeGen(object):
             arg2Offset = (self._symbolTable[functionName][0].index(tempArg2))  # we add 1 to align the index with args in dmem
         #if 't' in tempArg1:
             #arg1Offset = (self._functionReturnOffsetDict[functionName][0].index(int(tempArg1.strip('t'))))
-            
+        if str(tempArg1).isalpha():
+            arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
         #self.saveReg()
         if isinstance(offset, int):
             self.addCode("LDA 3,{}(0) # load return adress".format(offset))
@@ -329,16 +332,17 @@ class CodeGen(object):
         if isinstance(tempArg1,int):
             self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
         else:
-            self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(arg1Offset + int(offset.strip('t'))  ))
+            self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(1 + arg1Offset + int(str(offset).strip('t'))  ))
         if isinstance(offset,int):
-            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(1 + arg2Offset + offset)) # this offset should be 12 i think code returns 11
         else:
             self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
         self.addCode("DIV 4,4,5   # Divide")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
         #self.loadReg()
+    
 
-        # takes a 3AC in as 3 args
+
     def genAdd(self, tempArg1, tempArg2, tempPlace): #r2 is possibly not zero a,b,c is possibly t1,t2,t3 
         # get offset from symbol table
         print('what gets handed into mult')
@@ -356,7 +360,8 @@ class CodeGen(object):
             arg2Offset = (self._symbolTable[functionName][0].index(tempArg2))  # we add 1 to align the index with args in dmem
         #if 't' in tempArg1:
             #arg1Offset = (self._functionReturnOffsetDict[functionName][0].index(int(tempArg1.strip('t'))))
-            
+        if str(tempArg1).isalpha():
+            arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
         #self.saveReg()
         if isinstance(offset, int):
             self.addCode("LDA 3,{}(0) # load return adress".format(offset))
@@ -365,17 +370,17 @@ class CodeGen(object):
         if isinstance(tempArg1,int):
             self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
         else:
-            self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(arg1Offset + int(offset.strip('t'))  ))
+            self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(1 + arg1Offset + int(str(offset).strip('t'))  ))
         if isinstance(offset,int):
-            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(arg2Offset + offset)) # this offset should be 12 i think code returns 11
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(1 + arg2Offset + offset)) # this offset should be 12 i think code returns 11
         else:
             self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
         self.addCode("ADD 4,4,5   # Add")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
         #self.loadReg()
-        # takes a 3AC in as 3 args
+    
 
-        # takes a 3AC in as 3 args
+
     def genSubt(self, tempArg1, tempArg2, tempPlace): #r2 is possibly not zero a,b,c is possibly t1,t2,t3 
         # get offset from symbol table
         print('what gets handed into mult')

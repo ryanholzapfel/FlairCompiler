@@ -1,17 +1,17 @@
-program DoubleAddFunctions( n : integer, z:integer);
+program DoubleAddFunctions( n : integer);
 
 	function Mult (m: integer):integer
 	begin
 		return m*2
 	end;
 		
-    function Add (b: integer):integer
+    function temp (b: integer):integer
 	begin
 		return Mult(b )
 	end;
 		
 begin
 
-	return Add(z,n)
+	return temp(n)
 
 end.
