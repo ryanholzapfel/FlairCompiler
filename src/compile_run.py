@@ -1,5 +1,6 @@
 import sys
 import os
+import pwd
 from codegen2 import CodeGen
 from parser import Parser
 from scanner import Scanner
@@ -13,9 +14,9 @@ def genTMFileName():
     #return "print-one"
 
 
-
+user = pwd.getpwuid(os.getuid()).pw_name
 filename = input('Enter your program name ')
-fileIn = open("/home/ryan/Compiler/programs/"+ filename,"r")
+fileIn = open("/home/"+ user +"/Compiler/programs/"+ filename,"r")
 #fileIn = open(fileName)
 flrprogram = fileIn.read()
 
