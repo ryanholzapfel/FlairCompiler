@@ -24,34 +24,28 @@ class GenExpression(Enum):
 
 
 
-# class threeACGen(object):
-#     def __init__(self, programNode, symbolTable):
-#         self._programNode = programNode
-#         self._symbolTable = symbolTable #list of lists containing all functions used in program 
-#         self._program3AC = []
-
-#     def lessThan(self):
-#         self._exprPrime.place = makeNewTemp()
-#         self._exprPrime.code =  [simpleExpr1.code]
-#                                 [simpleExpr2.code]
-
+#object that stores 3AC, has functions that generate it from the program node
 class ThreeACGen():
     def __init__(self,programNode):
-        self._programNode = programNode
-        self._acList = []
-        self._lastID = "t-1"
+        self._programNode = programNode #AST object
+        self._acList = [] #list of 3AC fourples
+        self._lastID = "t-1" #start at t-1 to increment to t0 when the first generate is called
 
 
-
+    #increment the 3AC ID (eg. t0 -> t1)
     def idInc(self,id):
         num = int(id[1:])
         nextID = "t" + str(num+1)
         self._lastID = nextID
         return nextID
 
+
+    #helper function, adds a 3AC fourple to the list
     def new3AC(self,op,a1,a2,id):
         self._acList.append([op,a1,a2,id])
 
+
+    #call this to generate 3AC for whole function
     def program3AC(self):
         #generate 3AC for main return
         self.genExpr3AC(self._programNode.body().statementlist().returnstatement(), "t-1")
@@ -61,7 +55,8 @@ class ThreeACGen():
             self.genExpr3AC(deff.body().statementlist().returnstatement(), self._lastID)
         return self._acList
 
-    def genExpr3AC(self,returnExpr, prevID): #returnExpr is the return expression from the program node
+    #generate 3AC from a return expression node
+    def genExpr3AC(self,returnExpr, prevID): #returnExpr is the return statement from any function or main return
         id = self.idInc(prevID)
         #id = "t0"
         #acList = [] #[[op, arg1, arg2, id]]
@@ -72,7 +67,7 @@ class ThreeACGen():
         #return self._acList
 
 
-
+    #walk down the tree, see what operations there are
     def walkExpr(self,id,expr):
         if not expr.exprprime() == None:
             #find which operation node
@@ -140,6 +135,7 @@ class ThreeACGen():
             if isinstance(n, Negate_Node) or isinstance(n, Expr_Node):
                 pass
             elif isinstance(n, Call_Node):
+                #self.new3AC(GenExpression.genCall,self._acList[-1][-1],n.identifier(),id)
                 self.new3AC(GenExpression.genCall,None,n.identifier(),id)
             else:
                 self.new3AC(None,None,n,id)
