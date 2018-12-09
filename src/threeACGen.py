@@ -39,6 +39,10 @@ class ThreeACGen():
         self._lastID = nextID
         return nextID
 
+    def nextID(self,id):
+        num = int(id[1:])
+        nextID = "t" + str(num+1)
+        return nextID
 
     #helper function, adds a 3AC fourple to the list
     def new3AC(self,op,a1,a2,id):
@@ -52,6 +56,9 @@ class ThreeACGen():
         #generate 3AC for each function definition
         for deff in self._programNode.definitions().deffs():
             #nextID = self.idInc(self._lastID)
+            for code in self._acList:
+                if deff.identifier().identifier() == code[2]:
+                    code[1] = self.nextID(self._lastID)
             self.genExpr3AC(deff.body().statementlist().returnstatement(), self._lastID)
         return self._acList
 
@@ -132,11 +139,18 @@ class ThreeACGen():
 
         else:
             n = self.walkFactor(id,term.factor())
-            if isinstance(n, Negate_Node) or isinstance(n, Expr_Node):
+            if isinstance(n, Negate_Node):
                 pass
+            elif isinstance(n, Expr_Node):
+                self.walkExpr(id, n)
             elif isinstance(n, Call_Node):
                 #self.new3AC(GenExpression.genCall,self._acList[-1][-1],n.identifier(),id)
                 self.new3AC(GenExpression.genCall,None,n.identifier(),id)
+            
+                actuals = n.actuals().actualList()
+                for actual in actuals:
+                    id = self.idInc(id)
+                    self.walkExpr(id,actual) #t2,t3
             else:
                 self.new3AC(None,None,n,id)
 

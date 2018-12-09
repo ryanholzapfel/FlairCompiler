@@ -1,21 +1,22 @@
 import sys
 import os
+import pwd
 from codegen2 import CodeGen
 from parser import Parser
 from scanner import Scanner
 from semanticanalyzer import SemanticAnalyzer
 
 def genTMFileName():
-    #fl = fileName.split("/")
-    #flairFN = fl[-1]
-    #flairFN = flairFN.strip(".flr")
-    #return flairFN
-    return "print-one"
+    fl = filename.split("/")
+    flairFN = fl[-1]
+    flairFN = flairFN.strip(".flr")
+    return flairFN
+    #return "print-one"
 
 
-
+user = pwd.getpwuid(os.getuid()).pw_name
 filename = input('Enter your program name ')
-fileIn = open("/home/nick3/Compiler/programs/"+ filename,"r")
+fileIn = open("/home/"+ user +"/Compiler/programs/"+ filename,"r")
 #fileIn = open(fileName)
 flrprogram = fileIn.read()
 

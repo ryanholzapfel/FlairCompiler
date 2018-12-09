@@ -1,0 +1,10 @@
+program funopfun(n : integer);
+
+function a(b : integer):integer
+begin
+	return b
+end;
+
+begin
+	return a(n) * a(n)
+end.

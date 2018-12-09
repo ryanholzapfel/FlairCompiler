@@ -1,10 +1,15 @@
 0: LDC 5,-1(0)  #initialize status ptr
 1: LDC 6,2(0)   #initialize top ptr
-*-------------function main
-2: LDC 2,1(0) #load zero arg case
-3: ST 2, 11(0) #Store zero arg case to dmem 11
-5: LD 2,11(0)  # load return address from dmem in imem
-6: OUT 2,0,0   #return result of main
-7: HALT 0,0,0  #stop execution; end of program
+2: LD 2,1(0) #load program arg n to dmem
+3: ST 2, 12(0) #Store cmd Line arg n case to dmem 12
+*-------------function Doubler
+5: LDA 3,1(0) # load return adress
+6: LDC 4,2(0)  # load cmd line arg 1
+7: LD 5,12(0)  # load cmd line arg 2 or other known variable from dmem
+8: MUL 4,4,5   # multiply
+9: ST 4,11(0)  # store product in DMEM at same return address handed in
+10: LD 2,11(0)  # load return address from dmem in imem
+11: OUT 2,0,0   #return result of main
+12: HALT 0,0,0  #stop execution; end of program
 *--------- BackPatched Jumps
-4: LDA 7, 5(0)
+4: LDA 7, t1(0)
