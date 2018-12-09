@@ -4,6 +4,7 @@ scanner_test.py
 """
 import sys
 from scanner import Scanner
+sys.tracebacklimit = 0
 
 def main():
 

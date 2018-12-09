@@ -4,6 +4,7 @@ from semanticanalyzer import SemanticAnalyzer
 from codegen2 import CodeGen
 from parser import Parser
 from scanner import Scanner
+sys.tracebacklimit =0
 
 def genTMFileName():
     fl = fileName.split("/")
