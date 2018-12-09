@@ -11,12 +11,6 @@ class SemanticAnalyzer(object):
     def programNode(self):
         return self._programNode
         
-    # def setBool(self):
-        # self._currentType = "Boolean"
-        
-    # def setInt(self):
-        # self._currentType = "Integer"
-        
     def getType(self):
         return self._currentType
 
@@ -24,18 +18,6 @@ class SemanticAnalyzer(object):
         return self._errors.append(msg)
         
     def formals_dict(self, node): #node is the program node, creates a double dict for all formals in program
-        # self._typeList = {} #empty out dict
-        # programID = node.identifier().identifier()
-        # self._typelist[programID] = {}
-        # for formal in node.formals(): #build program formals set
-        # 	self._typelist[programID][formal.identifier().identifier()] = formal.types()
-        # defs = node.definitions()
-        # for deff in defs: #for each def
-        # 	defID = deff.identifier().identifier()
-        # 	self._typelist[defID] = {}
-        # 	for formal in deff.formals():
-        # 		self._typelist[defID][formal.identifier().identifier()] = formal.types()
-        
         """
         dict entry --> prog/fn ID (key fn.) : [[(0)formal ids for key fn.(strings)], [(1)formal types of items in (0) ("I" or "B")], [(2)key fn. called by these fnIDs], [(3)key fn. calls these fnIDs], (4)type of return value for key fn.("I" or "B")]
         """
@@ -54,7 +36,6 @@ class SemanticAnalyzer(object):
                     self._typelist[defID][0].append(formal.identifier().identifier())
                     self._typelist[defID][1].append(self.check_return(formal.types()))
                 self._typelist[defID].append(self.check_return(deff.types()))
-            
 
     def set_currentID(self,id):
         self._currentID = id
@@ -62,15 +43,12 @@ class SemanticAnalyzer(object):
     def check_expr(self, node):
         print(node)
         if node.exprprime() == None:
-            #print("checked se only")
             return self.check_se(node.sexpr())
         elif isinstance(node.exprprime(), LessThan_Node):
             if self.check_se(node.sexpr())=="I" and self.check_less(node.exprprime())=="I":
-                #print("checked se and less")
                 return "B"
         else: #exprprime is an equal to node
             if self.check_se(node.sexpr())=="I" and self.check_equal(node.exprprime())=="I":
-                #print("checked se and equal")
                 return "B"
             else:
                 msg = "Int Error: Expected to resolve integer in equal to operation, got boolean"
@@ -78,7 +56,6 @@ class SemanticAnalyzer(object):
                 return "I"
             
     def check_se(self, node):
-        #print(node.seprime(), "and", node.term)
         if node.seprime() == None:
             return self.check_term(node.term())
         elif isinstance(node.seprime(), Or_Node):
@@ -110,7 +87,6 @@ class SemanticAnalyzer(object):
             if self.check_factor(node.factor())=="I" and self.check_times(node.termprime())=="I":
                 return "I"
             else:
-                #print(self.check_factor(node.factor()), self.check_times(node.termprime()))
                 msg = "Int Error: Expected to resolve multiplication operation to Integer, got Boolean"
                 self.addError(msg)
                 return "B"
@@ -126,8 +102,7 @@ class SemanticAnalyzer(object):
                 msg = "Int Error: Expected to resolve division operation to Integer, got Boolean"
                 self.addError(msg)
                 return "B"
-                
-                
+                  
     def check_factor(self, node):
         if isinstance(node, Expr_Node):
             return self.check_expr(node)
@@ -138,9 +113,8 @@ class SemanticAnalyzer(object):
         elif isinstance(node, Literal_Node):# stores type int or boolean for later evaluations and returns true
             if isinstance(node.literal(), Integer_Node):
                 return "I"
-            elif isinstance(node.literal(), Boolean_Node):
-                #setBool()
-                return "B"
+            elif isinstance(node.literal(), Boolean_Node): 
+                return "B"#setBool()
             else:
                 print("couldn't resolve literal to either type", node.literal())
                 return("I")
@@ -152,66 +126,29 @@ class SemanticAnalyzer(object):
     def check_call(self, node):
         self._typelist[self._currentID][3].append(node.identifier())
         self._typelist[node.identifier()][2].append(self._currentID)
-        return "I"
-                
-                
+        return "I"         
                 
     def check_equal(self, node):
         return self.check_se(node.simpleexpr())
-        # if isinstance(node, Integer_Node):
-        # 	return "I"
-        # elif isinstance(node, Identifier_Node):
-        # 	return check_id(node)
-        # else:
-        # 	return "B"
+ 
     def check_less(self, node):
         return self.check_se(node.simpleexpr())
-        # if isinstance(node, Integer_Node):
-        # 	return "I"
-        # elif isinstance(node, Identifier_Node):
-        # 	return check_id(node)
-        # else:
-        # 	return "B"
+   
     def check_plus(self, node):
         return self.check_term(node.term())
-        # if isinstance(node, Integer_Node):
-        # 	return "I"
-        # elif isinstance(node, Identifier_Node):
-        # 	return check_id(node)
-        # else:
-        # 	return "B"
+  
     def check_minus(self, node):
         return self.check_term(node.term())
-        # if isinstance(node, Integer_Node):
-        # 	return "I"
-        # elif isinstance(node, Identifier_Node):
-        # 	return check_id(node)
-        # else:
-        # 	return "B"
+  
     def check_or(self, node):
         return self.check_term(node.term())
-        # if isinstance(node, Boolean_Node):
-        # 	return "B"
-        # elif isinstance(node, Identifier_Node):
-        # 	return check_id(node)
-        # else:
-        # 	return "I"
+  
     def check_times(self, node):
         return self.check_factor(node.factor())
-        # if isinstance(node, Integer_Node):
-        # 	return "I"
-        # elif isinstance(node, Identifier_Node):
-        # 	return check_id(node)
-        # else:
-        # 	return "B"
+ 
     def check_divide(self, node):
         return self.check_factor(node.factor())
-        # if isinstance(node, Integer_Node):
-        # 	return "I"
-        # elif isinstance(node, Identifier_Node):
-        # 	return check_id(node)
-        # else:
-        # 	return "B"
+  
     def check_if(self, node):
         tf = self.check_expr(node.expr1())
         rt = self.check_expr(node.expr2())
@@ -222,7 +159,7 @@ class SemanticAnalyzer(object):
             else:
                 msg = "Mismatch return types on If-Then-Else"
                 addError(msg)
-                return "B" #doesn't matter what this returns...
+                return "B" 
         else:
             msg = "If statement does not evaluate to boolean"
             addError(msg)
@@ -242,16 +179,15 @@ class SemanticAnalyzer(object):
         #if node is id, look up id in formals type list and check if integer or boolean
         idindex = self._typelist[self._currentID][0].index(idstr)
         formalType = self._typelist[self._currentID][1][idindex]
-        if formalType == "I": #isinstance(formalType, Integer_Node):
+        if formalType == "I": # ID is assigned to integer type
             return "I"
-        elif formalType == "B": #isinstance(formalType, Boolean_Node): # ID is assigned to boolean type
+        elif formalType == "B":  # ID is assigned to boolean type
             return "B"
         else:
             print("couldn't resolve id to type", idstr)
             return "I"
                 
     def check_return(self, node):
-        #print(node)
         if isinstance(node, Integer_Node):
             return "I"
         elif isinstance(node, Boolean_Node):
@@ -260,7 +196,6 @@ class SemanticAnalyzer(object):
             print("couldn't resolve return type")
             return "I"
         
-
     def check_def(self, node):	#node is def node	
         expr_type = self.check_expr(node.body().statementlist().returnstatement())
         return_type = self.check_return(node.types())
@@ -280,32 +215,9 @@ class SemanticAnalyzer(object):
         self.set_currentID(node.identifier().identifier())
         expr_type = self.check_expr(node.body().statementlist().returnstatement())
         return expr_type
-
-
-                
-                
-                
-                
-                
-                
+           
     def table(self):
         self.formals_dict(self.programNode()) #create (most of) symbol table
         self.check_definitions(self.programNode()) #verify that defs return the declared types
         self._typelist[self.programNode().identifier().identifier()].append(self.check_program(self.programNode())) #add program return type to symbol table
-        print(self._typelist)
-        print(self._errors)
-        return self._typelist
-        # programFunctions = []
-        # functionList = []
-        # for function in self.programNode().definitions().deffs():
-        #     functionList = []
-        #     functionList.append(str(function.identifier()))
-        #     functionList.append(str(function.formals()))
-        #     functionList.append(str(function.types()))
-        #     programFunctions.append(str(functionList))
-        # print(programFunctions)
-        
-            
-
-            
-    
+        return self._typelist 
