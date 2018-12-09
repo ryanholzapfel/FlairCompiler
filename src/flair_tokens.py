@@ -71,7 +71,6 @@ class Token:
     def is_divide(self):
         return self.token_type == TokenType.DIVIDE
 
-
     def is_less(self):
         return self.token_type == TokenType.LESS
 
