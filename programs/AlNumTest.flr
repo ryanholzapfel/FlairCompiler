@@ -1,0 +1,13 @@
+{
+
+Test for alpha-numeric identifiers
+
+}
+
+program Test( n : integer, n_1 : integer, n2 : integer, n_n :integer);
+
+	begin
+
+		return n + n_1 + n2 + n_n
+
+			end.

@@ -8,12 +8,14 @@ class Scanner:
     self.program_str = program_str
     self.pos         = 0
     self.lookahead   = None
-   
+
+  #look at next token without advancing the program string position
   def peek(self):
     if not self.lookahead:
       self.lookahead = self.get_next_token()
     return self.lookahead
-      
+
+  #return the next token    
   def next(self):
     if self.lookahead:
       answer = self.lookahead
@@ -27,10 +29,13 @@ class Scanner:
 
   def get_next_token(self):
     self.skip_whitespace()
-  
+
+    #at the end of the file, generate an EOF token
     if self.pos >= len(self.program_str):
       return Token(TokenType.EOF)  
-  
+
+    #if a alphabet char is encountered, build an ID then check if it's a keyword
+    #if it is a keyword, return that type of token instead of an ID
     if self.program_str[self.pos].isalpha():
       identifier = self.get_identifier()
       if identifier == "if":
@@ -72,6 +77,7 @@ class Scanner:
           msg = "identifier too long at position {}".format(self.pos)
           raise LexicalError(msg)
     
+    #when a number char is encountered, build a number token and check that it's within range
     if self.program_str[self.pos] in '1234567890':
       number = self.get_number()
       if number in range(0,4294967296):
@@ -81,8 +87,7 @@ class Scanner:
         raise LexicalError(msg)
         
         
-      #list of operator tokens (self delimiting)
-        
+    #handle subtraction vs. negate    
     if self.program_str[self.pos] == '-':
       if self.program_str[self.pos+1] in '1234567890':
         left_of_minus = self.pos - 1
@@ -103,7 +108,7 @@ class Scanner:
         
         
         
-        
+    #self-delimiting operators and punctuation    
     if self.program_str[self.pos] == '+':
       self.pos += 1
       return Token(TokenType.ADD)         
@@ -121,26 +126,15 @@ class Scanner:
     if self.program_str[self.pos] == '=':
       self.pos += 1
       return Token(TokenType.EQUAL)
-    
-    #no greater than operator?
-    #if self.program_str[self.pos] == '>':
-    # self.pos += 1
-    # return Token(TokenType.GREATER)  
-    # list of punctuators (self delimiting)     
+
+    #handle curly braces (comments) by ignoring everything between them and returning no tokens
     if self.program_str[self.pos] == '{':
         while True:
             if self.program_str[self.pos] == '}':
                 self.pos += 1
                 break
             self.pos += 1
-        #instead of returning a token we will return zero tokens for left and right bracket
-        #return Token(TokenType.LEFTBRACKET)
         return self.get_next_token()
-        
-    #comment out because right bracket should never return unless left bracket is returned first      
-    #if self.program_str[self.pos] == '}':
-    #  self.pos += 1
-    #  return Token(TokenType.RIGHTBRACKET)
           
     if self.program_str[self.pos] == ',':
       self.pos += 1
@@ -155,13 +149,6 @@ class Scanner:
       return Token(TokenType.COLON)
           
     if self.program_str[self.pos] == '.':
-    #  tempPos = self.pos + 1
-    #  if (tempPos) == len(self.program_str):
-    #    self.pos += 1
-    #    return Token(TokenType.PERIOD)
-    #  else:
-    #    msg = 'Invald decimal/period at position {}'.format(self.pos)
-    #    raise LexicalError(msg)
       self.pos += 1
       return Token(TokenType.PERIOD)
       
@@ -173,33 +160,32 @@ class Scanner:
     if self.program_str[self.pos] == ')':
       self.pos += 1
       return Token(TokenType.RIGHTPARENT)  
-    # if no token matches, signal an error
-        # Important need to make sure lexor works with scanner  
+    # if no token matches, signal an error 
     msg = 'invalid characters at position {}'.format(self.pos)
     raise LexicalError(msg)
 
   # --------------------------------------------------------
 
+  #uses is_whitespace to advance program string over whitespace
   def skip_whitespace(self):
       while self.pos < len(self.program_str) and \
           self.is_whitespace(self.program_str[self.pos]):
         self.pos += 1
       return
   
+  #returns true if a character is whitespace
   def is_whitespace(self, ch):
       return ch in ' \n\t\r '
-      
+
+  #while next char is a number, letter, or underscore, create an ID token
   def get_identifier(self):
-      start = self.pos
-      #if len(self.program_str) > 256:
-       # msg = 'Invalid Identifier: Identifier is longer than 256 characters at position {}'.format(self.pos)
-        #raise LexicalError(msg)
-        
-      while self.pos < len(self.program_str) and \
-            self.program_str[self.pos].isalpha():
+      start = self.pos    
+      while self.pos < len(self.program_str) and (self.program_str[self.pos].isalnum() or self.program_str[self.pos] == '_'):
         self.pos += 1
       return self.program_str[start : self.pos]
-      
+
+
+  #while the next char is a number, create a number token, break on whitespace or punctuation
   def get_number(self):
       start = self.pos
       while True:
@@ -209,8 +195,5 @@ class Scanner:
           msg = "invalid number at pos {}".format(self.pos)
           raise LexicalError(msg)
         else:
-          break
-      # if start == '0' and len(self.program_str[start:self.pos]) > 1:
-        # msg = "Leading zero(s) at position {}".format(start)
-        # raise LexicalError(msg)     
+          break     
       return int( self.program_str[start : self.pos])  
