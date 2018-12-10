@@ -1,0 +1,19 @@
+{
+
+----------divide FAIL Program---------
+started a function inside program body
+}
+
+program divi ( n : integer, m:integer );
+
+	begin
+
+		return n / m
+
+
+        function Fail (n:integer):integer
+
+        begin 
+            return 1
+        end.
+	end.

@@ -1,0 +1,14 @@
+ {
+
+----------Bool FAIL CheckProgram---------
+2 less operators
+
+}
+
+program LessThan ( n : boolean , m:boolean);
+
+	begin
+
+		return n << m
+
+	end.

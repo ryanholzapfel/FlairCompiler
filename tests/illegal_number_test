@@ -1,3 +1,5 @@
-123
-a
-123a
+123 {regular number}
+a {regular ID}
+a123 {ID with number}
+A_123 {ID with underscore}
+123a {illegal number (scanner will error out here)}

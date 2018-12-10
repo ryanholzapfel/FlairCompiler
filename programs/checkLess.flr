@@ -1,0 +1,13 @@
+ {
+
+----------Bool CheckProgram---------
+
+}
+
+program LessThan ( n : boolean , m:boolean);
+
+	begin
+
+		return n < m
+
+	end.

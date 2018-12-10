@@ -1,0 +1,13 @@
+ {
+
+----------Bool CheckProgram---------
+
+}
+
+program andr ( n : boolean , m:boolean);
+
+	begin
+
+		return n and m
+
+	end.

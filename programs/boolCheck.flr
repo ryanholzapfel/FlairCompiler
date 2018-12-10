@@ -1,0 +1,13 @@
+ {
+
+----------Bool CheckProgram---------
+
+}
+
+program Bool ( n : boolean , m:boolean);
+
+	begin
+
+		return n = m
+
+	end.

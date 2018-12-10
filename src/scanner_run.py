@@ -3,12 +3,15 @@ scanner_test.py
 """
 import sys
 from scanner import Scanner
-
+sys.tracebacklimit =0
 
 fileName = sys.argv[1]
-file = open(fileName)
+hasFlr = ".flr"
+if ".flr" in fileName:
+    hasFlr = ""
+fileIn = open("programs/"+ fileName + hasFlr, "r")
 
-program = file.read()
+program = fileIn.read()
 
 tokenList = Scanner(program)
 currentToken = tokenList.next()

@@ -16,11 +16,13 @@ fileIn = open("programs/"+ fileName + hasFlr, "r")
 
 program = fileIn.read()
 
+
+
 scanner = Scanner(program)
 parser = Parser(scanner)
 
 tree = parser.parse()
 
 if tree:
-    #print("Program is valid.")
-	print(tree)
+    print("Program is valid.")
+	#print(tree)

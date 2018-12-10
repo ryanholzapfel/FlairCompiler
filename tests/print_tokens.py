@@ -10,20 +10,11 @@ list of tokens in a Flair program
 
 '''
 
-
-#file name and open
 fileName = sys.argv[1]
 file = open(fileName)
-
-
 keywords = ["program","function","begin","end","return","integer","boolean","and","or","if","then","else","not","print"] 
-
 #read file to single string
 program = file.read()
-
-#test with string of characters
-#program = "program"
-
 #load the program into the scanner object
 tokenList = Scanner(program)
 #get the first token
@@ -43,6 +34,5 @@ while True:
     else: #any other tokens
         print(currentToken)
     currentToken = tokenList.get_next_token()    
-#print("done scanning")
 
 

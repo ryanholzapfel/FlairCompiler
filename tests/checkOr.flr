@@ -1,0 +1,13 @@
+ {
+
+----------Bool CheckProgram---------
+
+}
+
+program theOr ( n : boolean , m:boolean);
+
+	begin
+
+		return n or m
+
+	end.

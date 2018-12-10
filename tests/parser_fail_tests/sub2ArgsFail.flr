@@ -1,0 +1,13 @@
+{
+
+----------subtracting FAIL Program---------
+no begin statement
+}
+
+program sub( n : integer, m:integer );
+
+	
+
+		return n - m
+
+	end.

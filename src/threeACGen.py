@@ -5,6 +5,7 @@ from enum import Enum
 # The list will be inorder tree traversal of the program node.
 # The quadruples in the list will be in format [<operator>,<Arg1>,<Arg2>,<tempLocation>]
 
+#possible operations in TM/Operations in 3AC
 class GenExpression(Enum):
     genMult     = 1
     genDiv      = 2
@@ -29,16 +30,17 @@ class ThreeACGen():
     def __init__(self,programNode):
         self._programNode = programNode #AST object
         self._acList = [] #list of 3AC fourples
-        self._lastID = "t-1" #start at t-1 to increment to t0 when the first generate is called
+        self._lastID = "t-1" #last ID used in a piece of 3AC, start at t-1 to increment to t0 when the first generate is called
 
 
-    #increment the 3AC ID (eg. t0 -> t1)
+    #increment the 3AC ID (eg. t0 -> t1) and set the last ID
     def idInc(self,id):
         num = int(id[1:])
         nextID = "t" + str(num+1)
         self._lastID = nextID
         return nextID
 
+    #checks what the next ID is without setting the last ID
     def nextID(self,id):
         num = int(id[1:])
         nextID = "t" + str(num+1)
@@ -55,7 +57,6 @@ class ThreeACGen():
         self.genExpr3AC(self._programNode.body().statementlist().returnstatement(), "t-1")
         #generate 3AC for each function definition
         for deff in self._programNode.definitions().deffs():
-            #nextID = self.idInc(self._lastID)
             for code in self._acList:
                 if deff.identifier().identifier() == code[2]:
                     code[1] = self.nextID(self._lastID)
@@ -64,17 +65,15 @@ class ThreeACGen():
 
     #generate 3AC from a return expression node
     def genExpr3AC(self,returnExpr, prevID): #returnExpr is the return statement from any function or main return
+        #increment the ID, call walkExpr on the expression
         id = self.idInc(prevID)
-        #id = "t0"
-        #acList = [] #[[op, arg1, arg2, id]]
-        #need a backlog/temp list for the case where both sides of an operator are expressions
-        #acList.append(["t1", None, walkExpr(returnExpr), None])
         self.walkExpr(id,returnExpr)
-        #print(self._acList)
-        #return self._acList
+        #no return b/c operations are done on self
 
 
     #walk down the tree, see what operations there are
+
+    #check for less/equal
     def walkExpr(self,id,expr):
         if not expr.exprprime() == None:
             #find which operation node
@@ -87,14 +86,14 @@ class ThreeACGen():
             lid = self.idInc(rid)
             self.new3AC(op,rid,lid,id)
             #walk down right side, then left
-            self.walkSimpleExpr(rid,expr.exprprime().simpleexpr())
+            self.walkTerm(rid,expr.exprprime().simpleexpr())
             self.walkSimpleExpr(lid,expr.sexpr())
         else:
             #walk down the tree
             self.walkSimpleExpr(id, expr.sexpr())
         #return walkSimpleExpr(expr.sexpr())
 
-
+    #check for or/plus/minus
     def walkSimpleExpr(self,id,simpleexpr):
         if not simpleexpr.seprime() == None:
             if isinstance(simpleexpr.seprime(), Or_Node):
@@ -113,6 +112,7 @@ class ThreeACGen():
         else:
             self.walkTerm(id,simpleexpr.term())
 
+    #check for multiply/divide/and
     def walkTerm(self,id,term):
         if not term.termprime() == None:
             if isinstance(term.termprime(), Times_Node):
@@ -154,6 +154,7 @@ class ThreeACGen():
             else:
                 self.new3AC(None,None,n,id)
 
+    #return literals and identifiers, pass Calls back to walkTerm, recursively call walkExpr on compound expressions
     def walkFactor(self,id,factor):
         if isinstance(factor,Literal_Node):
             return factor.literal()
