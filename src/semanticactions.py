@@ -85,9 +85,13 @@ class Boolean_Node(AST_Node):
         self._boolean = boolean
         
     def __str__(self):
-        return str(self.boolean())
+        if self.boolean() == None:
+            return "boolean"
+        else:
+            return "{}".format(str(self.boolean()))
         
-    def boolean(self, boolean):
+        
+    def boolean(self):
         return self._boolean
         
 class SimpleExpr_Node(AST_Node):

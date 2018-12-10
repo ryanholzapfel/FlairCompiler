@@ -116,7 +116,9 @@ class CodeGen(object):
 
     def genBody(self):
         lastIndex = -1
-        if len(self.get3AC()) == 1: # this is meant for a zero arg return case aka print-one we were working on a genPrint but never got it finished
+
+        if  len(self._argOffsetList) == 0:
+            # this is meant for a zero arg return case aka print-one we were working on a genPrint but never got it finished
             treeValue = self.get3AC()[-1][2]
             self.addCode('LDC 2,{}(0) #load zero arg case'.format(treeValue))
             self.addCode('ST 2, 11(0) #Store zero arg case to dmem 11') # store tree value to dmem 1 we now have our arg for 0 arg programs

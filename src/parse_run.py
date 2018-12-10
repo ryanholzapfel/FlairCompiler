@@ -5,7 +5,7 @@ parse_run.py
 import sys
 from scanner import Scanner
 from parser import Parser
-sys.tracebacklimit = 0
+#sys.tracebacklimit = 0
 
 
 fileName = sys.argv[1]
