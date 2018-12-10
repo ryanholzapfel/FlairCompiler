@@ -55,21 +55,6 @@ class CodeGen(object):
             treeValue = self.get3AC()[-1][2]
             self.addCode('LDC 2,{}(0) #load zero arg case'.format(treeValue))
 
-
-    def saveReg(self): # typically used to store imem before a function call to save current state of main prog stored from dmem 6-10
-        self.addCode("ST 0,1(5)   #save IMEM to DMEM")
-        self.addCode("ST 1,2(5)   #save IMEM to DMEM")
-        self.addCode("ST 2,3(5)   #save IMEM to DMEM")
-        self.addCode("ST 3,4(5)   #save IMEM to DMEM")
-        self.addCode("ST 4,5(5)   #save IMEM to DMEM")
-
-    def loadReg(self): # used after a funtion calll to return imem to previous main prog state
-        self.addCode("LD 0,1(5)   #load DMEM to IMEM")
-        self.addCode("LD 1,2(5)   #load DMEM to IMEM")
-        self.addCode("LD 2,3(5)   #load DMEM to IMEM")
-        self.addCode("LD 3,4(5)   #load DMEM to IMEM")
-        self.addCode("LD 4,5(5)   #load DMEM to IMEM")
-
     def initializeMain(self): # This Program Literally starts here
         self.setFunctionList() 
         self.setNumberOfProgArgs()
@@ -294,7 +279,7 @@ class CodeGen(object):
         self.addCode("ST 2,{}(0)  # store cmd line arg 1".format(tempPlace + self._nextOffset))
         #self.loadReg()
     
-    def generate(self):     
+    def generate(self):     # generates all the tm codes
         self.initializeMain()
         return self._programString
 #--------------------------------------------------------------------------------------getter setters
