@@ -1,0 +1,14 @@
+ {
+
+----------BoolFail CheckProgram---------
+used a period instead of a colon
+
+}
+
+program Bool ( n : boolean , m .boolean);
+
+	begin
+
+		return n = m
+
+	end.

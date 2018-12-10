@@ -2,7 +2,7 @@ import sys
 
 from scanner import Scanner
 from parser import Parser
-#sys.tracebacklimit = 0
+sys.tracebacklimit = 0
 
 from semanticanalyzer import SemanticAnalyzer
 import os
