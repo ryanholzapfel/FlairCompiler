@@ -70,4 +70,6 @@ TM code generation is probably not as dynamic as it should be. We can successful
 
 ## Files specific to this submission
 No files are specific to this submission. However, we did add some new flair tests and programs.
-src/Codegen2.py was also heavily modified for this submission.
+* The file `src/Codegen2.py` was heavily modified for this submission.
+* The directory `tests/parser_fail_tests` now has five bad programs in it.
+* All python files associated with ./flair* unix programs use the same file path.
