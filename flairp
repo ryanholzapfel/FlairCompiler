@@ -5,4 +5,4 @@
 #this program runs a given flair program through the scanner and parser
 #will print a message if the program is valid, or an error if invalid
 
-python3 ./src/parse_run_no_tree.py $1
+python3 ./src/parse_run.py $1

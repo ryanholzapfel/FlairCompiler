@@ -20,5 +20,5 @@ parser = Parser(scanner)
 tree = parser.parse()
 
 if tree:
-    #print("Program is valid.")
-	print(tree)
+    print("Program is valid.")
+	#print(tree)
