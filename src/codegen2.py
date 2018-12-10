@@ -185,7 +185,7 @@ class CodeGen(object):
             self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(1 + arg2Offset + offset)) # this offset should refernce a return address location in dmem
         else:
             self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
-        self.addCode("MULT 4,4,5   # Multiply")
+        self.addCode("MUL 4,4,5   # Multiply")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
 
     def genDiv(self, tempArg1, tempArg2, tempPlace):  
