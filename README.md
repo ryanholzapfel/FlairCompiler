@@ -37,11 +37,12 @@ _None for the generator component._
 No compilation/building necessary for python3.
 
 ## How to Run
-* Executing the command `./flairs ./programs/<program name>` from the top level directory will execute the scanner and print_token programs which produce the tokens associated with the given Flair file and print them to the console. 
-* Executing the command `./flairf ./programs/<program name>` from the top level directory executes the parser (and scanner) on the program, prints the AST tree representation if the program is successfully parsed, or prints a relevent error message if it is not.
-* Executing the command `./flairv ./programs/<program name>` from the top level directory executes the parser on the program and prints the symbol table.
-* Executing the command `./flairc ./programs/<program name>` from the top level directory executes the generator and outputs a TM program with the same name as the flair program in the programs directory
-* Executing the command `./flairc <program name>` ex: `./flairc Doubler` from the top level directory will now work --exception for existing_programs run `./flairc existing_programs/<program name>`
+* All `./flair*` scripts are setup to execute only from the programs directory. If you wish to run programs from the tests directory, you need to specify the file path relative to the programs directory. (eg. `./flairc ../tests/checkAnd`)
+* Executing the command `./flairs <program name>` from the top level directory will execute the scanner and print_token programs which produce the tokens associated with the given Flair file and print them to the console. 
+* Executing the command `./flairf <program name>` from the top level directory executes the parser (and scanner) on the program, prints the AST tree representation if the program is successfully parsed, or prints a relevent error message if it is not.
+* Executing the command `./flairv <program name>` from the top level directory executes the parser on the program and prints the symbol table.
+* Executing the command `./flairc <program name>` from the top level directory executes the generator and outputs a TM program with the same name as the flair program in the tm directory
+
 
 ## Architecture and Design Decisions
 The scanner and flair token list are modeled after the class examples. We modeled each punctuation character and end of file as its own token type, and use the token/value pair for integers and words. 
@@ -69,4 +70,4 @@ TM code generation is probably not as dynamic as it should be. We can successful
 
 ## Files specific to this submission
 No files are specific to this submission. However, we did add some new flair tests and programs.
-src/Codegen2.py was also heavily modified for this submission. 
+src/Codegen2.py was also heavily modified for this submission.
