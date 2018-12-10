@@ -86,7 +86,7 @@ class ThreeACGen():
             lid = self.idInc(rid)
             self.new3AC(op,rid,lid,id)
             #walk down right side, then left
-            self.walkSimpleExpr(rid,expr.exprprime().simpleexpr())
+            self.walkTerm(rid,expr.exprprime().simpleexpr())
             self.walkSimpleExpr(lid,expr.sexpr())
         else:
             #walk down the tree

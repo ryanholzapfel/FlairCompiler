@@ -31,7 +31,11 @@ class CodeGen(object):
             GenExpression.genAdd : self.genAdd,
             GenExpression.genDiv : self.genDiv,
             GenExpression.genCall : self.genCall,
-            GenExpression.genMult : self.genMult
+            GenExpression.genMult : self.genMult,
+            GenExpression.genLess : self.genLess,
+            GenExpression.genAnd : self.genAnd,
+            GenExpression.genAnd : self.genAnd,
+            GenExpression.genEqual : self.genEqual
             }
 
     def currentLabel(self): # this is for when creating labels it is the next label number to be created
@@ -262,6 +266,126 @@ class CodeGen(object):
             self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
         self.addCode("SUB 4,4,5   # Subtract")
         self.addCode("ST 4,11(0)  # store product in DMEM at same return address handed in")
+
+    def genEqual(self, tempArg1, tempArg2, tempPlace):
+        functionName = self._functionList[self._functNumber] 
+        offset = self._functionReturnOffsetDict[functionName]
+        tPlace = int(tempPlace.strip('t'))
+        if str(tempArg2).isalpha():
+            arg2Offset = (self._symbolTable[functionName][0].index(tempArg2))
+        if str(tempArg1).isalpha():
+            arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
+        if isinstance(offset, int):
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset))
+        else:
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset.strip('t')))
+        if isinstance(tempArg1,int):
+            self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
+        else:
+            self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(1 + arg1Offset + int(str(offset).strip('t'))  ))
+        if isinstance(offset,int):
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(1 + arg2Offset + offset)) # this offset should refernce a return address location in dmem
+        else:
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
+        self.addCode("SUB 4,4,5   # subtract")
+        cln = self.currentLine()
+        self.addCode("JEQ 4,{}(0)   # evaluating 2 args".format(cln + 3))
+        self.addCode("ST 0,{}(0) # load return adress".format(offset))
+        #self.addCode("ST 4,{}(0) # load return adress".format(offset))
+        self.addCode("JEQ 0,{}(0)   # skips next line if run".format(cln + 5))
+        self.addCode("LDC 4,1(0) # load 1 into imem 4 adress")
+        self.addCode("ST 4,{}(0) # load return adress".format(offset))
+
+    def genLess(self, tempArg1, tempArg2, tempPlace):
+        functionName = self._functionList[self._functNumber] 
+        offset = self._functionReturnOffsetDict[functionName]
+        tPlace = int(tempPlace.strip('t'))
+        if str(tempArg2).isalpha():
+            arg2Offset = (self._symbolTable[functionName][0].index(tempArg2))
+        if str(tempArg1).isalpha():
+            arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
+        if isinstance(offset, int):
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset))
+        else:
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset.strip('t')))
+        if isinstance(tempArg1,int):
+            self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
+        else:
+            self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(1 + arg1Offset + int(str(offset).strip('t'))  ))
+        if isinstance(offset,int):
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(1 + arg2Offset + offset)) # this offset should refernce a return address location in dmem
+        else:
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
+        self.addCode("SUB 4,4,5   # subtract")
+        cln = self.currentLine()
+        self.addCode("JLT 4,{}(0)   # evaluating 2 args".format(cln + 3))
+        self.addCode("ST 0,{}(0) # load return adress".format(offset))
+        #self.addCode("ST 4,{}(0) # load return adress".format(offset))
+        self.addCode("JEQ 0,{}(0)   # skips next line if run".format(cln + 5))
+        self.addCode("LDC 4,1(0) # load 1 into imem 4 adress")
+        self.addCode("ST 4,{}(0) # load return adress".format(offset))
+
+    def genAnd(self, tempArg1, tempArg2, tempPlace):
+        functionName = self._functionList[self._functNumber] 
+        offset = self._functionReturnOffsetDict[functionName]
+        tPlace = int(tempPlace.strip('t'))
+        if str(tempArg2).isalpha():
+            arg2Offset = (self._symbolTable[functionName][0].index(tempArg2))
+        if str(tempArg1).isalpha():
+            arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
+        if isinstance(offset, int):
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset))
+        else:
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset.strip('t')))
+        if isinstance(tempArg1,int):
+            self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
+        else:
+            self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(1 + arg1Offset + int(str(offset).strip('t'))  ))
+        if isinstance(offset,int):
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(1 + arg2Offset + offset)) # this offset should refernce a return address location in dmem
+        else:
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
+        self.addCode("ADD 4,4,5   # add")
+        self.addCode("LDC 5,2(0)   # load 2 into imem 5")
+        self.addCode("SUB 4,4,5   # subtract 2")
+        cln = self.currentLine()
+        self.addCode("JEQ 4,{}(0)   # evaluating 2 args".format(cln + 3))
+        self.addCode("ST 0,{}(0) # load return adress".format(offset))
+        #self.addCode("ST 4,{}(0) # load return adress".format(offset))
+        self.addCode("JEQ 0,{}(0)   # skips next line if run".format(cln + 5))
+        self.addCode("LDC 4,1(0) # load 1 into imem 4 adress")
+        self.addCode("ST 4,{}(0) # load return adress".format(offset))
+
+    def genLess(self, tempArg1, tempArg2, tempPlace):
+        functionName = self._functionList[self._functNumber] 
+        offset = self._functionReturnOffsetDict[functionName]
+        tPlace = int(tempPlace.strip('t'))
+        if str(tempArg2).isalpha():
+            arg2Offset = (self._symbolTable[functionName][0].index(tempArg2))
+        if str(tempArg1).isalpha():
+            arg1Offset = (self._symbolTable[functionName][0].index(tempArg1)) 
+        if isinstance(offset, int):
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset))
+        else:
+            self.addCode("LDA 3,{}(0) # load return adress".format(offset.strip('t')))
+        if isinstance(tempArg1,int):
+            self.addCode("LDC 4,{}(0)  # load cmd line arg 1".format(tempArg1))
+        else:
+            self.addCode("LD 4,{}(0)  # load cmd line arg 1 or other known variable from dmem".format(1 + arg1Offset + int(str(offset).strip('t'))  ))
+        if isinstance(offset,int):
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(1 + arg2Offset + offset)) # this offset should refernce a return address location in dmem
+        else:
+            self.addCode("LD 5,{}(0)  # load cmd line arg 2 or other known variable from dmem".format(11 + int(str(offset).strip('t') ) ) )
+        self.addCode("ADD 4,4,5   # add")
+        cln = self.currentLine()
+        self.addCode("JGT 4,{}(0)   # evaluating 2 args".format(cln + 3))
+        self.addCode("ST 0,{}(0) # load return adress".format(offset))
+        #self.addCode("ST 4,{}(0) # load return adress".format(offset))
+        self.addCode("JEQ 0,{}(0)   # skips next line if run".format(cln + 5))
+        self.addCode("LDC 4,1(0) # load 1 into imem 4 adress")
+        self.addCode("ST 4,{}(0) # load return adress".format(offset))
+
+
 
     def genCall(self,threeAC, check3ACgenCallList, count):  # //TODO this funct will likely have to be modified if we ever get time to implement if statements
         tempPlace = threeAC[3]

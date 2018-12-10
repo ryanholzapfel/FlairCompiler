@@ -7,7 +7,7 @@ sys.tracebacklimit = 0
 from semanticanalyzer import SemanticAnalyzer
 import os
 cwd = os.getcwd()
-print(cwd)
+
 #bring in filepath, read program file
 # filename = input('Enter your program name ')
 # file = open("./programs/existing_programs/"+ filename,"r")
@@ -27,7 +27,7 @@ parser = Parser(scanner)
 programNode = parser.parse()
 
 sa = SemanticAnalyzer(programNode)
-sa.table()
+print(sa.table())
 
 
 

@@ -4,10 +4,10 @@
 
 }
 
-program Bool ( n : boolean , m:boolean);
+program theOr ( n : boolean , m:boolean);
 
 	begin
 
-		return n = m
+		return n or m
 
 	end.
