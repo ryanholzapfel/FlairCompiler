@@ -9,10 +9,12 @@ sys.tracebacklimit = 0
 
 
 fileName = sys.argv[1]
+hasFlr = ".flr"
+if ".flr" in fileName:
+    hasFlr = ""
+fileIn = open("programs/"+ fileName + hasFlr, "r")
 
-file = open(fileName)
-
-program = file.read()
+program = fileIn.read()
 
 scanner = Scanner(program)
 parser = Parser(scanner)
