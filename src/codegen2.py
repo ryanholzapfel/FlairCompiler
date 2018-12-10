@@ -125,7 +125,6 @@ class CodeGen(object):
         programNode = self._programNode
         tac = ThreeACGen(programNode)
         generatedACList = tac.program3AC() 
-        print(generatedACList)
         self.set3AC(generatedACList)
         self._functionReturnOffsetDict[self._programName] = 11 # we set dmem 11 to always be the main return address
         self.genBody()
