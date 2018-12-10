@@ -41,7 +41,6 @@ class SemanticAnalyzer(object):
         self._currentID = id
         
     def check_expr(self, node):
-        print(node)
         if node.exprprime() == None:
             return self.check_se(node.sexpr())
         elif isinstance(node.exprprime(), LessThan_Node):
@@ -116,7 +115,6 @@ class SemanticAnalyzer(object):
             elif isinstance(node.literal(), Boolean_Node): 
                 return "B"#setBool()
             else:
-                print("couldn't resolve literal to either type", node.literal())
                 return("I")
         elif isinstance(node, Identifier_Node):
             return self.check_id(node)
@@ -184,7 +182,6 @@ class SemanticAnalyzer(object):
         elif formalType == "B":  # ID is assigned to boolean type
             return "B"
         else:
-            print("couldn't resolve id to type", idstr)
             return "I"
                 
     def check_return(self, node):
@@ -193,7 +190,6 @@ class SemanticAnalyzer(object):
         elif isinstance(node, Boolean_Node):
             return "B"
         else:
-            print("couldn't resolve return type")
             return "I"
         
     def check_def(self, node):	#node is def node	
